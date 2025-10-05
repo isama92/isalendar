@@ -12,7 +12,7 @@ const Layout = ({ children }) => {
             {/* Sidebar */}
             {user && (
                 <aside className="w-64 border-r border-gray-200 bg-white">
-                    <div className="flex justify-center h-16 items-center border-b border-gray-200 px-6">
+                    <div className="flex h-16 items-center justify-center border-b border-gray-200 px-6">
                         <img src="/assets/logo.png" alt="Isalendar" className="h-8" />
                     </div>
                     <nav className="p-4">

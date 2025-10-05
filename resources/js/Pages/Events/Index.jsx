@@ -1,17 +1,7 @@
 import { Link } from '@inertiajs/react';
+import { formatDateTime } from '../../utils/date';
 
 const Index = ({ events }) => {
-    const formatDate = dateString => {
-        const date = new Date(dateString);
-        return date.toLocaleDateString('en-US', {
-            month: 'short',
-            day: 'numeric',
-            year: 'numeric',
-            hour: '2-digit',
-            minute: '2-digit',
-        });
-    };
-
     return (
         <div className="rounded-lg bg-white p-6 shadow">
             <h2 className="mb-6 text-2xl font-semibold text-gray-900">Events</h2>
@@ -30,7 +20,7 @@ const Index = ({ events }) => {
                                             <span>All day</span>
                                         ) : (
                                             <span>
-                                                {formatDate(event.starts_at)} - {formatDate(event.ends_at)}
+                                                {formatDateTime(event.starts_at)} - {formatDateTime(event.ends_at)}
                                             </span>
                                         )}
                                     </div>

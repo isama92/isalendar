@@ -15,7 +15,7 @@ const Login = () => {
     return (
         <div className="flex min-h-screen items-center justify-center bg-gray-100">
             <div className="w-full max-w-md rounded-lg bg-white p-8 shadow-md">
-                <div className="flex justify-center mb-6">
+                <div className="mb-6 flex justify-center">
                     <img src="/assets/logo.png" alt="Isalendar" className="h-12" />
                 </div>
 
