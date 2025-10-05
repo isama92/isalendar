@@ -22,7 +22,7 @@ const Login = () => {
                 <form onSubmit={submit}>
                     <div className="mb-4">
                         <label htmlFor="email" className="mb-2 block text-sm font-medium text-gray-700">
-                            Email
+                            {__('auth.email')}
                         </label>
                         <input
                             id="email"
@@ -37,7 +37,7 @@ const Login = () => {
 
                     <div className="mb-4">
                         <label htmlFor="password" className="mb-2 block text-sm font-medium text-gray-700">
-                            Password
+                            {__('auth.password')}
                         </label>
                         <input
                             id="password"
@@ -58,7 +58,7 @@ const Login = () => {
                                 onChange={e => setData('remember', e.target.checked)}
                                 className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
                             />
-                            <span className="ml-2 text-sm text-gray-600">Remember me</span>
+                            <span className="ml-2 text-sm text-gray-600">{__('auth.remember_me')}</span>
                         </label>
                     </div>
 
@@ -67,7 +67,7 @@ const Login = () => {
                         disabled={processing}
                         className="w-full rounded-md bg-blue-600 px-4 py-2 font-medium text-white hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:outline-none disabled:opacity-50"
                     >
-                        {processing ? 'Logging in...' : 'Login'}
+                        {processing ? __('auth.logging_in') : __('auth.login')}
                     </button>
                 </form>
             </div>

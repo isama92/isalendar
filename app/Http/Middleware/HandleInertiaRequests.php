@@ -4,6 +4,7 @@ namespace App\Http\Middleware;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\File;
 use Inertia\Middleware;
 use Override;
 use Tighten\Ziggy\Ziggy;
@@ -36,6 +37,31 @@ class HandleInertiaRequests extends Middleware
             'user' => Auth::check()
                 ? Auth::user()->only(['name', 'email'])
                 : null,
+            'locale' => app()->getLocale(),
+            'translations' => $this->getTranslations(),
         ];
+    }
+
+    /**
+     * @return array<string, array<string, string>>
+     */
+    protected function getTranslations(): array
+    {
+        $locale = app()->getLocale();
+        $langPath = lang_path("{$locale}");
+
+        if (! File::exists($langPath)) {
+            return [];
+        }
+
+        $translations = [];
+        $files = File::files($langPath);
+
+        foreach ($files as $file) {
+            $key = $file->getFilenameWithoutExtension();
+            $translations[$key] = require $file->getPathname();
+        }
+
+        return $translations;
     }
 }

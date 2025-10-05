@@ -30,12 +30,12 @@ const Index = ({ events }) => {
         () => [
             {
                 accessorKey: 'title',
-                header: 'Title',
+                header: __('events.title'),
                 cell: info => info.getValue(),
             },
             {
                 accessorKey: 'all_day',
-                header: 'All Day',
+                header: __('events.all_day'),
                 cell: info =>
                     info.getValue() ? (
                         <CheckIcon className="h-5 w-5 text-green-500" />
@@ -49,7 +49,7 @@ const Index = ({ events }) => {
             },
             {
                 accessorKey: 'starts_at',
-                header: 'Starts At',
+                header: __('events.starts_at'),
                 cell: info =>
                     info.row.original.all_day ? formatDate(info.getValue()) : formatDateTime(info.getValue()),
                 filterFn: (row, id, value) => {
@@ -59,7 +59,7 @@ const Index = ({ events }) => {
             },
             {
                 accessorKey: 'ends_at',
-                header: 'Ends At',
+                header: __('events.ends_at'),
                 cell: info => (info.row.original.all_day ? '' : formatDateTime(info.getValue())),
                 filterFn: (row, id, value) => {
                     if (!value) return true;
@@ -68,30 +68,30 @@ const Index = ({ events }) => {
             },
             {
                 id: 'actions',
-                header: 'Actions',
+                header: __('common.actions'),
                 cell: info => (
                     <div className="flex items-center gap-2">
                         <Link
                             href={route('events.show', info.row.original.id)}
-                            title="View"
+                            title={__('common.view')}
                             className="text-gray-600 hover:text-gray-800"
                         >
                             <EyeIcon className="h-5 w-5" />
                         </Link>
                         <Link
                             href={route('events.edit', info.row.original.id)}
-                            title="Edit"
+                            title={__('common.edit')}
                             className="text-blue-600 hover:text-blue-800"
                         >
                             <PencilIcon className="h-5 w-5" />
                         </Link>
                         <button
                             onClick={() => {
-                                if (confirm('Are you sure you want to delete this event?')) {
+                                if (confirm(__('events.delete_confirm'))) {
                                     router.delete(route('events.destroy', info.row.original.id));
                                 }
                             }}
-                            title="Delete"
+                            title={__('common.delete')}
                             className="cursor-pointer text-red-600 hover:text-red-800"
                         >
                             <TrashIcon className="h-5 w-5" />
@@ -121,19 +121,19 @@ const Index = ({ events }) => {
     return (
         <div className="rounded-lg bg-white p-6 shadow">
             <div className="mb-6 flex items-center justify-between">
-                <h2 className="text-2xl font-semibold text-gray-900">Events</h2>
+                <h2 className="text-2xl font-semibold text-gray-900">{__('events.events')}</h2>
                 <Link
                     href={route('events.create')}
                     className="rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:outline-none"
                 >
-                    Create Event
+                    {__('events.create_event')}
                 </Link>
             </div>
 
             <div className="mb-4 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
                 <input
                     type="text"
-                    placeholder="Filter by title..."
+                    placeholder={__('events.filter_by_title')}
                     value={table.getColumn('title')?.getFilterValue() ?? ''}
                     onChange={e => table.getColumn('title')?.setFilterValue(e.target.value)}
                     className="rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none"
@@ -143,9 +143,9 @@ const Index = ({ events }) => {
                     onChange={e => table.getColumn('all_day')?.setFilterValue(e.target.value)}
                     className="rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none"
                 >
-                    <option value="all">All events</option>
-                    <option value="true">All Day only</option>
-                    <option value="false">Not All Day</option>
+                    <option value="all">{__('events.all_events')}</option>
+                    <option value="true">{__('events.all_day_only')}</option>
+                    <option value="false">{__('events.not_all_day')}</option>
                 </select>
                 <DatePicker
                     selected={
@@ -157,7 +157,7 @@ const Index = ({ events }) => {
                         table.getColumn('starts_at')?.setFilterValue(date ? formatWithFormat(date, 'YYYY-MM-DD') : '')
                     }
                     dateFormat="dd/MM/yyyy"
-                    placeholderText="Filter by starts at..."
+                    placeholderText={__('events.filter_by_starts_at')}
                     isClearable
                     calendarStartDay={1}
                     withPortal
@@ -173,7 +173,7 @@ const Index = ({ events }) => {
                         table.getColumn('ends_at')?.setFilterValue(date ? formatWithFormat(date, 'YYYY-MM-DD') : '')
                     }
                     dateFormat="dd/MM/yyyy"
-                    placeholderText="Filter by ends at..."
+                    placeholderText={__('events.filter_by_ends_at')}
                     isClearable
                     calendarStartDay={1}
                     withPortal
@@ -183,7 +183,7 @@ const Index = ({ events }) => {
 
             <div className="overflow-x-auto">
                 {table.getRowModel().rows.length === 0 ? (
-                    <p className="text-gray-500">No events found.</p>
+                    <p className="text-gray-500">{__('events.no_events_found')}</p>
                 ) : (
                     <table className="min-w-full divide-y divide-gray-200">
                         <thead className="bg-gray-50">

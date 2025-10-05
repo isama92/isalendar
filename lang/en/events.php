@@ -1,0 +1,27 @@
+<?php
+
+return [
+    'events' => 'Events',
+    'event' => 'Event',
+    'create_event' => 'Create Event',
+    'edit_event' => 'Edit Event',
+    'title' => 'Title',
+    'all_day' => 'All Day',
+    'starts_at' => 'Starts At',
+    'ends_at' => 'Ends At',
+    'description' => 'Description',
+    'created_at' => 'Created At',
+    'updated_at' => 'Updated At',
+    'date' => 'Date',
+    'new_event' => 'New Event',
+    'all_events' => 'All events',
+    'all_day_only' => 'All Day only',
+    'not_all_day' => 'Not All Day',
+    'search_events' => 'Search events...',
+    'show_event' => 'Event Details',
+    'delete_confirm' => 'Are you sure you want to delete this event?',
+    'filter_by_title' => 'Filter by title...',
+    'filter_by_starts_at' => 'Filter by starts at...',
+    'filter_by_ends_at' => 'Filter by ends at...',
+    'no_events_found' => 'No events found.',
+];

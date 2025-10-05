@@ -24,6 +24,7 @@ export default [
                 ...globals.browser,
                 axios: true,
                 route: true,
+                __: true,
             },
         },
     },

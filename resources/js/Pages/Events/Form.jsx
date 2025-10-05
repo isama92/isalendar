@@ -42,12 +42,14 @@ const Form = ({ event = null }) => {
 
     return (
         <div className="rounded-lg bg-white p-6 shadow">
-            <h2 className="mb-6 text-2xl font-semibold text-gray-900">{isEditing ? 'Edit Event' : 'Create Event'}</h2>
+            <h2 className="mb-6 text-2xl font-semibold text-gray-900">
+                {isEditing ? __('events.edit_event') : __('events.create_event')}
+            </h2>
 
             <form className="space-y-6">
                 <div>
                     <label htmlFor="title" className="block text-sm font-medium text-gray-700">
-                        Title
+                        {__('events.title')}
                     </label>
                     <input
                         type="text"
@@ -67,14 +69,14 @@ const Form = ({ event = null }) => {
                             onChange={e => setData('all_day', e.target.checked)}
                             className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
                         />
-                        <span className="ml-2 text-sm text-gray-700">All Day</span>
+                        <span className="ml-2 text-sm text-gray-700">{__('events.all_day')}</span>
                     </label>
                 </div>
 
                 <div className="flex flex-col gap-6 sm:flex-row">
                     <div>
                         <label htmlFor="starts_at" className="block text-sm font-medium text-gray-700">
-                            Starts At
+                            {__('events.starts_at')}
                         </label>
                         <DatePicker
                             id="starts_at"
@@ -100,7 +102,7 @@ const Form = ({ event = null }) => {
                     {!data.all_day && (
                         <div>
                             <label htmlFor="ends_at" className="block text-sm font-medium text-gray-700">
-                                Ends At
+                                {__('events.ends_at')}
                             </label>
                             <DatePicker
                                 id="ends_at"
@@ -122,7 +124,7 @@ const Form = ({ event = null }) => {
 
                 <div>
                     <label htmlFor="description" className="block text-sm font-medium text-gray-700">
-                        Description
+                        {__('events.description')}
                     </label>
                     <textarea
                         id="description"
@@ -139,7 +141,7 @@ const Form = ({ event = null }) => {
                         href={route('events.index')}
                         className="rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:outline-none"
                     >
-                        Cancel
+                        {__('common.cancel')}
                     </a>
                     <div className="flex gap-3">
                         <button
@@ -150,11 +152,11 @@ const Form = ({ event = null }) => {
                         >
                             {processing
                                 ? isEditing
-                                    ? 'Updating...'
-                                    : 'Creating...'
+                                    ? __('common.updating')
+                                    : __('common.creating')
                                 : isEditing
-                                  ? 'Update & Back to List'
-                                  : 'Create & Back to List'}
+                                  ? __('common.update_and_back_to_list')
+                                  : __('common.create_and_back_to_list')}
                         </button>
                         <button
                             type="button"
@@ -164,11 +166,11 @@ const Form = ({ event = null }) => {
                         >
                             {processing
                                 ? isEditing
-                                    ? 'Updating...'
-                                    : 'Creating...'
+                                    ? __('common.updating')
+                                    : __('common.creating')
                                 : isEditing
-                                  ? 'Update & View'
-                                  : 'Create & View'}
+                                  ? __('common.update_and_view')
+                                  : __('common.create_and_view')}
                         </button>
                     </div>
                 </div>

@@ -1,0 +1,27 @@
+<?php
+
+return [
+    'events' => 'Eventi',
+    'event' => 'Evento',
+    'create_event' => 'Crea Evento',
+    'edit_event' => 'Modifica Evento',
+    'title' => 'Titolo',
+    'all_day' => 'Tutto il Giorno',
+    'starts_at' => 'Inizio',
+    'ends_at' => 'Fine',
+    'description' => 'Descrizione',
+    'created_at' => 'Creato il',
+    'updated_at' => 'Aggiornato il',
+    'date' => 'Data',
+    'new_event' => 'Nuovo Evento',
+    'all_events' => 'Tutti gli eventi',
+    'all_day_only' => 'Solo Tutto il Giorno',
+    'not_all_day' => 'Non Tutto il Giorno',
+    'search_events' => 'Cerca eventi...',
+    'show_event' => 'Dettagli Evento',
+    'delete_confirm' => 'Sei sicuro di voler eliminare questo evento?',
+    'filter_by_title' => 'Filtra per titolo...',
+    'filter_by_starts_at' => 'Filtra per inizio...',
+    'filter_by_ends_at' => 'Filtra per fine...',
+    'no_events_found' => 'Nessun evento trovato.',
+];

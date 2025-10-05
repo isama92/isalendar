@@ -3,6 +3,7 @@
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\EventsController;
+use App\Http\Controllers\LocaleController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
@@ -12,6 +13,9 @@ Route::post('/login', [AuthController::class, 'store'])
     ->name('login.submit');
 Route::post('/logout', [AuthController::class, 'destroy'])->middleware('auth')
     ->name('logout');
+
+Route::post('/locale', [LocaleController::class, 'update'])
+    ->name('locale.update');
 
 Route::middleware('auth')->group(function (): void {
     Route::get('/', [DashboardController::class, 'index'])

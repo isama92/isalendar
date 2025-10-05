@@ -2,8 +2,10 @@ import { createInertiaApp } from '@inertiajs/react';
 import { createRoot } from 'react-dom/client';
 import { route } from 'ziggy-js';
 import Layout from './Components/Layout';
+import { __, setGlobalTranslations } from './utils/translate';
 
 window.route = route;
+window.__ = __;
 
 createInertiaApp({
     resolve: name => {
@@ -15,6 +17,9 @@ createInertiaApp({
         return page;
     },
     setup({ el, App, props }) {
+        if (props.initialPage.props.translations) {
+            setGlobalTranslations(props.initialPage.props.translations);
+        }
         createRoot(el).render(<App {...props} />);
     },
 });
