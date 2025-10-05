@@ -1,13 +1,12 @@
 {
-    "$schema": "https://getcomposer.org/schema.json",
     "name": "isama92/isalendar",
-    "type": "project",
     "description": "Add events to a shared calendar.",
+    "license": "MIT",
+    "type": "project",
     "keywords": [
         "isama92",
         "isalendar"
     ],
-    "license": "MIT",
     "require": {
         "php": "^8.4",
         "laravel/framework": "^12.0",
@@ -15,21 +14,26 @@
     },
     "require-dev": {
         "barryvdh/laravel-debugbar": "^3.16",
+        "defstudio/pest-plugin-laravel-expectations": "^2.6",
         "driftingly/rector-laravel": "^2.0",
+        "ergebnis/composer-normalize": "^2.48",
         "fakerphp/faker": "^1.23",
+        "jasonmccreary/laravel-test-assertions": "^2.8",
         "larastan/larastan": "^3.7",
         "laravel/pail": "^1.2.2",
         "laravel/pint": "^1.24",
         "laravel/sail": "^1.41",
         "mockery/mockery": "^1.6",
         "nunomaduro/collision": "^8.6",
+        "pestphp/pest": "^4.1",
         "phpmd/phpmd": "^2.15",
         "phpstan/extension-installer": "^1.4",
         "phpstan/phpstan": "^2.1",
-        "phpunit/phpunit": "^11.5.3",
         "rector/rector": "^2.1",
         "roave/security-advisories": "dev-latest"
     },
+    "minimum-stability": "stable",
+    "prefer-stable": true,
     "autoload": {
         "psr-4": {
             "App\\": "app/",
@@ -42,13 +46,32 @@
             "Tests\\": "tests/"
         }
     },
+    "config": {
+        "allow-plugins": {
+            "ergebnis/composer-normalize": true,
+            "pestphp/pest-plugin": true,
+            "php-http/discovery": false,
+            "phpstan/extension-installer": true
+        },
+        "optimize-autoloader": true,
+        "preferred-install": "dist",
+        "sort-packages": true
+    },
+    "extra": {
+        "laravel": {
+            "dont-discover": []
+        }
+    },
     "scripts": {
+        "post-update-cmd": [
+            "@php artisan vendor:publish --tag=laravel-assets --ansi --force"
+        ],
+        "pre-package-uninstall": [
+            "Illuminate\\Foundation\\ComposerScripts::prePackageUninstall"
+        ],
         "post-autoload-dump": [
             "Illuminate\\Foundation\\ComposerScripts::postAutoloadDump",
             "@php artisan package:discover --ansi"
-        ],
-        "post-update-cmd": [
-            "@php artisan vendor:publish --tag=laravel-assets --ansi --force"
         ],
         "post-root-package-install": [
             "@php -r \"file_exists('.env') || copy('.env.example', '.env');\""
@@ -58,14 +81,11 @@
             "@php -r \"file_exists('database/database.sqlite') || touch('database/database.sqlite');\"",
             "@php artisan migrate --graceful --ansi"
         ],
-        "pre-package-uninstall": [
-            "Illuminate\\Foundation\\ComposerScripts::prePackageUninstall"
-        ],
+        "analyse": "phpstan analyse --memory-limit=-1",
         "dev": [
             "Composer\\Config::disableProcessTimeout",
             "npx concurrently -c \"#93c5fd,#c4b5fd,#fb7185,#fdba74\" \"php artisan serve\" \"php artisan queue:listen --tries=1\" \"php artisan pail --timeout=0\" \"npm run dev\" --names=server,queue,logs,vite --kill-others"
         ],
-        "analyse": "phpstan analyse --memory-limit=-1",
         "lint": [
             "pint"
         ],
@@ -85,25 +105,18 @@
             "@test"
         ],
         "test": [
-            "@php artisan config:clear --ansi",
-            "@php artisan test"
+            "Composer\\Config::disableProcessTimeout",
+            "pest"
         ]
     },
-    "extra": {
-        "laravel": {
-            "dont-discover": []
-        }
+    "scripts-descriptions": {
+        "analyse": "Runs static analysis",
+        "lint": "Correct the code style of all PHP files",
+        "mess": "Checks for potential code problems",
+        "refactor": "Run refactoring tools",
+        "static": "Run the static CI suite of checks",
+        "suite": "Run the full CI suite of checks",
+        "test": "Run the test suite"
     },
-    "config": {
-        "optimize-autoloader": true,
-        "preferred-install": "dist",
-        "sort-packages": true,
-        "allow-plugins": {
-            "pestphp/pest-plugin": true,
-            "php-http/discovery": true,
-            "phpstan/extension-installer": true
-        }
-    },
-    "minimum-stability": "stable",
-    "prefer-stable": true
+    "$schema": "https://getcomposer.org/schema.json"
 }

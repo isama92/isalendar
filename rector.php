@@ -41,4 +41,3 @@ return RectorConfig::configure()
         cacheDirectory: '/tmp/rector/cache',
         cacheClass: FileCacheStorage::class,
     );
-
