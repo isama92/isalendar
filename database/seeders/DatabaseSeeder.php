@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Enums\Role;
 use App\Models\Event;
 use App\Models\User;
 use Illuminate\Database\Seeder;
@@ -13,6 +14,10 @@ class DatabaseSeeder extends Seeder
 
     public function run(): void
     {
+        $this->call([
+            RoleSeeder::class,
+        ]);
+
         $users = $this->seed(
             'Create 20 users',
             fn (): Collection => $this->createUsers(),
@@ -33,6 +38,7 @@ class DatabaseSeeder extends Seeder
             'name' => 'Test User',
             'email' => 'test@example.com',
         ]);
+        $user->assignRole(Role::SUPER_ADMIN);
 
         return User::factory(19)->create()
             ->prepend($user);
