@@ -1,7 +1,6 @@
 <?php
 
-use Illuminate\Contracts\View\Factory;
-use Illuminate\Contracts\View\View;
+use App\Http\Controllers\EventsController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', fn (): View|Factory => view('welcome'));
+Route::get('/', (new EventsController)->index(...));

@@ -9,6 +9,7 @@
     ],
     "require": {
         "php": "^8.4",
+        "inertiajs/inertia-laravel": "^2.0",
         "laravel/framework": "^12.0",
         "laravel/tinker": "^2.10.1"
     },
@@ -88,7 +89,8 @@
             "npx concurrently -c \"#93c5fd,#c4b5fd,#fb7185,#fdba74\" \"php artisan serve\" \"php artisan queue:listen --tries=1\" \"php artisan pail --timeout=0\" \"npm run dev\" --names=server,queue,logs,vite --kill-others"
         ],
         "lint": [
-            "pint"
+            "pint",
+            "npm run format"
         ],
         "mess": "phpmd . ansi phpmd.ruleset.xml --exclude 'tests/*,vendor/*,node_modules/*,storage/*'",
         "refactor": "rector process",
@@ -112,7 +114,7 @@
     },
     "scripts-descriptions": {
         "analyse": "Runs static analysis",
-        "lint": "Correct the code style of all PHP files",
+        "lint": "Correct the code style of all PHP and JS files",
         "mess": "Checks for potential code problems",
         "refactor": "Run refactoring tools",
         "static": "Run the static CI suite of checks",
