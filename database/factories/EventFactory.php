@@ -3,6 +3,7 @@
 namespace Database\Factories;
 
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -19,8 +20,11 @@ class EventFactory extends Factory
             'user_id' => User::factory(),
             'title' => fake()->sentence(3),
             'all_day' => fake()->boolean(20),
-            'starts_at' => fn (array $attributes) => $attributes['all_day'] ? null : fake()
-                ->dateTimeBetween('now', '+1 month'),
+            'starts_at' => function (array $attributes) {
+                $date = new Carbon(fake()->dateTimeBetween('now', '+1 month'));
+
+                return $attributes['all_day'] ? $date->startOfDay() : $date;
+            },
             'ends_at' => fn (array $attributes) => $attributes['all_day'] ? null : fake()
                 ->dateTimeBetween($attributes['starts_at'], $attributes['starts_at']->format('Y-m-d H:i:s').' +16 hours'),
             'description' => fake()->paragraph(),

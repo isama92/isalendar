@@ -33,10 +33,8 @@ const Show = ({ event }) => {
 
             <dl className="space-y-4">
                 <div>
-                    <dt className="text-sm font-medium text-gray-500">Type</dt>
-                    <dd className="mt-1 text-sm text-gray-900">
-                        {event.all_day ? 'All day event' : 'Scheduled event'}
-                    </dd>
+                    <dt className="text-sm font-medium text-gray-500">All Day</dt>
+                    <dd className="mt-1 text-sm text-gray-900">{event.all_day ? 'Yes' : 'No'}</dd>
                 </div>
 
                 {!event.all_day && (

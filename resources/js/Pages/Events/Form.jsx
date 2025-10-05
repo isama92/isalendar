@@ -1,5 +1,4 @@
 import { useForm } from '@inertiajs/react';
-import { omit } from 'es-toolkit';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import { formatWithFormat } from '../../utils/date';
@@ -22,7 +21,7 @@ const Form = ({ event = null }) => {
             let submitData = { ...data };
 
             if (data.all_day) {
-                submitData = omit(submitData, ['starts_at', 'ends_at']);
+                submitData.ends_at = null;
             }
 
             return submitData;
@@ -66,32 +65,37 @@ const Form = ({ event = null }) => {
                             onChange={e => setData('all_day', e.target.checked)}
                             className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
                         />
-                        <span className="ml-2 text-sm text-gray-700">All day event</span>
+                        <span className="ml-2 text-sm text-gray-700">All Day</span>
                     </label>
                 </div>
 
-                {!data.all_day && (
-                    <>
-                        <div>
-                            <label htmlFor="starts_at" className="block text-sm font-medium text-gray-700">
-                                Starts At
-                            </label>
-                            <DatePicker
-                                id="starts_at"
-                                selected={data.starts_at ? new Date(data.starts_at) : null}
-                                onChange={date =>
-                                    setData('starts_at', date ? formatWithFormat(date, 'YYYY-MM-DD HH:mm:ss') : '')
-                                }
-                                showTimeSelect
-                                timeFormat="HH:mm"
-                                timeIntervals={15}
-                                dateFormat="dd/MM/yyyy HH:mm"
-                                calendarStartDay={1}
-                                className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none"
-                            />
-                            {errors.starts_at && <p className="mt-1 text-sm text-red-600">{errors.starts_at}</p>}
-                        </div>
+                <div className="flex flex-col gap-6 sm:flex-row">
+                    <div>
+                        <label htmlFor="starts_at" className="block text-sm font-medium text-gray-700">
+                            Starts At
+                        </label>
+                        <DatePicker
+                            id="starts_at"
+                            selected={data.starts_at ? new Date(data.starts_at) : null}
+                            onChange={date =>
+                                setData(
+                                    'starts_at',
+                                    date
+                                        ? formatWithFormat(date, data.all_day ? 'YYYY-MM-DD' : 'YYYY-MM-DD HH:mm:ss')
+                                        : ''
+                                )
+                            }
+                            showTimeSelect={!data.all_day}
+                            timeFormat="HH:mm"
+                            timeIntervals={15}
+                            dateFormat={data.all_day ? 'dd/MM/yyyy' : 'dd/MM/yyyy HH:mm'}
+                            calendarStartDay={1}
+                            className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none"
+                        />
+                        {errors.starts_at && <p className="mt-1 text-sm text-red-600">{errors.starts_at}</p>}
+                    </div>
 
+                    {!data.all_day && (
                         <div>
                             <label htmlFor="ends_at" className="block text-sm font-medium text-gray-700">
                                 Ends At
@@ -111,8 +115,8 @@ const Form = ({ event = null }) => {
                             />
                             {errors.ends_at && <p className="mt-1 text-sm text-red-600">{errors.ends_at}</p>}
                         </div>
-                    </>
-                )}
+                    )}
+                </div>
 
                 <div>
                     <label htmlFor="description" className="block text-sm font-medium text-gray-700">

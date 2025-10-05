@@ -1,4 +1,12 @@
-import { CheckIcon, ChevronDownIcon, ChevronUpIcon, PencilIcon, TrashIcon, XMarkIcon } from '@heroicons/react/24/solid';
+import {
+    CheckIcon,
+    ChevronDownIcon,
+    ChevronUpIcon,
+    EyeIcon,
+    PencilIcon,
+    TrashIcon,
+    XMarkIcon,
+} from '@heroicons/react/24/solid';
 import { Link, router } from '@inertiajs/react';
 import {
     flexRender,
@@ -12,7 +20,7 @@ import { useMemo, useState } from 'react';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import Pagination from '../../Components/Pagination';
-import { formatDateTime, formatWithFormat } from '../../utils/date';
+import { formatDate, formatDateTime, formatWithFormat } from '../../utils/date';
 
 const Index = ({ events }) => {
     const [sorting, setSorting] = useState([]);
@@ -42,7 +50,8 @@ const Index = ({ events }) => {
             {
                 accessorKey: 'starts_at',
                 header: 'Starts At',
-                cell: info => (info.row.original.all_day ? '' : formatDateTime(info.getValue())),
+                cell: info =>
+                    info.row.original.all_day ? formatDate(info.getValue()) : formatDateTime(info.getValue()),
                 filterFn: (row, id, value) => {
                     if (!value) return true;
                     return formatWithFormat(row.getValue(id), 'YYYY-MM-DD') === value;
@@ -62,6 +71,13 @@ const Index = ({ events }) => {
                 header: 'Actions',
                 cell: info => (
                     <div className="flex items-center gap-2">
+                        <Link
+                            href={route('events.show', info.row.original.id)}
+                            title="View"
+                            className="text-gray-600 hover:text-gray-800"
+                        >
+                            <EyeIcon className="h-5 w-5" />
+                        </Link>
                         <Link
                             href={route('events.edit', info.row.original.id)}
                             title="Edit"
@@ -128,8 +144,8 @@ const Index = ({ events }) => {
                     className="rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none"
                 >
                     <option value="all">All events</option>
-                    <option value="true">All day only</option>
-                    <option value="false">Not all day</option>
+                    <option value="true">All Day only</option>
+                    <option value="false">Not All Day</option>
                 </select>
                 <DatePicker
                     selected={
