@@ -1,25 +1,47 @@
 import { useForm } from '@inertiajs/react';
+import { omit } from 'es-toolkit';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import { formatWithFormat } from '../../utils/date';
 
-const Edit = ({ event }) => {
-    const { data, setData, put, processing, errors } = useForm({
-        title: event.title || '',
-        all_day: event.all_day || false,
-        starts_at: event.starts_at || '',
-        ends_at: event.ends_at || '',
-        description: event.description || '',
+const Form = ({ event = null }) => {
+    const isEditing = !!event;
+
+    const { data, setData, post, put, processing, errors, transform } = useForm({
+        title: event?.title || '',
+        all_day: event?.all_day || false,
+        starts_at: event?.starts_at || '',
+        ends_at: event?.ends_at || '',
+        description: event?.description || '',
     });
 
     const handleSubmit = e => {
         e.preventDefault();
-        put(route('events.update', event.id));
+
+        transform(data => {
+            let submitData = { ...data };
+
+            if (data.all_day) {
+                submitData = omit(submitData, ['starts_at', 'ends_at']);
+            }
+
+            return submitData;
+        });
+
+        if (isEditing) {
+            put(route('events.update', event.id), {
+                onFinish: () => transform(d => d),
+            });
+        } else {
+            post(route('events.store'), {
+                onFinish: () => transform(d => d),
+            });
+        }
     };
 
     return (
         <div className="rounded-lg bg-white p-6 shadow">
-            <h2 className="mb-6 text-2xl font-semibold text-gray-900">Edit Event</h2>
+            <h2 className="mb-6 text-2xl font-semibold text-gray-900">{isEditing ? 'Edit Event' : 'Create Event'}</h2>
 
             <form onSubmit={handleSubmit} className="space-y-6">
                 <div>
@@ -31,7 +53,7 @@ const Edit = ({ event }) => {
                         id="title"
                         value={data.title}
                         onChange={e => setData('title', e.target.value)}
-                        className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                        className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none"
                     />
                     {errors.title && <p className="mt-1 text-sm text-red-600">{errors.title}</p>}
                 </div>
@@ -65,7 +87,7 @@ const Edit = ({ event }) => {
                                 timeIntervals={15}
                                 dateFormat="dd/MM/yyyy HH:mm"
                                 calendarStartDay={1}
-                                className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                                className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none"
                             />
                             {errors.starts_at && <p className="mt-1 text-sm text-red-600">{errors.starts_at}</p>}
                         </div>
@@ -85,7 +107,7 @@ const Edit = ({ event }) => {
                                 timeIntervals={15}
                                 dateFormat="dd/MM/yyyy HH:mm"
                                 calendarStartDay={1}
-                                className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                                className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none"
                             />
                             {errors.ends_at && <p className="mt-1 text-sm text-red-600">{errors.ends_at}</p>}
                         </div>
@@ -101,7 +123,7 @@ const Edit = ({ event }) => {
                         value={data.description}
                         onChange={e => setData('description', e.target.value)}
                         rows={4}
-                        className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                        className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none"
                     />
                     {errors.description && <p className="mt-1 text-sm text-red-600">{errors.description}</p>}
                 </div>
@@ -109,16 +131,22 @@ const Edit = ({ event }) => {
                 <div className="flex items-center justify-end gap-3">
                     <a
                         href={route('events.index')}
-                        className="rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+                        className="rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:outline-none"
                     >
                         Cancel
                     </a>
                     <button
                         type="submit"
                         disabled={processing}
-                        className="rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50"
+                        className="rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:outline-none disabled:opacity-50"
                     >
-                        {processing ? 'Updating...' : 'Update Event'}
+                        {processing
+                            ? isEditing
+                                ? 'Updating...'
+                                : 'Creating...'
+                            : isEditing
+                              ? 'Update Event'
+                              : 'Create Event'}
                     </button>
                 </div>
             </form>
@@ -126,4 +154,4 @@ const Edit = ({ event }) => {
     );
 };
 
-export default Edit;
+export default Form;

@@ -18,7 +18,7 @@ Route::middleware('auth')->group(function (): void {
 
     Route::prefix('/events')
         ->name('events.')
-        ->group(function () {
+        ->group(function (): void {
             Route::get('/', [EventsController::class, 'index'])
                 ->name('index');
             Route::get('/create', [EventsController::class, 'create'])

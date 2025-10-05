@@ -38,7 +38,7 @@ class EventsController extends Controller
     {
         Gate::authorize('create', Event::class);
 
-        return Inertia::render('Events/Create');
+        return Inertia::render('Events/Form');
     }
 
     public function store(StoreEventRequest $request): RedirectResponse
@@ -54,7 +54,7 @@ class EventsController extends Controller
     {
         Gate::authorize('update', $event);
 
-        return Inertia::render('Events/Edit', [
+        return Inertia::render('Events/Form', [
             'event' => $event,
         ]);
     }

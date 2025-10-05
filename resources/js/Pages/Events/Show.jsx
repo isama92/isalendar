@@ -16,14 +16,14 @@ const Show = ({ event }) => {
                 <div className="flex gap-3">
                     <Link
                         href={route('events.edit', event.id)}
-                        className="rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+                        className="rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:outline-none"
                     >
                         Edit
                     </Link>
                     <button
                         onClick={handleDelete}
                         title="Delete"
-                        className="inline-flex items-center gap-2 rounded-md bg-red-600 px-4 py-2 text-sm font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
+                        className="inline-flex items-center gap-2 rounded-md bg-red-600 px-4 py-2 text-sm font-medium text-white hover:bg-red-700 focus:ring-2 focus:ring-red-500 focus:ring-offset-2 focus:outline-none"
                     >
                         <TrashIcon className="h-4 w-4" />
                         Delete
@@ -63,16 +63,13 @@ const Show = ({ event }) => {
                 {event.description && (
                     <div>
                         <dt className="text-sm font-medium text-gray-500">Description</dt>
-                        <dd className="mt-1 text-sm text-gray-900 whitespace-pre-wrap">{event.description}</dd>
+                        <dd className="mt-1 text-sm whitespace-pre-wrap text-gray-900">{event.description}</dd>
                     </div>
                 )}
             </dl>
 
             <div className="mt-6">
-                <Link
-                    href={route('events.index')}
-                    className="text-sm text-blue-600 hover:text-blue-800"
-                >
+                <Link href={route('events.index')} className="text-sm text-blue-600 hover:text-blue-800">
                     ← Back to Events
                 </Link>
             </div>
