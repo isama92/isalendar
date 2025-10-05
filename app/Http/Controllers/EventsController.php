@@ -6,6 +6,7 @@ use App\Http\Requests\StoreEventRequest;
 use App\Http\Requests\UpdateEventRequest;
 use App\Models\Event;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -17,7 +18,7 @@ class EventsController extends Controller
         Gate::authorize('viewAny', Event::class);
 
         $events = Event::query()
-            ->where('user_id', auth()->id())
+            ->forCurrentUser()
             ->paginate(10);
 
         return Inertia::render('Events/Index', [
@@ -43,7 +44,7 @@ class EventsController extends Controller
 
     public function store(StoreEventRequest $request): RedirectResponse
     {
-        auth()->user()
+        Auth::user()
             ->events()
             ->create($request->validated());
 

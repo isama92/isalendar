@@ -3,6 +3,7 @@
 namespace App\Http\Middleware;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Inertia\Middleware;
 use Tighten\Ziggy\Ziggy;
 
@@ -29,9 +30,8 @@ class HandleInertiaRequests extends Middleware
                 ...(new Ziggy)->toArray(),
                 'location' => $request->url(),
             ],
-            'user' => auth()->check()
-                ? auth()->user()
-                    ->only(['name', 'email'])
+            'user' => Auth::check()
+                ? Auth::user()->only(['name', 'email'])
                 : null,
         ];
     }
