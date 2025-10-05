@@ -24,7 +24,10 @@ class HandleInertiaRequests extends Middleware
     {
         return [
             ...parent::share($request),
-            //
+            'user' => auth()->check()
+                ? auth()->user()
+                    ->only(['name', 'email'])
+                : null,
         ];
     }
 }
