@@ -40,7 +40,9 @@ class DatabaseSeeder extends Seeder
         ]);
         $user->assignRole(Role::SUPER_ADMIN);
 
-        return User::factory(19)->create()
+        return User::factory(19)
+            ->create()
+            ->each(fn (User $user) => $user->assignRole(Role::USER))
             ->prepend($user);
     }
 
