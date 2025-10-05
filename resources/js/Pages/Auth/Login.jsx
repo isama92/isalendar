@@ -1,6 +1,6 @@
 import { useForm } from '@inertiajs/react';
 
-const Login = ({ loginSubmitRoute }) => {
+const Login = () => {
     const { data, setData, post, processing, errors } = useForm({
         email: '',
         password: '',
@@ -9,13 +9,15 @@ const Login = ({ loginSubmitRoute }) => {
 
     const submit = e => {
         e.preventDefault();
-        post(loginSubmitRoute);
+        post(route('login.submit'));
     };
 
     return (
         <div className="flex min-h-screen items-center justify-center bg-gray-100">
             <div className="w-full max-w-md rounded-lg bg-white p-8 shadow-md">
-                <h1 className="mb-6 text-2xl font-bold text-gray-900">Isalendar</h1>
+                <div className="flex justify-center mb-6">
+                    <img src="/assets/logo.png" alt="Isalendar" className="h-12" />
+                </div>
 
                 <form onSubmit={submit}>
                     <div className="mb-4">

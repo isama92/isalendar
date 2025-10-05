@@ -14,9 +14,7 @@ class AuthController extends Controller
 {
     public function create(): Response
     {
-        return Inertia::render('Auth/Login', [
-            'loginSubmitRoute' => route('login.submit'),
-        ]);
+        return Inertia::render('Auth/Login');
     }
 
     public function store(LoginRequest $request): RedirectResponse

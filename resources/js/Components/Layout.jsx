@@ -1,10 +1,10 @@
 import { Link, router, usePage } from '@inertiajs/react';
 
 const Layout = ({ children }) => {
-    const { user, logoutRoute, dashboardRoute, eventsRoute } = usePage().props;
+    const { user } = usePage().props;
 
     const handleLogout = () => {
-        router.post(logoutRoute);
+        router.post(route('logout'));
     };
 
     return (
@@ -12,18 +12,18 @@ const Layout = ({ children }) => {
             {/* Sidebar */}
             {user && (
                 <aside className="w-64 border-r border-gray-200 bg-white">
-                    <div className="flex h-16 items-center border-b border-gray-200 px-6">
-                        <h1 className="text-xl font-bold text-gray-900">Isalendar</h1>
+                    <div className="flex justify-center h-16 items-center border-b border-gray-200 px-6">
+                        <img src="/assets/logo.png" alt="Isalendar" className="h-8" />
                     </div>
                     <nav className="p-4">
                         <Link
-                            href={dashboardRoute}
+                            href={route('dashboard')}
                             className="mb-2 block rounded-md px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100"
                         >
                             Dashboard
                         </Link>
                         <Link
-                            href={eventsRoute}
+                            href={route('events.index')}
                             className="block rounded-md px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100"
                         >
                             Events
