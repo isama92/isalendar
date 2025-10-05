@@ -2,18 +2,50 @@
 
 namespace Database\Seeders;
 
+use App\Models\Event;
 use App\Models\User;
-// use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Collection;
 
 class DatabaseSeeder extends Seeder
 {
+    use HasSeedComments;
+
     public function run(): void
     {
-        User::factory()->create([
+        $users = $this->seed(
+            'Create 20 users',
+            fn (): Collection => $this->createUsers(),
+        );
+
+        $this->seed(
+            'Create 25 events for each user',
+            fn () => $this->createEvents($users),
+        );
+    }
+
+    /**
+     * @return \Illuminate\Support\Collection<int, \App\Models\User>
+     */
+    private function createUsers(): Collection
+    {
+        $user = User::factory()->create([
             'name' => 'Test User',
             'email' => 'test@example.com',
         ]);
-        User::factory(9)->create();
+
+        return User::factory(19)->create()
+            ->prepend($user);
+    }
+
+    /**
+     * @param  \Illuminate\Support\Collection<int, \App\Models\User>  $users
+     */
+    private function createEvents(Collection $users): void
+    {
+        $users->each(fn (User $user) => Event::factory(25)
+            ->for($user)
+            ->create()
+        );
     }
 }
