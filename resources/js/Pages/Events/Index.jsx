@@ -1,4 +1,5 @@
-import { CheckIcon, ChevronDownIcon, ChevronUpIcon, XMarkIcon } from '@heroicons/react/24/solid';
+import { CheckIcon, ChevronDownIcon, ChevronUpIcon, PencilIcon, TrashIcon, XMarkIcon } from '@heroicons/react/24/solid';
+import { Link, router } from '@inertiajs/react';
 import {
     flexRender,
     getCoreRowModel,
@@ -56,6 +57,33 @@ const Index = ({ events }) => {
                     return formatWithFormat(row.getValue(id), 'YYYY-MM-DD') === value;
                 },
             },
+            {
+                id: 'actions',
+                header: 'Actions',
+                cell: info => (
+                    <div className="flex items-center gap-2">
+                        <Link
+                            href={route('events.edit', info.row.original.id)}
+                            title="Edit"
+                            className="text-blue-600 hover:text-blue-800"
+                        >
+                            <PencilIcon className="h-5 w-5" />
+                        </Link>
+                        <button
+                            onClick={() => {
+                                if (confirm('Are you sure you want to delete this event?')) {
+                                    router.delete(route('events.destroy', info.row.original.id));
+                                }
+                            }}
+                            title="Delete"
+                            className="cursor-pointer text-red-600 hover:text-red-800"
+                        >
+                            <TrashIcon className="h-5 w-5" />
+                        </button>
+                    </div>
+                ),
+                enableSorting: false,
+            },
         ],
         []
     );
@@ -76,7 +104,15 @@ const Index = ({ events }) => {
 
     return (
         <div className="rounded-lg bg-white p-6 shadow">
-            <h2 className="mb-6 text-2xl font-semibold text-gray-900">Events</h2>
+            <div className="mb-6 flex items-center justify-between">
+                <h2 className="text-2xl font-semibold text-gray-900">Events</h2>
+                <Link
+                    href={route('events.create')}
+                    className="rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+                >
+                    Create Event
+                </Link>
+            </div>
 
             <div className="mb-4 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
                 <input
