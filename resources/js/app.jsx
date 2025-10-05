@@ -1,10 +1,15 @@
 import { createInertiaApp } from '@inertiajs/react';
 import { createRoot } from 'react-dom/client';
+import Layout from './Components/Layout';
 
 createInertiaApp({
     resolve: name => {
         const pages = import.meta.glob('./Pages/**/*.jsx', { eager: true });
-        return pages[`./Pages/${name}.jsx`];
+        const page = pages[`./Pages/${name}.jsx`];
+
+        page.default.layout = page.default.layout || (page => <Layout>{page}</Layout>);
+
+        return page;
     },
     setup({ el, App, props }) {
         createRoot(el).render(<App {...props} />);

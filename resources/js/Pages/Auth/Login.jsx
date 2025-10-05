@@ -1,6 +1,6 @@
 import { useForm } from '@inertiajs/react';
 
-const Login = ({loginSubmitRoute}) => {
+const Login = ({ loginSubmitRoute }) => {
     const { data, setData, post, processing, errors } = useForm({
         email: '',
         password: '',

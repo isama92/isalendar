@@ -24,6 +24,9 @@ class HandleInertiaRequests extends Middleware
     {
         return [
             ...parent::share($request),
+            'logoutRoute' => route('logout'),
+            'dashboardRoute' => route('dashboard'),
+            'eventsRoute' => route('events.index'),
             'user' => auth()->check()
                 ? auth()->user()
                     ->only(['name', 'email'])

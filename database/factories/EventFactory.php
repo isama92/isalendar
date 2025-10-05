@@ -19,9 +19,9 @@ class EventFactory extends Factory
             'user_id' => User::factory(),
             'title' => fake()->sentence(3),
             'all_day' => fake()->boolean(20),
-            'starts_at' => fn(array $attributes) => $attributes['all_day']? null : fake()
+            'starts_at' => fn (array $attributes) => $attributes['all_day'] ? null : fake()
                 ->dateTimeBetween('now', '+1 month'),
-            'ends_at' => fn(array $attributes) => $attributes['all_day']? null : fake()
+            'ends_at' => fn (array $attributes) => $attributes['all_day'] ? null : fake()
                 ->dateTimeBetween($attributes['starts_at'], $attributes['starts_at']->format('Y-m-d H:i:s').' +16 hours'),
             'description' => fake()->paragraph(),
         ];
