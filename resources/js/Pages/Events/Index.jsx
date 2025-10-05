@@ -1,98 +1,139 @@
-import { Link } from '@inertiajs/react';
+import { CheckIcon, ChevronDownIcon, ChevronUpIcon, XMarkIcon } from '@heroicons/react/24/solid';
+import {
+    flexRender,
+    getCoreRowModel,
+    getFilteredRowModel,
+    getSortedRowModel,
+    useReactTable,
+} from '@tanstack/react-table';
+import { useMemo, useState } from 'react';
+import Pagination from '../../Components/Pagination';
 import { formatDateTime } from '../../utils/date';
 
 const Index = ({ events }) => {
+    const [sorting, setSorting] = useState([]);
+    const [columnFilters, setColumnFilters] = useState([]);
+
+    const columns = useMemo(
+        () => [
+            {
+                accessorKey: 'title',
+                header: 'Title',
+                cell: info => info.getValue(),
+            },
+            {
+                accessorKey: 'all_day',
+                header: 'All Day',
+                cell: info =>
+                    info.getValue() ? (
+                        <CheckIcon className="h-5 w-5 text-green-500" />
+                    ) : (
+                        <XMarkIcon className="h-5 w-5 text-gray-400" />
+                    ),
+                filterFn: (row, id, value) => {
+                    if (value === 'all') return true;
+                    return row.getValue(id) === (value === 'true');
+                },
+            },
+            {
+                accessorKey: 'starts_at',
+                header: 'Starts At',
+                cell: info => (info.row.original.all_day ? '' : formatDateTime(info.getValue())),
+            },
+            {
+                accessorKey: 'ends_at',
+                header: 'Ends At',
+                cell: info => (info.row.original.all_day ? '' : formatDateTime(info.getValue())),
+            },
+        ],
+        []
+    );
+
+    const table = useReactTable({
+        data: events.data,
+        columns,
+        state: {
+            sorting,
+            columnFilters,
+        },
+        onSortingChange: setSorting,
+        onColumnFiltersChange: setColumnFilters,
+        getCoreRowModel: getCoreRowModel(),
+        getSortedRowModel: getSortedRowModel(),
+        getFilteredRowModel: getFilteredRowModel(),
+    });
+
     return (
         <div className="rounded-lg bg-white p-6 shadow">
             <h2 className="mb-6 text-2xl font-semibold text-gray-900">Events</h2>
 
-            <div className="space-y-4">
-                {events.data.length === 0 ? (
+            <div className="mb-4 flex gap-4">
+                <input
+                    type="text"
+                    placeholder="Filter by title..."
+                    value={table.getColumn('title')?.getFilterValue() ?? ''}
+                    onChange={e => table.getColumn('title')?.setFilterValue(e.target.value)}
+                    className="rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none"
+                />
+                <select
+                    value={table.getColumn('all_day')?.getFilterValue() ?? 'all'}
+                    onChange={e => table.getColumn('all_day')?.setFilterValue(e.target.value)}
+                    className="rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none"
+                >
+                    <option value="all">All events</option>
+                    <option value="true">All day only</option>
+                    <option value="false">Not all day</option>
+                </select>
+            </div>
+
+            <div className="overflow-x-auto">
+                {table.getRowModel().rows.length === 0 ? (
                     <p className="text-gray-500">No events found.</p>
                 ) : (
-                    events.data.map(event => (
-                        <div key={event.id} className="rounded-lg border border-gray-200 p-4 hover:bg-gray-50">
-                            <div className="flex items-start justify-between">
-                                <div className="flex-1">
-                                    <h3 className="text-lg font-medium text-gray-900">{event.title}</h3>
-                                    <div className="mt-1 text-sm text-gray-500">
-                                        {event.all_day ? (
-                                            <span>All day</span>
-                                        ) : (
-                                            <span>
-                                                {formatDateTime(event.starts_at)} - {formatDateTime(event.ends_at)}
-                                            </span>
-                                        )}
-                                    </div>
-                                    {event.description && (
-                                        <p className="mt-2 text-sm text-gray-600">{event.description}</p>
-                                    )}
-                                </div>
-                            </div>
-                        </div>
-                    ))
+                    <table className="min-w-full divide-y divide-gray-200">
+                        <thead className="bg-gray-50">
+                            {table.getHeaderGroups().map(headerGroup => (
+                                <tr key={headerGroup.id}>
+                                    {headerGroup.headers.map(header => (
+                                        <th
+                                            key={header.id}
+                                            className="px-6 py-3 text-left text-xs font-medium tracking-wider text-gray-500 uppercase"
+                                        >
+                                            {header.isPlaceholder ? null : (
+                                                <div
+                                                    className={`flex items-center gap-2 ${
+                                                        header.column.getCanSort() ? 'cursor-pointer select-none' : ''
+                                                    }`}
+                                                    onClick={header.column.getToggleSortingHandler()}
+                                                >
+                                                    {flexRender(header.column.columnDef.header, header.getContext())}
+                                                    {{
+                                                        asc: <ChevronUpIcon className="h-4 w-4" />,
+                                                        desc: <ChevronDownIcon className="h-4 w-4" />,
+                                                    }[header.column.getIsSorted()] ?? null}
+                                                </div>
+                                            )}
+                                        </th>
+                                    ))}
+                                </tr>
+                            ))}
+                        </thead>
+                        <tbody className="divide-y divide-gray-200 bg-white">
+                            {table.getRowModel().rows.map(row => (
+                                <tr key={row.id} className="hover:bg-gray-50">
+                                    {row.getVisibleCells().map(cell => (
+                                        <td key={cell.id} className="px-6 py-4 text-sm whitespace-nowrap text-gray-900">
+                                            {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                                        </td>
+                                    ))}
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
                 )}
             </div>
 
-            {/* Pagination */}
-            {events.links.length > 3 && (
-                <div className="mt-6 flex items-center justify-between border-t border-gray-200 pt-4">
-                    <div className="flex flex-1 justify-between sm:hidden">
-                        {events.prev_page_url ? (
-                            <Link
-                                href={events.prev_page_url}
-                                className="relative inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
-                            >
-                                Previous
-                            </Link>
-                        ) : (
-                            <span className="relative inline-flex items-center rounded-md border border-gray-300 bg-gray-100 px-4 py-2 text-sm font-medium text-gray-400">
-                                Previous
-                            </span>
-                        )}
-                        {events.next_page_url ? (
-                            <Link
-                                href={events.next_page_url}
-                                className="relative ml-3 inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
-                            >
-                                Next
-                            </Link>
-                        ) : (
-                            <span className="relative ml-3 inline-flex items-center rounded-md border border-gray-300 bg-gray-100 px-4 py-2 text-sm font-medium text-gray-400">
-                                Next
-                            </span>
-                        )}
-                    </div>
-                    <div className="hidden sm:flex sm:flex-1 sm:items-center sm:justify-between">
-                        <div>
-                            <p className="text-sm text-gray-700">
-                                Showing <span className="font-medium">{events.from}</span> to{' '}
-                                <span className="font-medium">{events.to}</span> of{' '}
-                                <span className="font-medium">{events.total}</span> results
-                            </p>
-                        </div>
-                        <div>
-                            <nav className="isolate inline-flex -space-x-px rounded-md shadow-sm">
-                                {events.links.map((link, index) => (
-                                    <Link
-                                        key={index}
-                                        href={link.url || '#'}
-                                        preserveScroll
-                                        className={`relative inline-flex items-center px-4 py-2 text-sm font-medium ${
-                                            link.active
-                                                ? 'z-10 bg-blue-600 text-white focus:z-20'
-                                                : 'bg-white text-gray-700 hover:bg-gray-50'
-                                        } ${index === 0 ? 'rounded-l-md' : ''} ${
-                                            index === events.links.length - 1 ? 'rounded-r-md' : ''
-                                        } ${!link.url ? 'cursor-not-allowed opacity-50' : ''} border border-gray-300`}
-                                        dangerouslySetInnerHTML={{ __html: link.label }}
-                                    />
-                                ))}
-                            </nav>
-                        </div>
-                    </div>
-                </div>
-            )}
+            <Pagination data={events} routeName="events.index" />
         </div>
     );
 };
