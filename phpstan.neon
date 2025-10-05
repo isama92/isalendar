@@ -1,0 +1,14 @@
+includes:
+    - ./phpstan-types.neon
+
+parameters:
+    paths:
+        - app/
+        - config/
+        - database/
+        - routes/
+
+    level: 6
+
+    checkOctaneCompatibility: true
+

@@ -1,0 +1,21 @@
+parameters:
+    typeAliases:
+        ValidationRulesArray: '''
+            array<
+                string,
+                array<
+                    int,
+                    \Closure(string, mixed, \Closure(string, ?string=): \Illuminate\Translation\PotentiallyTranslatedString, \Illuminate\Validation\Validator=): void
+                    |\Illuminate\Contracts\Validation\Rule
+                    |\Illuminate\Contracts\Validation\ValidationRule
+                    |\Illuminate\Validation\ConditionalRules
+                    |string
+                >
+                |\Closure(string, mixed, \Closure(string, ?string=): \Illuminate\Translation\PotentiallyTranslatedString, \Illuminate\Validation\Validator=): void
+                |\Illuminate\Contracts\Validation\Rule
+                |\Illuminate\Contracts\Validation\ValidationRule
+                |\Illuminate\Validation\ConditionalRules
+                |string
+            >
+            '''
+
