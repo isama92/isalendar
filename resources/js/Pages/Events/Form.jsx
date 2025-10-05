@@ -14,7 +14,7 @@ const Form = ({ event = null }) => {
         description: event?.description || '',
     });
 
-    const handleSubmit = e => {
+    const handleSubmit = (e, redirectToShow = false) => {
         e.preventDefault();
 
         transform(data => {
@@ -24,17 +24,19 @@ const Form = ({ event = null }) => {
                 submitData.ends_at = null;
             }
 
+            submitData.redirect_to_show = redirectToShow;
+
             return submitData;
         });
 
+        const options = {
+            onFinish: () => transform(d => d),
+        };
+
         if (isEditing) {
-            put(route('events.update', event.id), {
-                onFinish: () => transform(d => d),
-            });
+            put(route('events.update', event.id), options);
         } else {
-            post(route('events.store'), {
-                onFinish: () => transform(d => d),
-            });
+            post(route('events.store'), options);
         }
     };
 
@@ -42,7 +44,7 @@ const Form = ({ event = null }) => {
         <div className="rounded-lg bg-white p-6 shadow">
             <h2 className="mb-6 text-2xl font-semibold text-gray-900">{isEditing ? 'Edit Event' : 'Create Event'}</h2>
 
-            <form onSubmit={handleSubmit} className="space-y-6">
+            <form className="space-y-6">
                 <div>
                     <label htmlFor="title" className="block text-sm font-medium text-gray-700">
                         Title
@@ -132,26 +134,43 @@ const Form = ({ event = null }) => {
                     {errors.description && <p className="mt-1 text-sm text-red-600">{errors.description}</p>}
                 </div>
 
-                <div className="flex items-center justify-end gap-3">
+                <div className="flex items-center justify-between gap-3">
                     <a
                         href={route('events.index')}
                         className="rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:outline-none"
                     >
                         Cancel
                     </a>
-                    <button
-                        type="submit"
-                        disabled={processing}
-                        className="rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:outline-none disabled:opacity-50"
-                    >
-                        {processing
-                            ? isEditing
-                                ? 'Updating...'
-                                : 'Creating...'
-                            : isEditing
-                              ? 'Update Event'
-                              : 'Create Event'}
-                    </button>
+                    <div className="flex gap-3">
+                        <button
+                            type="button"
+                            onClick={e => handleSubmit(e, false)}
+                            disabled={processing}
+                            className="rounded-md border border-blue-600 bg-white px-4 py-2 text-sm font-medium text-blue-600 hover:bg-blue-50 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:outline-none disabled:opacity-50"
+                        >
+                            {processing
+                                ? isEditing
+                                    ? 'Updating...'
+                                    : 'Creating...'
+                                : isEditing
+                                  ? 'Update & Back to List'
+                                  : 'Create & Back to List'}
+                        </button>
+                        <button
+                            type="button"
+                            onClick={e => handleSubmit(e, true)}
+                            disabled={processing}
+                            className="rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:outline-none disabled:opacity-50"
+                        >
+                            {processing
+                                ? isEditing
+                                    ? 'Updating...'
+                                    : 'Creating...'
+                                : isEditing
+                                  ? 'Update & View'
+                                  : 'Create & View'}
+                        </button>
+                    </div>
                 </div>
             </form>
         </div>
