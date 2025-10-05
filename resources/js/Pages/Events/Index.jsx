@@ -6,9 +6,12 @@ import {
     getSortedRowModel,
     useReactTable,
 } from '@tanstack/react-table';
+import dayjs from 'dayjs';
 import { useMemo, useState } from 'react';
+import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
 import Pagination from '../../Components/Pagination';
-import { formatDateTime } from '../../utils/date';
+import { formatDateTime, formatWithFormat } from '../../utils/date';
 
 const Index = ({ events }) => {
     const [sorting, setSorting] = useState([]);
@@ -39,11 +42,19 @@ const Index = ({ events }) => {
                 accessorKey: 'starts_at',
                 header: 'Starts At',
                 cell: info => (info.row.original.all_day ? '' : formatDateTime(info.getValue())),
+                filterFn: (row, id, value) => {
+                    if (!value) return true;
+                    return formatWithFormat(row.getValue(id), 'YYYY-MM-DD') === value;
+                },
             },
             {
                 accessorKey: 'ends_at',
                 header: 'Ends At',
                 cell: info => (info.row.original.all_day ? '' : formatDateTime(info.getValue())),
+                filterFn: (row, id, value) => {
+                    if (!value) return true;
+                    return formatWithFormat(row.getValue(id), 'YYYY-MM-DD') === value;
+                },
             },
         ],
         []
@@ -67,7 +78,7 @@ const Index = ({ events }) => {
         <div className="rounded-lg bg-white p-6 shadow">
             <h2 className="mb-6 text-2xl font-semibold text-gray-900">Events</h2>
 
-            <div className="mb-4 flex gap-4">
+            <div className="mb-4 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
                 <input
                     type="text"
                     placeholder="Filter by title..."
@@ -84,6 +95,38 @@ const Index = ({ events }) => {
                     <option value="true">All day only</option>
                     <option value="false">Not all day</option>
                 </select>
+                <DatePicker
+                    selected={
+                        table.getColumn('starts_at')?.getFilterValue()
+                            ? dayjs(table.getColumn('starts_at')?.getFilterValue()).toDate()
+                            : null
+                    }
+                    onChange={date =>
+                        table.getColumn('starts_at')?.setFilterValue(date ? formatWithFormat(date, 'YYYY-MM-DD') : '')
+                    }
+                    dateFormat="dd/MM/yyyy"
+                    placeholderText="Filter by starts at..."
+                    isClearable
+                    calendarStartDay={1}
+                    withPortal
+                    className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none"
+                />
+                <DatePicker
+                    selected={
+                        table.getColumn('ends_at')?.getFilterValue()
+                            ? dayjs(table.getColumn('ends_at')?.getFilterValue()).toDate()
+                            : null
+                    }
+                    onChange={date =>
+                        table.getColumn('ends_at')?.setFilterValue(date ? formatWithFormat(date, 'YYYY-MM-DD') : '')
+                    }
+                    dateFormat="dd/MM/yyyy"
+                    placeholderText="Filter by ends at..."
+                    isClearable
+                    calendarStartDay={1}
+                    withPortal
+                    className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none"
+                />
             </div>
 
             <div className="overflow-x-auto">
