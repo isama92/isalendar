@@ -8,9 +8,12 @@ use Google\Client as GoogleClient;
 use Google\Service\Calendar as GoogleCalendar;
 use Google\Service\Calendar\Event as GoogleEvent;
 use Google\Service\Calendar\Events as GoogleEvents;
+use Spatie\QueueableAction\QueueableAction;
 
 readonly class FetchAndSaveEvents
 {
+    use QueueableAction;
+
     public function __construct(private GetAuthClient $getAuthClient) {}
 
     public function execute(Calendar $calendar): void
