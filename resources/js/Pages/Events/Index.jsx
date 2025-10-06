@@ -119,12 +119,14 @@ const Index = ({ events }) => {
     });
 
     return (
-        <div className="rounded-lg bg-white p-6 shadow dark:bg-gray-800">
-            <div className="mb-6 flex items-center justify-between">
-                <h2 className="text-2xl font-semibold text-gray-900 dark:text-gray-100">{__('events.events')}</h2>
+        <div className="rounded-lg bg-white p-6 shadow sm:p-6 dark:bg-gray-800">
+            <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                <h2 className="text-2xl font-semibold text-gray-900 sm:text-2xl dark:text-gray-100">
+                    {__('events.events')}
+                </h2>
                 <Link
                     href={route('events.create')}
-                    className="rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:outline-none"
+                    className="rounded-md bg-blue-600 px-4 py-2 text-center text-sm font-medium text-white hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:outline-none"
                 >
                     {__('events.create_event')}
                 </Link>
@@ -181,9 +183,9 @@ const Index = ({ events }) => {
                 />
             </div>
 
-            <div className="overflow-x-auto">
+            <div className="-mx-4 overflow-x-auto sm:mx-0">
                 {table.getRowModel().rows.length === 0 ? (
-                    <p className="text-gray-500 dark:text-gray-400">{__('events.no_events_found')}</p>
+                    <p className="px-4 text-gray-500 sm:px-0 dark:text-gray-400">{__('events.no_events_found')}</p>
                 ) : (
                     <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
                         <thead className="bg-gray-50 dark:bg-gray-700">
@@ -192,7 +194,7 @@ const Index = ({ events }) => {
                                     {headerGroup.headers.map(header => (
                                         <th
                                             key={header.id}
-                                            className="px-6 py-3 text-left text-xs font-medium tracking-wider text-gray-500 uppercase dark:text-gray-300"
+                                            className="px-4 py-3 text-left text-xs font-medium tracking-wider text-gray-500 uppercase sm:px-6 dark:text-gray-300"
                                         >
                                             {header.isPlaceholder ? null : (
                                                 <div
@@ -219,7 +221,7 @@ const Index = ({ events }) => {
                                     {row.getVisibleCells().map(cell => (
                                         <td
                                             key={cell.id}
-                                            className="px-6 py-4 text-sm whitespace-nowrap text-gray-900 dark:text-gray-100"
+                                            className="px-4 py-4 text-sm whitespace-nowrap text-gray-900 sm:px-6 dark:text-gray-100"
                                         >
                                             {flexRender(cell.column.columnDef.cell, cell.getContext())}
                                         </td>
