@@ -8,11 +8,14 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
 use Laravel\Socialite\Facades\Socialite;
 use Laravel\Socialite\Two\GoogleProvider;
+use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
 
 class AuthController extends Controller
 {
     public function redirect(): RedirectResponse
     {
+        abort_if(Auth::user()->calendar()->exists(), SymfonyResponse::HTTP_FORBIDDEN);
+
         return ensure(Socialite::driver('google'), GoogleProvider::class)
             ->scopes([
                 'https://www.googleapis.com/auth/calendar',
@@ -30,6 +33,8 @@ class AuthController extends Controller
 
     public function callback(CreateOrUpdateCalendar $createOrUpdateCalendar): RedirectResponse
     {
+        abort_if(Auth::user()->calendar()->exists(), SymfonyResponse::HTTP_FORBIDDEN);
+
         $createOrUpdateCalendar->execute(
             Auth::user(),
             Socialite::driver('google')->user()
@@ -42,7 +47,9 @@ class AuthController extends Controller
     {
         $user = Auth::user();
 
-        $user->calendar()->delete();
+        abort_if(is_null($user->calendar), SymfonyResponse::HTTP_FORBIDDEN);
+
+        $user->calendar->delete();
 
         return redirect()->route('profile.edit')->with('success', __('profile.google_calendar_disconnected'));
     }

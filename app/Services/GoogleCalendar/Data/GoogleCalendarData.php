@@ -10,7 +10,7 @@ class GoogleCalendarData extends Data
     public function __construct(
         public string $id,
         public string $summary,
-        public string $description,
+        public ?string $description,
         public string $timezone,
     ) {}
 

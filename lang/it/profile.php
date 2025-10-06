@@ -13,4 +13,6 @@ return [
     'google_calendar_disconnect_confirm' => 'Sei sicuro di voler disconnettere il tuo Google Calendar?',
     'google_calendar_connected' => 'Google Calendar connesso con successo.',
     'google_calendar_disconnected' => 'Google Calendar disconnesso con successo.',
+    'pick_calendar' => 'Scegli un Calendario',
+    'timezone' => 'timezone',
 ];

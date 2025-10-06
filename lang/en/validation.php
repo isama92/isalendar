@@ -168,6 +168,7 @@ return [
         'available' => 'available',
         'birthday' => 'birthday',
         'body' => 'body',
+        'calendar_id' => 'calendar',
         'city' => 'city',
         'company' => 'company',
         'compilation' => 'compilation',

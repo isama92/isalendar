@@ -29,7 +29,7 @@ const UserDropdown = () => {
                                 toggleTheme();
                                 setDropdownOpen(false);
                             }}
-                            className="flex w-full items-center gap-2 px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700"
+                            className="flex w-full cursor-pointer items-center gap-2 px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700"
                         >
                             {theme === 'light' ? <MoonIcon className="h-5 w-5" /> : <SunIcon className="h-5 w-5" />}
                             <span>{theme === 'light' ? __('common.dark_mode') : __('common.light_mode')}</span>

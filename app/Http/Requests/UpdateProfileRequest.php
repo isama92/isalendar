@@ -6,11 +6,6 @@ use Illuminate\Foundation\Http\FormRequest;
 
 class UpdateProfileRequest extends FormRequest
 {
-    public function authorize(): bool
-    {
-        return true;
-    }
-
     /**
      * @return array<string, array<mixed>|\Illuminate\Contracts\Validation\ValidationRule|string>
      */

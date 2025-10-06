@@ -16,7 +16,11 @@ class ProfileController extends Controller
         $user = Auth::user();
 
         return Inertia::render('Profile/Edit', [
-            'hasGoogleCalendar' => $user->calendar()->exists(),
+            'calendar' => $user->calendar?->only([
+                'external_calendar_name',
+                'external_calendar_description',
+                'external_calendar_timezone',
+            ]),
         ]);
     }
 

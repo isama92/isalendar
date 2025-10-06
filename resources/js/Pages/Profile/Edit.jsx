@@ -1,6 +1,6 @@
 import { router, useForm, usePage } from '@inertiajs/react';
 
-const Edit = ({ user, hasGoogleCalendar }) => {
+const Edit = ({ user, calendar }) => {
     const { flash } = usePage().props;
     const { data, setData, put, processing, errors } = useForm({
         name: user.name || '',
@@ -43,11 +43,23 @@ const Edit = ({ user, hasGoogleCalendar }) => {
                     <h3 className="mb-3 text-lg font-medium text-gray-900 dark:text-gray-100">
                         {__('profile.google_calendar_integration')}
                     </h3>
-                    {hasGoogleCalendar ? (
-                        <div className="space-y-3">
-                            <p className="text-sm text-green-700 dark:text-green-400">
+                    {calendar ? (
+                        <div className="space-y-4">
+                            <p className="text-sm font-medium text-green-700 dark:text-green-400">
                                 {__('profile.google_calendar_status_connected')}
                             </p>
+
+                            {/* Calendar details */}
+                            <div className="mx-auto max-w-xl">
+                                <div className="rounded-xl bg-gray-800 p-6 text-white shadow-lg">
+                                    <h2 className="text-xl font-semibold">{calendar.external_calendar_name}</h2>
+                                    <p className="mt-1 text-gray-300">{calendar.external_calendar_description}</p>
+                                    <p className="mt-2 text-sm text-gray-400 capitalize">
+                                        {__('profile.timezone')}: {calendar.external_calendar_timezone}
+                                    </p>
+                                </div>
+                            </div>
+
                             <button
                                 type="button"
                                 onClick={() => {
@@ -55,7 +67,7 @@ const Edit = ({ user, hasGoogleCalendar }) => {
                                         router.post(route('services.google.disconnect'));
                                     }
                                 }}
-                                className="rounded-md border border-red-300 bg-white px-4 py-2 text-sm font-medium text-red-700 hover:bg-red-50 focus:ring-2 focus:ring-red-500 focus:ring-offset-2 focus:outline-none dark:border-red-600 dark:bg-gray-800 dark:text-red-400 dark:hover:bg-gray-700"
+                                className="cursor-pointer rounded-md border border-red-300 bg-white px-4 py-2 text-sm font-medium text-red-700 hover:bg-red-50 focus:ring-2 focus:ring-red-500 focus:ring-offset-2 focus:outline-none dark:border-red-600 dark:bg-gray-800 dark:text-red-400 dark:hover:bg-gray-700"
                             >
                                 {__('profile.google_calendar_disconnect')}
                             </button>
@@ -85,7 +97,7 @@ const Edit = ({ user, hasGoogleCalendar }) => {
                     <button
                         type="submit"
                         disabled={processing}
-                        className="rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:outline-none disabled:opacity-50"
+                        className="cursor-pointer rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:outline-none disabled:opacity-50"
                     >
                         {processing ? __('common.updating') : __('profile.update_profile')}
                     </button>
