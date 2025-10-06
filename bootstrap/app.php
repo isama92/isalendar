@@ -1,10 +1,12 @@
 <?php
 
+use App\Http\Middleware\AddSecurityHeaders;
 use App\Http\Middleware\HandleInertiaRequests;
 use App\Http\Middleware\SetLocale;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
+use Spatie\Csp\AddCspHeaders;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -13,10 +15,19 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
-        $middleware->web(append: [
-            SetLocale::class,
-            HandleInertiaRequests::class,
-        ]);
+        $middleware->trustHosts();
+        $middleware->trustProxies();
+        $middleware->throttleWithRedis();
+
+        $middleware->web(
+            append: [
+                SetLocale::class,
+                HandleInertiaRequests::class,
+            ],
+            prepend: [
+                AddSecurityHeaders::class,
+                AddCspHeaders::class,
+            ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //
