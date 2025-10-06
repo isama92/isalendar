@@ -5,18 +5,22 @@
          colors="true"
 >
     <testsuites>
+        <testsuite name="Architecture">
+            <directory suffix=".php">./tests/Architecture</directory>
+        </testsuite>
         <testsuite name="Unit">
-            <directory>tests/Unit</directory>
+            <directory suffix=".php">./tests/Unit</directory>
         </testsuite>
         <testsuite name="Feature">
-            <directory>tests/Feature</directory>
+            <directory suffix=".php">./tests/Feature</directory>
         </testsuite>
     </testsuites>
     <source>
         <include>
-            <directory>app</directory>
+            <directory suffix=".php">./app</directory>
         </include>
     </source>
+    <coverage/>
     <php>
         <env name="APP_ENV" value="testing"/>
         <env name="APP_MAINTENANCE_DRIVER" value="file"/>
