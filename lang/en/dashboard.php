@@ -2,5 +2,12 @@
 
 return [
     'dashboard' => 'Dashboard',
-    'welcome_message' => 'Welcome to your dashboard. This will be built later.',
+    'welcome_message' => 'Welcome to your dashboard.',
+    'total_events' => 'Total Events',
+    'events_today' => 'Events Today',
+    'events_tomorrow' => 'Events Tomorrow',
+    'events_this_week' => 'Events This Week',
+    'events_next_week' => 'Events Next Week',
+    'events_by_day_of_week' => 'Events by Day of Week',
+    'events' => 'Events',
 ];
