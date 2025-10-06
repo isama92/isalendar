@@ -15,7 +15,7 @@ class GoogleEventData extends Data
         public ?string $startDate,
         public ?string $endDateTime,
         public ?string $endDate,
-        public string $description,
+        public ?string $description,
     ) {}
 
     public static function fromGoogleEvent(GoogleEvent $googleEvent): self

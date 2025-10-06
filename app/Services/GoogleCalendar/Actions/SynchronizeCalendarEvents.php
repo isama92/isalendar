@@ -12,11 +12,11 @@ use Google\Service\Calendar\Event as GoogleEvent;
 use Illuminate\Support\Collection;
 use Spatie\QueueableAction\QueueableAction;
 
-readonly class SynchronizeCalendarEvents
+class SynchronizeCalendarEvents
 {
     use QueueableAction;
 
-    public function __construct(private GetAuthClient $getAuthClient) {}
+    public function __construct(private readonly GetAuthClient $getAuthClient) {}
 
     public function execute(Calendar $calendar): void
     {

@@ -5,7 +5,9 @@ Add events to a shared calendar.
 ## TODO
 - BUG: fix pagination in events index table
 - BUG: allow end date when all day is set (to have a multiday all day thingy)
-- BUG: when saving calendar the event end date is +2h (timezone)
+- BUG: when saving calendar the event end date is +2h (timezone problem)
+- BUG: when saving calendar from google event it's +2h (timezone problem)
+  - create from carbon with timezone, and use calendar timezone
 - BUG: remove usages of `usepage().props`
 - BUG: remove usages <a> tag
 - if user doesn't have a calendar model
