@@ -17,6 +17,7 @@ class EventsController extends Controller
     {
         Gate::authorize('viewAny', Event::class);
 
+        // TODO: fix pagination
         $events = Event::query()
             ->forCurrentUser()
             ->paginate(10);

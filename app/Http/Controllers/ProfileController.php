@@ -12,8 +12,10 @@ class ProfileController extends Controller
 {
     public function edit(): Response
     {
+        $user = Auth::user();
+
         return Inertia::render('Profile/Edit', [
-            'user' => Auth::user(),
+            'hasGoogleCalendar' => $user->calendar()->exists(),
         ]);
     }
 

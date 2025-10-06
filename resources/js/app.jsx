@@ -1,4 +1,5 @@
 import { createInertiaApp } from '@inertiajs/react';
+import axios from 'axios';
 import dayjs from 'dayjs';
 import 'dayjs/locale/it';
 import updateLocale from 'dayjs/plugin/updateLocale';
@@ -9,6 +10,10 @@ import { ThemeProvider } from './Contexts/ThemeContext';
 import { __, setGlobalTranslations } from './utils/translate';
 
 dayjs.extend(updateLocale);
+
+// Configure Axios to use the same origin as the current page
+axios.defaults.baseURL = window.location.origin;
+axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 
 window.route = route;
 window.__ = __;

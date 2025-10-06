@@ -1,6 +1,6 @@
-import { useForm, usePage } from '@inertiajs/react';
+import { router, useForm, usePage } from '@inertiajs/react';
 
-const Edit = ({ user }) => {
+const Edit = ({ user, hasGoogleCalendar }) => {
     const { flash } = usePage().props;
     const { data, setData, put, processing, errors } = useForm({
         name: user.name || '',
@@ -36,6 +36,43 @@ const Edit = ({ user }) => {
                         className="mt-1 block w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-gray-900 shadow-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100"
                     />
                     {errors.name && <p className="mt-1 text-sm text-red-600">{errors.name}</p>}
+                </div>
+
+                {/* Google Calendar Integration */}
+                <div className="rounded-md border border-gray-200 bg-gray-50 p-4 dark:border-gray-700 dark:bg-gray-900">
+                    <h3 className="mb-3 text-lg font-medium text-gray-900 dark:text-gray-100">
+                        {__('profile.google_calendar_integration')}
+                    </h3>
+                    {hasGoogleCalendar ? (
+                        <div className="space-y-3">
+                            <p className="text-sm text-green-700 dark:text-green-400">
+                                {__('profile.google_calendar_status_connected')}
+                            </p>
+                            <button
+                                type="button"
+                                onClick={() => {
+                                    if (confirm(__('profile.google_calendar_disconnect_confirm'))) {
+                                        router.post(route('services.google.disconnect'));
+                                    }
+                                }}
+                                className="rounded-md border border-red-300 bg-white px-4 py-2 text-sm font-medium text-red-700 hover:bg-red-50 focus:ring-2 focus:ring-red-500 focus:ring-offset-2 focus:outline-none dark:border-red-600 dark:bg-gray-800 dark:text-red-400 dark:hover:bg-gray-700"
+                            >
+                                {__('profile.google_calendar_disconnect')}
+                            </button>
+                        </div>
+                    ) : (
+                        <div className="space-y-3">
+                            <p className="text-sm text-gray-600 dark:text-gray-400">
+                                {__('profile.google_calendar_status_disconnected')}
+                            </p>
+                            <a
+                                href={route('services.google.connect')}
+                                className="inline-block rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:outline-none"
+                            >
+                                {__('profile.google_calendar_connect')}
+                            </a>
+                        </div>
+                    )}
                 </div>
 
                 <div className="flex items-center justify-end gap-3">

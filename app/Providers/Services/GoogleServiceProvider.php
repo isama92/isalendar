@@ -1,0 +1,31 @@
+<?php
+
+namespace App\Providers\Services;
+
+use Google\Client as GoogleClient;
+use Illuminate\Contracts\Support\DeferrableProvider;
+use Illuminate\Foundation\Application;
+use Illuminate\Support\ServiceProvider;
+use Override;
+
+class GoogleServiceProvider extends ServiceProvider implements DeferrableProvider
+{
+    #[Override]
+    public function register(): void
+    {
+        $this->app->scoped(GoogleClient::class, fn (Application $app): GoogleClient => new GoogleClient([
+            'client_id' => config('services.google.client_id'),
+            'client_secret' => config('services.google.client_secret'),
+            'redirect_uri' => route('services.google.redirect'),
+        ]));
+    }
+
+    /**
+     * @return class-string[]
+     */
+    #[Override]
+    public function provides(): array
+    {
+        return [GoogleClient::class];
+    }
+}
