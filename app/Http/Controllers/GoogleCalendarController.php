@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Services\GoogleCalendar\Actions\CreateOrUpdateCalendar;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
 use Laravel\Socialite\Facades\Socialite;
 use Laravel\Socialite\Two\GoogleProvider;
-use Laravel\Socialite\Two\User;
 
 class GoogleCalendarController extends Controller
 {
@@ -27,21 +27,11 @@ class GoogleCalendarController extends Controller
             ->redirect();
     }
 
-    public function callback(): RedirectResponse
+    public function callback(CreateOrUpdateCalendar $createOrUpdateCalendar): RedirectResponse
     {
-        $googleUser = ensure(Socialite::driver('google')->user(), User::class);
-
-        $user = Auth::user();
-
-        $user->calendar()->updateOrCreate(
-            ['user_id' => $user->id],
-            [
-                'external_user_id' => $googleUser->id,
-                'external_calendar_id' => 'primary',
-                'external_token' => $googleUser->token,
-                'external_refresh_token' => $googleUser->refreshToken,
-                'external_token_expires_at' => now()->addSeconds($googleUser->expiresIn),
-            ]
+        $createOrUpdateCalendar->execute(
+            Auth::user(),
+            Socialite::driver('google')->user()
         );
 
         return redirect()->route('profile.edit')->with('success', __('profile.google_calendar_connected'));

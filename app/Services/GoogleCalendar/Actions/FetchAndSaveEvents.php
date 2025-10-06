@@ -2,6 +2,7 @@
 
 namespace App\Services\GoogleCalendar\Actions;
 
+use App\Data\EventData;
 use App\Models\Calendar;
 use Carbon\Carbon;
 use Google\Client as GoogleClient;
@@ -47,27 +48,15 @@ readonly class FetchAndSaveEvents
 
     private function saveEvent(GoogleEvent $googleEvent, Calendar $calendar): void
     {
-        $startObj = $googleEvent->getStart();
-        $endObj = $googleEvent->getEnd();
+        $eventData = EventData::from($googleEvent);
 
-        /** @var null|string $startDateTime */
-        $startDateTime = $startObj->getDateTime();
-
-        /** @var null|string $endDateTime */
-        $endDateTime = $endObj->getDateTime();
-
-        $calendar->user->events()->updateOrCreate(
-            [
-                'external_identifier' => $googleEvent->id,
-                'calendar_id' => $calendar->id,
-            ],
-            [
-                'title' => $googleEvent->getSummary(),
-                'description' => $googleEvent->getDescription(),
-                'all_day' => $startDateTime === null,
-                'starts_at' => Carbon::parse($startDateTime ?? $startObj->getDate()),
-                'ends_at' => Carbon::parse($endDateTime ?? $endObj->getDate()),
-            ]
-        );
+        $calendar->user->events()
+            ->updateOrCreate(
+                [
+                    'external_identifier' => $eventData->externalIdentifier,
+                    'calendar_id' => $calendar->id,
+                ],
+                $eventData->all(),
+            );
     }
 }
