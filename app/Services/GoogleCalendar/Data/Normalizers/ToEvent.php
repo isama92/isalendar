@@ -2,29 +2,19 @@
 
 namespace App\Services\GoogleCalendar\Data\Normalizers;
 
-use Carbon\Carbon;
-use Google\Service\Calendar\Event as GoogleEvent;
+use App\Services\GoogleCalendar\Data\GoogleEventData;
 
 trait ToEvent
 {
-    public static function fromGoogleEvent(GoogleEvent $googleEvent): self
+    public static function fromGoogleEvent(GoogleEventData $googleEventData): self
     {
-        $startObj = $googleEvent->getStart();
-        $endObj = $googleEvent->getEnd();
-
-        /** @var null|string $startDateTime */
-        $startDateTime = $startObj->getDateTime();
-
-        /** @var null|string $endDateTime */
-        $endDateTime = $endObj->getDateTime();
-
         return new self(
-            externalIdentifier: $googleEvent->id,
-            title: $googleEvent->getSummary(),
-            allDay: is_null($startDateTime),
-            startsAt: Carbon::parse($startDateTime ?? $startObj->getDate()),
-            endsAt: Carbon::parse($endDateTime ?? $endObj->getDate()),
-            description: $googleEvent->getDescription(),
+            externalIdentifier: $googleEventData->id,
+            title: $googleEventData->summary,
+            allDay: $googleEventData->allDay(),
+            startsAt: $googleEventData->startsAt(),
+            endsAt: $googleEventData->endsAt(),
+            description: $googleEventData->description,
         );
     }
 }

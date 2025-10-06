@@ -16,9 +16,12 @@ class CalendarData extends Data
 
     public function __construct(
         public string|Optional $externalUserId,
-        public string|Optional $externalCalendarId,
         public string|Optional $externalToken,
         public string|Optional $externalRefreshToken,
         public Carbon|Optional $externalTokenExpiresAt,
+        public string|Optional $externalCalendarId,
+        public string|Optional $externalCalendarName,
+        public string|Optional $externalCalendarDescription,
+        public string|Optional $externalCalendarTimezone,
     ) {}
 }

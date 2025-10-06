@@ -11,10 +11,13 @@ class Calendar extends Model
     protected $fillable = [
         'user_id',
         'external_user_id',
-        'external_calendar_id',
         'external_token',
         'external_refresh_token',
         'external_token_expires_at',
+        'external_calendar_id',
+        'external_calendar_name',
+        'external_calendar_description',
+        'external_calendar_timezone',
     ];
 
     /**
