@@ -18,7 +18,7 @@ class StoreEventRequest extends FormRequest
         if ($this->boolean('all_day')) {
             $merge = ['ends_at' => null];
 
-            if ($this->has('starts_at')) {
+            if ($this->filled('starts_at')) {
                 $merge['starts_at'] = Carbon::parse($this->input('starts_at'))->startOfDay()->toDateTimeString();
             }
 
