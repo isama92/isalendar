@@ -22,7 +22,7 @@ const LanguageSwitcher = () => {
         <div className="relative">
             <button
                 onClick={() => setDropdownOpen(!dropdownOpen)}
-                className="flex cursor-pointer items-center gap-2 rounded-md px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100"
+                className="flex cursor-pointer items-center gap-2 rounded-md px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700"
             >
                 <LanguageIcon className="h-5 w-5" />
             </button>
@@ -30,7 +30,7 @@ const LanguageSwitcher = () => {
             {dropdownOpen && (
                 <>
                     <div className="fixed inset-0 z-10" onClick={() => setDropdownOpen(false)} />
-                    <div className="absolute right-0 z-20 mt-2 w-32 rounded-md border border-gray-200 bg-white shadow-lg">
+                    <div className="absolute right-0 z-20 mt-2 w-32 rounded-md border border-gray-200 bg-white shadow-lg dark:border-gray-700 dark:bg-gray-800">
                         <button
                             onClick={() => {
                                 switchLanguage('en');
@@ -38,8 +38,8 @@ const LanguageSwitcher = () => {
                             }}
                             className={`flex w-full items-center justify-between px-4 py-2 text-sm ${
                                 locale === 'en'
-                                    ? 'bg-blue-50 font-medium text-blue-600'
-                                    : 'text-gray-700 hover:bg-gray-100'
+                                    ? 'bg-blue-50 font-medium text-blue-600 dark:bg-blue-900/30 dark:text-blue-400'
+                                    : 'text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700'
                             }`}
                         >
                             <span>English</span>
@@ -52,8 +52,8 @@ const LanguageSwitcher = () => {
                             }}
                             className={`flex w-full items-center justify-between px-4 py-2 text-sm ${
                                 locale === 'it'
-                                    ? 'bg-blue-50 font-medium text-blue-600'
-                                    : 'text-gray-700 hover:bg-gray-100'
+                                    ? 'bg-blue-50 font-medium text-blue-600 dark:bg-blue-900/30 dark:text-blue-400'
+                                    : 'text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700'
                             }`}
                         >
                             <span>Italiano</span>

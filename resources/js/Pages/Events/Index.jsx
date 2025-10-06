@@ -217,7 +217,10 @@ const Index = ({ events }) => {
                             {table.getRowModel().rows.map(row => (
                                 <tr key={row.id} className="hover:bg-gray-50 dark:hover:bg-gray-700">
                                     {row.getVisibleCells().map(cell => (
-                                        <td key={cell.id} className="px-6 py-4 text-sm whitespace-nowrap text-gray-900 dark:text-gray-100">
+                                        <td
+                                            key={cell.id}
+                                            className="px-6 py-4 text-sm whitespace-nowrap text-gray-900 dark:text-gray-100"
+                                        >
                                             {flexRender(cell.column.columnDef.cell, cell.getContext())}
                                         </td>
                                     ))}

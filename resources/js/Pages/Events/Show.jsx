@@ -34,19 +34,29 @@ const Show = ({ event }) => {
             <dl className="space-y-4">
                 <div>
                     <dt className="text-sm font-medium text-gray-500 dark:text-gray-400">{__('events.all_day')}</dt>
-                    <dd className="mt-1 text-sm text-gray-900 dark:text-gray-100">{event.all_day ? __('common.yes') : __('common.no')}</dd>
+                    <dd className="mt-1 text-sm text-gray-900 dark:text-gray-100">
+                        {event.all_day ? __('common.yes') : __('common.no')}
+                    </dd>
                 </div>
 
                 {!event.all_day && (
                     <>
                         <div>
-                            <dt className="text-sm font-medium text-gray-500 dark:text-gray-400">{__('events.starts_at')}</dt>
-                            <dd className="mt-1 text-sm text-gray-900 dark:text-gray-100">{formatDateTime(event.starts_at)}</dd>
+                            <dt className="text-sm font-medium text-gray-500 dark:text-gray-400">
+                                {__('events.starts_at')}
+                            </dt>
+                            <dd className="mt-1 text-sm text-gray-900 dark:text-gray-100">
+                                {formatDateTime(event.starts_at)}
+                            </dd>
                         </div>
 
                         <div>
-                            <dt className="text-sm font-medium text-gray-500 dark:text-gray-400">{__('events.ends_at')}</dt>
-                            <dd className="mt-1 text-sm text-gray-900 dark:text-gray-100">{formatDateTime(event.ends_at)}</dd>
+                            <dt className="text-sm font-medium text-gray-500 dark:text-gray-400">
+                                {__('events.ends_at')}
+                            </dt>
+                            <dd className="mt-1 text-sm text-gray-900 dark:text-gray-100">
+                                {formatDateTime(event.ends_at)}
+                            </dd>
                         </div>
                     </>
                 )}
@@ -60,14 +70,21 @@ const Show = ({ event }) => {
 
                 {event.description && (
                     <div>
-                        <dt className="text-sm font-medium text-gray-500 dark:text-gray-400">{__('events.description')}</dt>
-                        <dd className="mt-1 text-sm whitespace-pre-wrap text-gray-900 dark:text-gray-100">{event.description}</dd>
+                        <dt className="text-sm font-medium text-gray-500 dark:text-gray-400">
+                            {__('events.description')}
+                        </dt>
+                        <dd className="mt-1 text-sm whitespace-pre-wrap text-gray-900 dark:text-gray-100">
+                            {event.description}
+                        </dd>
                     </div>
                 )}
             </dl>
 
             <div className="mt-6">
-                <Link href={route('events.index')} className="text-sm text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300">
+                <Link
+                    href={route('events.index')}
+                    className="text-sm text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300"
+                >
                     ← {__('common.back_to')} {__('events.events')}
                 </Link>
             </div>

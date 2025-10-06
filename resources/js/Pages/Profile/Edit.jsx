@@ -13,7 +13,9 @@ const Edit = ({ user }) => {
 
     return (
         <div className="rounded-lg bg-white p-6 shadow dark:bg-gray-800">
-            <h2 className="mb-6 text-2xl font-semibold text-gray-900 dark:text-gray-100">{__('profile.edit_profile')}</h2>
+            <h2 className="mb-6 text-2xl font-semibold text-gray-900 dark:text-gray-100">
+                {__('profile.edit_profile')}
+            </h2>
 
             {flash?.success && (
                 <div className="mb-4 rounded-md bg-green-50 p-4 dark:bg-green-900/20">

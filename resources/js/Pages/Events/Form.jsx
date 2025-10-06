@@ -75,7 +75,10 @@ const Form = ({ event = null }) => {
 
                 <div className="flex flex-col gap-6 sm:flex-row">
                     <div>
-                        <label htmlFor="starts_at" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                        <label
+                            htmlFor="starts_at"
+                            className="block text-sm font-medium text-gray-700 dark:text-gray-300"
+                        >
                             {__('events.starts_at')}
                         </label>
                         <DatePicker
@@ -101,7 +104,10 @@ const Form = ({ event = null }) => {
 
                     {!data.all_day && (
                         <div>
-                            <label htmlFor="ends_at" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                            <label
+                                htmlFor="ends_at"
+                                className="block text-sm font-medium text-gray-700 dark:text-gray-300"
+                            >
                                 {__('events.ends_at')}
                             </label>
                             <DatePicker
@@ -148,7 +154,7 @@ const Form = ({ event = null }) => {
                             type="button"
                             onClick={e => handleSubmit(e, false)}
                             disabled={processing}
-                            className="rounded-md border border-blue-600 bg-white px-4 py-2 text-sm font-medium text-blue-600 hover:bg-blue-50 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:outline-none disabled:opacity-50"
+                            className="cursor-pointer rounded-md border border-blue-600 bg-white px-4 py-2 text-sm font-medium text-blue-600 hover:bg-blue-50 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:outline-none disabled:opacity-50 dark:border-blue-400 dark:bg-gray-800 dark:text-blue-400 dark:hover:bg-gray-700"
                         >
                             {processing
                                 ? isEditing
@@ -162,7 +168,7 @@ const Form = ({ event = null }) => {
                             type="button"
                             onClick={e => handleSubmit(e, true)}
                             disabled={processing}
-                            className="rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:outline-none disabled:opacity-50"
+                            className="cursor-pointer rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:outline-none disabled:opacity-50"
                         >
                             {processing
                                 ? isEditing
