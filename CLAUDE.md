@@ -43,6 +43,7 @@ This application is a Laravel application and its main Laravel ecosystems packag
   - `./vendor/bin/sail composer install` (NOT `composer install`)
   - `./vendor/bin/sail npm install` (NOT `npm install`)
   - `./vendor/bin/sail php --version` (NOT `php --version`)
+- **NPM Development Server**: `./vendor/bin/sail npm run dev` is always running in the background. DO NOT run `./vendor/bin/sail npm run build` as changes are automatically hot-reloaded by Vite.
 
 ## Code Formatting
 - To format/lint PHP files, use: `./vendor/bin/sail composer lint`
@@ -82,6 +83,7 @@ This application is a Laravel application and its main Laravel ecosystems packag
 
 ## Reading Browser Logs With the `browser-logs` Tool
 - You can read browser logs, errors, and exceptions using the `browser-logs` tool from Boost.
+- Browser logs are also stored in `storage/logs/browser.log` and can be read directly.
 - Only recent browser logs will be useful - ignore old logs.
 
 ## Searching Documentation (Critically Important)
