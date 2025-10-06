@@ -8,3 +8,5 @@ Add events to a shared calendar.
 
 - queue action to fetch events, every hour
   - in the command loop the users with a calendar and run the fetch and save action
+- if user doesn't have a calendar show a permanent message somewhere to tell them to add it
+- BUG: when saving calendar the event end date is +2h (timezone)

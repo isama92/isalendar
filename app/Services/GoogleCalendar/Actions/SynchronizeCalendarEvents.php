@@ -11,7 +11,7 @@ use Google\Service\Calendar\Event as GoogleEvent;
 use Google\Service\Calendar\Events as GoogleEvents;
 use Spatie\QueueableAction\QueueableAction;
 
-readonly class FetchAndSaveEvents
+readonly class SynchronizeCalendarEvents
 {
     use QueueableAction;
 
