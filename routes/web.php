@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\LocaleController;
+use App\Http\Controllers\Web\LocaleController;
 use Illuminate\Support\Facades\Route;
 
 require __DIR__.'/web/auth.php';

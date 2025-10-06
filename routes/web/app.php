@@ -1,8 +1,8 @@
 <?php
 
-use App\Http\Controllers\DashboardController;
-use App\Http\Controllers\EventsController;
-use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\Web\DashboardController;
+use App\Http\Controllers\Web\EventsController;
+use App\Http\Controllers\Web\ProfileController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware('auth')->group(function (): void {

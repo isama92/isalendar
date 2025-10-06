@@ -1,14 +1,15 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Services\GoogleCalendar;
 
+use App\Http\Controllers\Controller;
 use App\Services\GoogleCalendar\Actions\CreateOrUpdateCalendar;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
 use Laravel\Socialite\Facades\Socialite;
 use Laravel\Socialite\Two\GoogleProvider;
 
-class GoogleCalendarController extends Controller
+class AuthController extends Controller
 {
     public function redirect(): RedirectResponse
     {
@@ -34,10 +35,8 @@ class GoogleCalendarController extends Controller
             Socialite::driver('google')->user()
         );
 
-        return redirect()->route('profile.edit')->with('success', __('profile.google_calendar_connected'));
+        return redirect()->route('services.google.calendar.index');
     }
-
-    // TODO: add select calendar
 
     public function disconnect(): RedirectResponse
     {
