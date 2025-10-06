@@ -2,12 +2,15 @@
 
 namespace App\Actions;
 
+use App\Builders\EventBuilder;
 use App\Models\User;
-use Carbon\Carbon;
+use Carbon\CarbonImmutable;
 use Illuminate\Support\Facades\DB;
 
 class GetDashboardEventStats
 {
+    private User $user;
+
     /**
      * @return array{
      *     totalEvents: int,
@@ -20,78 +23,60 @@ class GetDashboardEventStats
      */
     public function execute(User $user): array
     {
-        $now = Carbon::now();
-
-        $dateRanges = $this->calculateDateRanges($now);
+        $this->user = $user;
+        $today = CarbonImmutable::now()->startOfDay();
 
         return [
-            'totalEvents' => $this->getTotalEvents($user),
-            'eventsToday' => $this->getEventsForDate($user, $dateRanges['today']),
-            'eventsTomorrow' => $this->getEventsForDate($user, $dateRanges['tomorrow'], $dateRanges['endOfTomorrow']),
-            'eventsThisWeek' => $this->getEventsBetween($user, $dateRanges['thisWeekStart'], $dateRanges['thisWeekEnd']),
-            'eventsNextWeek' => $this->getEventsBetween($user, $dateRanges['nextWeekStart'], $dateRanges['nextWeekEnd']),
-            'averagePerDayOfWeek' => $this->getAveragePerDayOfWeek($user),
+            'totalEvents' => $this->getTotalEvents(),
+            'eventsToday' => $this->getEventsForDate($today),
+            'eventsTomorrow' => $this->getEventsForDate($today->addDay(), $today->addDay()->endOfDay()),
+            'eventsThisWeek' => $this->getEventsBetween($today->startOfWeek(), $today->endOfWeek()),
+            'eventsNextWeek' => $this->getEventsBetween($today->addWeek()->startOfWeek(), $today->addWeek()->endOfWeek()),
+            'averagePerDayOfWeek' => $this->getAveragePerDayOfWeek(),
         ];
     }
 
-    /**
-     * @return array<string, Carbon>
-     */
-    private function calculateDateRanges(Carbon $now): array
+    private function getTotalEvents(): int
     {
-        $today = $now->copy()->startOfDay();
-        $tomorrow = $now->copy()->addDay()->startOfDay();
-
-        return [
-            'today' => $today,
-            'tomorrow' => $tomorrow,
-            'endOfTomorrow' => $tomorrow->copy()->endOfDay(),
-            'thisWeekStart' => $now->copy()->startOfWeek(),
-            'thisWeekEnd' => $now->copy()->endOfWeek(),
-            'nextWeekStart' => $now->copy()->addWeek()->startOfWeek(),
-            'nextWeekEnd' => $now->copy()->addWeek()->endOfWeek(),
-        ];
+        return $this->user->events()->count();
     }
 
-    private function getTotalEvents(User $user): int
+    private function getEventsForDate(CarbonImmutable $date, ?CarbonImmutable $endDate = null): int
     {
-        return $user->events()->count();
-    }
-
-    private function getEventsForDate(User $user, Carbon $date, ?Carbon $endDate = null): int
-    {
-        return $user->events()
+        return $this->user->events()
             ->where(function ($query) use ($date, $endDate): void {
-                $query->where('all_day', true)
-                    ->whereDate('starts_at', $date)
-                    ->orWhere(function ($q) use ($date, $endDate): void {
+                $query->where(function (EventBuilder $q) use ($date): void {
+                    $q->where('all_day', true)
+                        ->whereDate('starts_at', $date);
+                })
+                    ->orWhere(function (EventBuilder $q) use ($date, $endDate): void {
                         $q->where('all_day', false);
 
-                        if ($endDate instanceof Carbon) {
-                            $q->whereBetween('starts_at', [$date, $endDate]);
+                        if (is_null($endDate)) {
+                            $q->whereDate('starts_at', $date);
 
                             return;
                         }
 
-                        $q->whereDate('starts_at', $date);
+                        $q->whereBetween('starts_at', [$date, $endDate]);
                     });
             })
             ->count();
     }
 
-    private function getEventsBetween(User $user, Carbon $start, Carbon $end): int
+    private function getEventsBetween(CarbonImmutable $start, CarbonImmutable $end): int
     {
-        return $user->events()
+        return $this->user->events()
             ->whereBetween('starts_at', [$start, $end])
             ->count();
     }
 
     /**
-     * @return array<int>
+     * @return list<int>
      */
-    private function getAveragePerDayOfWeek(User $user): array
+    private function getAveragePerDayOfWeek(): array
     {
-        $averagePerDayOfWeek = $user->events()
+        $averagePerDayOfWeek = $this->user->events()
             ->select(DB::raw('DAYOFWEEK(starts_at) - 1 as day_of_week, COUNT(*) as count'))
             ->groupBy('day_of_week')
             ->pluck('count', 'day_of_week')
