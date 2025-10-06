@@ -29,4 +29,6 @@ return [
     'showing' => 'Showing',
     'to' => 'to',
     'results' => 'results',
+    'dark_mode' => 'Dark Mode',
+    'light_mode' => 'Light Mode',
 ];

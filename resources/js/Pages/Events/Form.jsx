@@ -41,14 +41,14 @@ const Form = ({ event = null }) => {
     };
 
     return (
-        <div className="rounded-lg bg-white p-6 shadow">
-            <h2 className="mb-6 text-2xl font-semibold text-gray-900">
+        <div className="rounded-lg bg-white p-6 shadow dark:bg-gray-800">
+            <h2 className="mb-6 text-2xl font-semibold text-gray-900 dark:text-gray-100">
                 {isEditing ? __('events.edit_event') : __('events.create_event')}
             </h2>
 
             <form className="space-y-6">
                 <div>
-                    <label htmlFor="title" className="block text-sm font-medium text-gray-700">
+                    <label htmlFor="title" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
                         {__('events.title')}
                     </label>
                     <input
@@ -56,7 +56,7 @@ const Form = ({ event = null }) => {
                         id="title"
                         value={data.title}
                         onChange={e => setData('title', e.target.value)}
-                        className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none"
+                        className="mt-1 block w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-gray-900 shadow-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100"
                     />
                     {errors.title && <p className="mt-1 text-sm text-red-600">{errors.title}</p>}
                 </div>
@@ -69,13 +69,13 @@ const Form = ({ event = null }) => {
                             onChange={e => setData('all_day', e.target.checked)}
                             className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
                         />
-                        <span className="ml-2 text-sm text-gray-700">{__('events.all_day')}</span>
+                        <span className="ml-2 text-sm text-gray-700 dark:text-gray-300">{__('events.all_day')}</span>
                     </label>
                 </div>
 
                 <div className="flex flex-col gap-6 sm:flex-row">
                     <div>
-                        <label htmlFor="starts_at" className="block text-sm font-medium text-gray-700">
+                        <label htmlFor="starts_at" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
                             {__('events.starts_at')}
                         </label>
                         <DatePicker
@@ -94,14 +94,14 @@ const Form = ({ event = null }) => {
                             timeIntervals={15}
                             dateFormat={data.all_day ? 'dd/MM/yyyy' : 'dd/MM/yyyy HH:mm'}
                             calendarStartDay={1}
-                            className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none"
+                            className="mt-1 block w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-gray-900 shadow-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100"
                         />
                         {errors.starts_at && <p className="mt-1 text-sm text-red-600">{errors.starts_at}</p>}
                     </div>
 
                     {!data.all_day && (
                         <div>
-                            <label htmlFor="ends_at" className="block text-sm font-medium text-gray-700">
+                            <label htmlFor="ends_at" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
                                 {__('events.ends_at')}
                             </label>
                             <DatePicker
@@ -115,7 +115,7 @@ const Form = ({ event = null }) => {
                                 timeIntervals={15}
                                 dateFormat="dd/MM/yyyy HH:mm"
                                 calendarStartDay={1}
-                                className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none"
+                                className="mt-1 block w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-gray-900 shadow-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100"
                             />
                             {errors.ends_at && <p className="mt-1 text-sm text-red-600">{errors.ends_at}</p>}
                         </div>
@@ -123,7 +123,7 @@ const Form = ({ event = null }) => {
                 </div>
 
                 <div>
-                    <label htmlFor="description" className="block text-sm font-medium text-gray-700">
+                    <label htmlFor="description" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
                         {__('events.description')}
                     </label>
                     <textarea
@@ -131,7 +131,7 @@ const Form = ({ event = null }) => {
                         value={data.description}
                         onChange={e => setData('description', e.target.value)}
                         rows={4}
-                        className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none"
+                        className="mt-1 block w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-gray-900 shadow-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100"
                     />
                     {errors.description && <p className="mt-1 text-sm text-red-600">{errors.description}</p>}
                 </div>
@@ -139,7 +139,7 @@ const Form = ({ event = null }) => {
                 <div className="flex items-center justify-between gap-3">
                     <a
                         href={route('events.index')}
-                        className="rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:outline-none"
+                        className="rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:outline-none dark:border-gray-600 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700"
                     >
                         {__('common.cancel')}
                     </a>

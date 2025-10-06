@@ -29,4 +29,6 @@ return [
     'showing' => 'Visualizzazione da',
     'to' => 'a',
     'results' => 'risultati',
+    'dark_mode' => 'Modalità Scura',
+    'light_mode' => 'Modalità Chiara',
 ];

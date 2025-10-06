@@ -74,14 +74,14 @@ const Index = ({ events }) => {
                         <Link
                             href={route('events.show', info.row.original.id)}
                             title={__('common.view')}
-                            className="text-gray-600 hover:text-gray-800"
+                            className="text-gray-600 hover:text-gray-800 dark:text-gray-300 dark:hover:text-gray-100"
                         >
                             <EyeIcon className="h-5 w-5" />
                         </Link>
                         <Link
                             href={route('events.edit', info.row.original.id)}
                             title={__('common.edit')}
-                            className="text-blue-600 hover:text-blue-800"
+                            className="text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300"
                         >
                             <PencilIcon className="h-5 w-5" />
                         </Link>
@@ -92,7 +92,7 @@ const Index = ({ events }) => {
                                 }
                             }}
                             title={__('common.delete')}
-                            className="cursor-pointer text-red-600 hover:text-red-800"
+                            className="cursor-pointer text-red-600 hover:text-red-800 dark:text-red-400 dark:hover:text-red-300"
                         >
                             <TrashIcon className="h-5 w-5" />
                         </button>
@@ -119,9 +119,9 @@ const Index = ({ events }) => {
     });
 
     return (
-        <div className="rounded-lg bg-white p-6 shadow">
+        <div className="rounded-lg bg-white p-6 shadow dark:bg-gray-800">
             <div className="mb-6 flex items-center justify-between">
-                <h2 className="text-2xl font-semibold text-gray-900">{__('events.events')}</h2>
+                <h2 className="text-2xl font-semibold text-gray-900 dark:text-gray-100">{__('events.events')}</h2>
                 <Link
                     href={route('events.create')}
                     className="rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:outline-none"
@@ -136,12 +136,12 @@ const Index = ({ events }) => {
                     placeholder={__('events.filter_by_title')}
                     value={table.getColumn('title')?.getFilterValue() ?? ''}
                     onChange={e => table.getColumn('title')?.setFilterValue(e.target.value)}
-                    className="rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none"
+                    className="rounded-md border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100"
                 />
                 <select
                     value={table.getColumn('all_day')?.getFilterValue() ?? 'all'}
                     onChange={e => table.getColumn('all_day')?.setFilterValue(e.target.value)}
-                    className="rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none"
+                    className="rounded-md border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100"
                 >
                     <option value="all">{__('events.all_events')}</option>
                     <option value="true">{__('events.all_day_only')}</option>
@@ -161,7 +161,7 @@ const Index = ({ events }) => {
                     isClearable
                     calendarStartDay={1}
                     withPortal
-                    className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none"
+                    className="w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100"
                 />
                 <DatePicker
                     selected={
@@ -177,22 +177,22 @@ const Index = ({ events }) => {
                     isClearable
                     calendarStartDay={1}
                     withPortal
-                    className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none"
+                    className="w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100"
                 />
             </div>
 
             <div className="overflow-x-auto">
                 {table.getRowModel().rows.length === 0 ? (
-                    <p className="text-gray-500">{__('events.no_events_found')}</p>
+                    <p className="text-gray-500 dark:text-gray-400">{__('events.no_events_found')}</p>
                 ) : (
-                    <table className="min-w-full divide-y divide-gray-200">
-                        <thead className="bg-gray-50">
+                    <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                        <thead className="bg-gray-50 dark:bg-gray-700">
                             {table.getHeaderGroups().map(headerGroup => (
                                 <tr key={headerGroup.id}>
                                     {headerGroup.headers.map(header => (
                                         <th
                                             key={header.id}
-                                            className="px-6 py-3 text-left text-xs font-medium tracking-wider text-gray-500 uppercase"
+                                            className="px-6 py-3 text-left text-xs font-medium tracking-wider text-gray-500 uppercase dark:text-gray-300"
                                         >
                                             {header.isPlaceholder ? null : (
                                                 <div
@@ -213,11 +213,11 @@ const Index = ({ events }) => {
                                 </tr>
                             ))}
                         </thead>
-                        <tbody className="divide-y divide-gray-200 bg-white">
+                        <tbody className="divide-y divide-gray-200 bg-white dark:divide-gray-700 dark:bg-gray-800">
                             {table.getRowModel().rows.map(row => (
-                                <tr key={row.id} className="hover:bg-gray-50">
+                                <tr key={row.id} className="hover:bg-gray-50 dark:hover:bg-gray-700">
                                     {row.getVisibleCells().map(cell => (
-                                        <td key={cell.id} className="px-6 py-4 text-sm whitespace-nowrap text-gray-900">
+                                        <td key={cell.id} className="px-6 py-4 text-sm whitespace-nowrap text-gray-900 dark:text-gray-100">
                                             {flexRender(cell.column.columnDef.cell, cell.getContext())}
                                         </td>
                                     ))}
