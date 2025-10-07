@@ -22,4 +22,5 @@ return [
     'no' => 'No',
     'dark_mode' => 'Modalità Scura',
     'light_mode' => 'Modalità Chiara',
+    'choose' => 'scegli',
 ];

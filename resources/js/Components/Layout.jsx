@@ -4,7 +4,7 @@ import LanguageSwitcher from './LanguageSwitcher';
 import UserDropdown from './UserDropdown';
 
 const Layout = ({ children }) => {
-    const { user } = usePage().props;
+    const { user, locale } = usePage().props;
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
     return (
@@ -79,8 +79,8 @@ const Layout = ({ children }) => {
                                 <img src="/assets/logo.png" alt="Isalendar" className="h-8" />
                             </Link>
                             <div className="ml-auto flex items-center gap-2">
-                                <LanguageSwitcher />
-                                <UserDropdown />
+                                <LanguageSwitcher locale={locale} />
+                                <UserDropdown user={user} />
                             </div>
                         </div>
                     )}

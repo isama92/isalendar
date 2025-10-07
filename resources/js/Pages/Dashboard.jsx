@@ -1,11 +1,14 @@
-import { usePage } from '@inertiajs/react';
 import EventsByDayOfWeekChart from '../Components/EventsByDayOfWeekChart';
 import StatCard from '../Components/StatCard';
 
-const Dashboard = () => {
-    const { totalEvents, eventsToday, eventsTomorrow, eventsThisWeek, eventsNextWeek, averagePerDayOfWeek } =
-        usePage().props;
-
+const Dashboard = ({
+    totalEvents,
+    eventsToday,
+    eventsTomorrow,
+    eventsThisWeek,
+    eventsNextWeek,
+    averagePerDayOfWeek,
+}) => {
     return (
         <div className="space-y-6">
             <div className="rounded-lg bg-white p-6 shadow dark:bg-gray-800">

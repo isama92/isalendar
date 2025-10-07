@@ -28,6 +28,7 @@ class ProfileController extends Controller
     {
         Auth::user()->update($request->validated());
 
-        return redirect()->route('profile.edit')->with('success', 'Profile updated successfully.');
+        return redirect()->route('profile.edit')
+            ->with('success', __('profile.profile_updated_successfully'));
     }
 }

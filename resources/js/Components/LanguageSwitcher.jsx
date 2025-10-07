@@ -1,9 +1,8 @@
 import { LanguageIcon } from '@heroicons/react/24/outline';
-import { router, usePage } from '@inertiajs/react';
+import { router } from '@inertiajs/react';
 import { useState } from 'react';
 
-const LanguageSwitcher = () => {
-    const { locale } = usePage().props;
+const LanguageSwitcher = ({ locale }) => {
     const [dropdownOpen, setDropdownOpen] = useState(false);
 
     const switchLanguage = newLocale => {

@@ -1,7 +1,6 @@
-import { router, useForm, usePage } from '@inertiajs/react';
+import { router, useForm } from '@inertiajs/react';
 
-const Edit = ({ user, calendar }) => {
-    const { flash } = usePage().props;
+const Edit = ({ user, calendar, flash }) => {
     const { data, setData, put, processing, errors } = useForm({
         name: user.name || '',
     });
@@ -88,12 +87,6 @@ const Edit = ({ user, calendar }) => {
                 </div>
 
                 <div className="flex items-center justify-end gap-3">
-                    <a
-                        href={route('dashboard')}
-                        className="rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:outline-none dark:border-gray-600 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700"
-                    >
-                        {__('common.cancel')}
-                    </a>
                     <button
                         type="submit"
                         disabled={processing}

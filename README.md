@@ -8,8 +8,6 @@ Add events to a shared calendar.
 - BUG: when saving calendar the event end date is +2h (timezone problem)
 - BUG: when saving calendar from google event it's +2h (timezone problem)
   - create from carbon with timezone, and use calendar timezone
-- BUG: remove usages of `usepage().props`
-- BUG: remove usages <a> tag
 - if user doesn't have a calendar model
   - show a permanent message somewhere to tell them to add it
 - if user have a calendar model but doesn't have the external_calendar_id

@@ -1,10 +1,9 @@
 import { ArrowRightOnRectangleIcon, MoonIcon, SunIcon, UserCircleIcon } from '@heroicons/react/24/outline';
-import { Link, usePage } from '@inertiajs/react';
+import { Link } from '@inertiajs/react';
 import { useState } from 'react';
 import { useTheme } from '../Contexts/ThemeContext';
 
-const UserDropdown = () => {
-    const { user } = usePage().props;
+const UserDropdown = ({ user }) => {
     const { theme, toggleTheme } = useTheme();
     const [dropdownOpen, setDropdownOpen] = useState(false);
 
