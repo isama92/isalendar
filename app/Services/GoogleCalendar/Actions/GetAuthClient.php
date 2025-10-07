@@ -8,26 +8,26 @@ use Illuminate\Support\Facades\Cache;
 
 readonly class GetAuthClient
 {
-    public function __construct(private GoogleClient $client) {}
+    public function __construct(private GoogleClient $googleClient) {}
 
     public function execute(Calendar $calendar): GoogleClient
     {
-        $this->client->setAccessToken($calendar->external_token);
+        $this->googleClient->setAccessToken($calendar->external_token);
 
-        if (! $this->client->isAccessTokenExpired()) {
-            return $this->client;
+        if (! $this->googleClient->isAccessTokenExpired()) {
+            return $this->googleClient;
         }
 
         return Cache::lock(sprintf('calendar-refresh-%s', $calendar->id), 10)
             ->block(5, function () use ($calendar): GoogleClient {
-                $this->client->fetchAccessTokenWithRefreshToken($calendar->external_refresh_token);
-                $newToken = $this->client->getAccessToken();
+                $this->googleClient->fetchAccessTokenWithRefreshToken($calendar->external_refresh_token);
+                $newToken = $this->googleClient->getAccessToken();
                 $calendar->update([
                     'external_token' => $newToken['access_token'],
                     'external_token_expires_at' => now()->addSeconds($newToken['expires_in']),
                 ]);
 
-                return $this->client;
+                return $this->googleClient;
             });
     }
 }

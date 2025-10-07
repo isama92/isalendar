@@ -17,8 +17,8 @@ readonly class GetCalendars
      */
     public function execute(Calendar $calendar): Collection
     {
-        $client = $this->getAuthClient->execute($calendar);
-        $service = new CalendarService($client);
+        $googleClient = $this->getAuthClient->execute($calendar);
+        $service = new CalendarService($googleClient);
 
         /** @var \Google\Service\Calendar\CalendarList $calendarList */
         $calendarList = $service->calendarList

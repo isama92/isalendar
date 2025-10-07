@@ -9,7 +9,7 @@ use App\Services\GoogleCalendar\Data\GoogleUserData;
 use Laravel\Socialite\Contracts\User as ProviderUser;
 use Laravel\Socialite\Two\User as GoogleUser;
 
-class CreateOrUpdateCalendar
+class SaveGoogleUser
 {
     public function execute(User $user, ProviderUser|GoogleUser $providerUser): Calendar
     {

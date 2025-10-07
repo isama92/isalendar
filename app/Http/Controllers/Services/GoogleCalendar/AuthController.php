@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Services\GoogleCalendar;
 
 use App\Http\Controllers\Controller;
-use App\Services\GoogleCalendar\Actions\CreateOrUpdateCalendar;
+use App\Services\GoogleCalendar\Actions\SaveGoogleUser;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
 use Laravel\Socialite\Facades\Socialite;
@@ -31,11 +31,11 @@ class AuthController extends Controller
             ->redirect();
     }
 
-    public function callback(CreateOrUpdateCalendar $createOrUpdateCalendar): RedirectResponse
+    public function callback(SaveGoogleUser $saveGoogleUser): RedirectResponse
     {
         abort_if(Auth::user()->calendar()->exists(), SymfonyResponse::HTTP_FORBIDDEN);
 
-        $createOrUpdateCalendar->execute(
+        $saveGoogleUser->execute(
             Auth::user(),
             Socialite::driver('google')->user()
         );
