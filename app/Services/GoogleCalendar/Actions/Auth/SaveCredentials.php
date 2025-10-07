@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Services\GoogleCalendar\Actions;
+namespace App\Services\GoogleCalendar\Actions\Auth;
 
 use App\Data\CalendarData;
 use App\Models\Calendar;
@@ -9,7 +9,7 @@ use App\Services\GoogleCalendar\Data\GoogleUserData;
 use Laravel\Socialite\Contracts\User as ProviderUser;
 use Laravel\Socialite\Two\User as GoogleUser;
 
-class SaveGoogleUser
+class SaveCredentials
 {
     public function execute(User $user, ProviderUser|GoogleUser $providerUser): Calendar
     {

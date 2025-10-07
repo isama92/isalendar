@@ -3,7 +3,7 @@
 namespace App\Services\GoogleCalendar\Actions\Events;
 
 use App\Models\Calendar;
-use App\Services\GoogleCalendar\Actions\GetAuthClient;
+use App\Services\GoogleCalendar\Actions\Auth\GetAuthClient;
 use App\Services\GoogleCalendar\Data\GoogleEventData;
 use Carbon\CarbonImmutable;
 use Google\Service\Calendar as CalendarService;

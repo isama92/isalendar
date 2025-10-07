@@ -1,16 +1,17 @@
 <?php
 
-namespace App\Services\GoogleCalendar\Actions;
+namespace App\Services\GoogleCalendar\Actions\Calendars;
 
 use App\Models\Calendar;
+use App\Services\GoogleCalendar\Actions\Auth\GetAuthClient;
 use App\Services\GoogleCalendar\Data\GoogleCalendarData;
 use Google\Service\Calendar as CalendarService;
 use Google\Service\Calendar\CalendarListEntry as GoogleCalendar;
 use Illuminate\Support\Collection;
 
-readonly class GetCalendars
+class GetCalendars
 {
-    public function __construct(private GetAuthClient $getAuthClient) {}
+    public function __construct(private readonly GetAuthClient $getAuthClient) {}
 
     /**
      * @return \Illuminate\Support\Collection<int, \App\Services\GoogleCalendar\Data\GoogleCalendarData>

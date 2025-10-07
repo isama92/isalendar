@@ -3,35 +3,23 @@
 namespace App\Http\Controllers\Services\GoogleCalendar;
 
 use App\Http\Controllers\Controller;
-use App\Services\GoogleCalendar\Actions\SaveGoogleUser;
+use App\Services\GoogleCalendar\Actions\Auth\RequestAccess;
+use App\Services\GoogleCalendar\Actions\Auth\SaveCredentials;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
 use Laravel\Socialite\Facades\Socialite;
-use Laravel\Socialite\Two\GoogleProvider;
 use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
 
 class AuthController extends Controller
 {
-    public function redirect(): RedirectResponse
+    public function redirect(RequestAccess $requestAccess): RedirectResponse
     {
         abort_if(Auth::user()->calendar()->exists(), SymfonyResponse::HTTP_FORBIDDEN);
 
-        return ensure(Socialite::driver('google'), GoogleProvider::class)
-            ->scopes([
-                'https://www.googleapis.com/auth/calendar',
-                'https://www.googleapis.com/auth/calendar.events',
-                'openid',
-                'profile',
-                'email',
-            ])
-            ->with([
-                'access_type' => 'offline',
-                'prompt' => 'consent',
-            ])
-            ->redirect();
+        return $requestAccess->execute();
     }
 
-    public function callback(SaveGoogleUser $saveGoogleUser): RedirectResponse
+    public function callback(SaveCredentials $saveGoogleUser): RedirectResponse
     {
         abort_if(Auth::user()->calendar()->exists(), SymfonyResponse::HTTP_FORBIDDEN);
 

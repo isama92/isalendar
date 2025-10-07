@@ -1,14 +1,14 @@
 <?php
 
-namespace App\Services\GoogleCalendar\Actions;
+namespace App\Services\GoogleCalendar\Actions\Auth;
 
 use App\Models\Calendar;
 use Google\Client as GoogleClient;
 use Illuminate\Support\Facades\Cache;
 
-readonly class GetAuthClient
+class GetAuthClient
 {
-    public function __construct(private GoogleClient $googleClient) {}
+    public function __construct(private readonly GoogleClient $googleClient) {}
 
     public function execute(Calendar $calendar): GoogleClient
     {

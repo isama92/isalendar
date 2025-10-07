@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Services\GoogleCalendar;
 
 use App\Data\CalendarData;
 use App\Http\Requests\UpdateCalendarRequest;
-use App\Services\GoogleCalendar\Actions\GetCalendars;
+use App\Services\GoogleCalendar\Actions\Calendars\GetCalendars;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
