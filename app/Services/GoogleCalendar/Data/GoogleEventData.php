@@ -2,7 +2,6 @@
 
 namespace App\Services\GoogleCalendar\Data;
 
-use Carbon\Carbon;
 use Google\Service\Calendar\Event as GoogleEvent;
 use Spatie\LaravelData\Data;
 
@@ -12,8 +11,10 @@ class GoogleEventData extends Data
         public string $id,
         public string $summary,
         public ?string $startDateTime,
+        public ?string $startTimezone,
         public ?string $startDate,
         public ?string $endDateTime,
+        public ?string $endTimezone,
         public ?string $endDate,
         public ?string $description,
     ) {}
@@ -27,25 +28,12 @@ class GoogleEventData extends Data
             id: $googleEvent->getId(),
             summary: $googleEvent->getSummary(),
             startDateTime: $startObj->getDateTime(),
+            startTimezone: $startObj->getTimezone(),
             startDate: $startObj->getDate(),
             endDateTime: $endObj->getDateTime(),
+            endTimezone: $endObj->getTimezone(),
             endDate: $endObj->getDate(),
             description: $googleEvent->getDescription(),
         );
-    }
-
-    public function startsAt(): Carbon
-    {
-        return Carbon::parse($this->startDateTime ?? $this->startDate);
-    }
-
-    public function endsAt(): Carbon
-    {
-        return Carbon::parse($this->endDateTime ?? $this->endDate);
-    }
-
-    public function allDay(): bool
-    {
-        return is_null($this->startDateTime);
     }
 }
