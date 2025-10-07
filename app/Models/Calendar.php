@@ -3,41 +3,36 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Calendar extends Model
 {
     protected $fillable = [
-        'user_id',
-        'external_user_id',
-        'external_token',
-        'external_refresh_token',
-        'external_token_expires_at',
-        'external_calendar_id',
-        'external_calendar_name',
-        'external_calendar_description',
-        'external_calendar_timezone',
+        'external_id',
+        'name',
+        'description',
+        'enabled',
     ];
 
     /**
      * @return array{
-     *     external_token_expires_at: 'datetime'
+     *     enabled: 'boolean'
      * }
      */
     protected function casts(): array
     {
         return [
-            'external_token_expires_at' => 'datetime',
+            'enabled' => 'boolean',
         ];
     }
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo<\App\Models\User, $this>
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany<\App\Models\Connector, $this>
      */
-    public function user(): BelongsTo
+    public function connectors(): BelongsToMany
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsToMany(Connector::class);
     }
 
     /**

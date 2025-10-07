@@ -22,9 +22,8 @@ class Event extends Model
     protected static string $builder = EventBuilder::class;
 
     protected $fillable = [
-        'user_id',
         'calendar_id',
-        'external_identifier',
+        'external_id',
         'title',
         'all_day',
         'starts_at',
@@ -46,14 +45,6 @@ class Event extends Model
             'starts_at' => 'datetime',
             'ends_at' => 'datetime',
         ];
-    }
-
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo<\App\Models\User, $this>
-     */
-    public function user(): BelongsTo
-    {
-        return $this->belongsTo(User::class);
     }
 
     /**
