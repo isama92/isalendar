@@ -25,4 +25,4 @@ return [
     'filter_by_starts_at' => 'Filter by starts at...',
     'filter_by_ends_at' => 'Filter by ends at...',
     'no_events_found' => 'No events found.',
-];
+    'event_will_be_uploaded_after_save' => 'The event will be updated immediately after saving.', ];

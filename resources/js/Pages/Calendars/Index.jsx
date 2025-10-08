@@ -8,7 +8,6 @@ import {
     useReactTable,
 } from '@tanstack/react-table';
 import { useMemo, useState } from 'react';
-import 'react-datepicker/dist/react-datepicker.css';
 import Pagination from '../../Components/Pagination';
 
 const Index = ({ calendars }) => {

@@ -62,10 +62,6 @@ class EventsController extends Controller
     {
         $event = Event::create($request->validated());
 
-        if ($request->input('redirect_to_show')) {
-            return redirect()->route('events.show', $event);
-        }
-
         return redirect()->route('events.index');
     }
 
@@ -90,10 +86,6 @@ class EventsController extends Controller
     public function update(UpdateEventRequest $request, Event $event): RedirectResponse
     {
         $event->update($request->validated());
-
-        if ($request->input('redirect_to_show')) {
-            return redirect()->route('events.show', $event);
-        }
 
         return redirect()->route('events.index');
     }

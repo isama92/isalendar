@@ -25,4 +25,5 @@ return [
     'filter_by_starts_at' => 'Filtra per inizio...',
     'filter_by_ends_at' => 'Filtra per fine...',
     'no_events_found' => 'Nessun evento trovato.',
+    'event_will_be_uploaded_after_save' => 'L\'evento sarà aggiornato immediatamente dopo il salvataggio.',
 ];
