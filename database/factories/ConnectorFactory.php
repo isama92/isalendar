@@ -1,0 +1,39 @@
+<?php
+
+namespace Database\Factories;
+
+use App\Contracts\AccessToken;
+use App\Enums\Service;
+use App\Models\User;
+use App\Services\GoogleCalendar\Auth\AccessToken as GoogleCalendarAccessToken;
+use Illuminate\Database\Eloquent\Factories\Factory;
+
+/**
+ * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Connector>
+ */
+class ConnectorFactory extends Factory
+{
+    public function definition(): array
+    {
+        return [
+            'user_id' => User::factory(),
+            'provider_id' => fake()->randomElement(Service::cases())->id(),
+            'external_id' => fake()->uuid(),
+            'access_details' => fn (array $attributes): AccessToken => match (Service::fromId($attributes['provider_id'])) {
+                Service::GOOGLE_CALENDAR => new GoogleCalendarAccessToken(
+                    fake()->uuid,
+                    fake()->regexify('[A-Za-z0-9-_]{411}'),
+                    fake()->regexify('[A-Za-z0-9-_]{411}'),
+                    (int) now()->diffInSeconds(now()->addHour()),
+                ),
+            },
+        ];
+    }
+
+    public function disabled(): static
+    {
+        return $this->state(fn (array $attributes): array => [
+            'enabled' => false,
+        ]);
+    }
+}

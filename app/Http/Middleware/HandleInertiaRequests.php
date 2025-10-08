@@ -12,31 +12,26 @@ use Tighten\Ziggy\Ziggy;
 class HandleInertiaRequests extends Middleware
 {
     /**
-     * @var string
-     */
-    protected $rootView = 'app';
-
-    #[Override]
-    public function version(Request $request): ?string
-    {
-        return parent::version($request);
-    }
-
-    /**
      * @return array<string, mixed>
      */
     #[Override]
     public function share(Request $request): array
     {
+        $loggedIn = Auth::check();
+        $user = Auth::user();
+
         return [
             ...parent::share($request),
             'ziggy' => fn (): array => [
                 ...(new Ziggy)->toArray(),
                 'location' => $request->url(),
             ],
-            'user' => Auth::check()
-                ? Auth::user()->only(['name', 'email'])
+            'user' => $loggedIn
+                ? $user->only(['name', 'email'])
                 : null,
+            'connectorEnabled' => $loggedIn
+                ? $user->connectors()->enabled()->exists()
+                : false,
             'locale' => app()->getLocale(),
             'translations' => $this->getTranslations(),
             'flash' => [
@@ -63,7 +58,7 @@ class HandleInertiaRequests extends Middleware
 
         foreach ($files as $file) {
             $key = $file->getFilenameWithoutExtension();
-            $translations[$key] = require $file->getPathname();
+            $translations[$key] = __($key);
         }
 
         return $translations;

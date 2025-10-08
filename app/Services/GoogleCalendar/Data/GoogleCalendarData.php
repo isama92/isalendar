@@ -11,7 +11,6 @@ class GoogleCalendarData extends Data
         public string $id,
         public string $summary,
         public ?string $description,
-        public string $timezone,
     ) {}
 
     public static function fromGoogleCalendar(GoogleCalendar $googleCalendar): self
@@ -20,7 +19,6 @@ class GoogleCalendarData extends Data
             id: $googleCalendar->getId(),
             summary: $googleCalendar->getSummary(),
             description: $googleCalendar->getDescription(),
-            timezone: $googleCalendar->getTimeZone(),
         );
     }
 }

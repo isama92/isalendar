@@ -13,15 +13,7 @@ class ProfileController extends Controller
 {
     public function edit(): Response
     {
-        $user = Auth::user();
-
-        return Inertia::render('Profile/Edit', [
-            'calendar' => $user->calendar?->only([
-                'external_calendar_name',
-                'external_calendar_description',
-                'external_calendar_timezone',
-            ]),
-        ]);
+        return Inertia::render('Profile/Edit');
     }
 
     public function update(UpdateProfileRequest $request): RedirectResponse

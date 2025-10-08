@@ -15,7 +15,7 @@ class EventData extends Data
     use FromGoogleCalendar;
 
     public function __construct(
-        public string|Optional|null $externalIdentifier,
+        public string|Optional|null $externalId,
         public string|Optional $title,
         public bool|Optional $allDay,
         public Carbon|Optional $startsAt,

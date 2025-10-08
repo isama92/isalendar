@@ -2,6 +2,7 @@
 
 namespace App\Policies;
 
+use App\Models\Calendar;
 use App\Models\Event;
 use App\Models\User;
 
@@ -9,17 +10,18 @@ class EventPolicy
 {
     public function viewAny(User $user): bool
     {
-        return true;
+        return $user->can('viewAny', Calendar::class);
     }
 
     public function view(User $user, Event $event): bool
     {
-        return $event->user_id === $user->id;
+        // if user can see calendar then can do anything to its events (except force delete)
+        return $user->can('view', $event->calendar);
     }
 
     public function create(User $user): bool
     {
-        return true;
+        return $this->viewAny($user);
     }
 
     public function update(User $user, Event $event): bool
@@ -39,6 +41,6 @@ class EventPolicy
 
     public function forceDelete(User $user, Event $event): bool
     {
-        return $this->view($user, $event);
+        return false;
     }
 }

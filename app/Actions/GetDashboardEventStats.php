@@ -3,17 +3,17 @@
 namespace App\Actions;
 
 use App\Builders\EventBuilder;
-use App\Models\User;
+use App\Models\Calendar;
+use App\Models\Event;
 use Carbon\CarbonImmutable;
 use Illuminate\Support\Facades\DB;
 
 class GetDashboardEventStats
 {
-    private User $user;
-
     /**
      * @return array{
      *     totalEvents: int,
+     *     totalCalendars: int,
      *     eventsToday: int,
      *     eventsTomorrow: int,
      *     eventsThisWeek: int,
@@ -21,13 +21,13 @@ class GetDashboardEventStats
      *     averagePerDayOfWeek: array<int>
      * }
      */
-    public function execute(User $user): array
+    public function execute(): array
     {
-        $this->user = $user;
         $today = CarbonImmutable::now()->startOfDay();
 
         return [
             'totalEvents' => $this->getTotalEvents(),
+            'totalCalendars' => $this->getTotalCalendars(),
             'eventsToday' => $this->getEventsForDate($today),
             'eventsTomorrow' => $this->getEventsForDate($today->addDay(), $today->addDay()->endOfDay()),
             'eventsThisWeek' => $this->getEventsBetween($today->startOfWeek(), $today->endOfWeek()),
@@ -38,12 +38,17 @@ class GetDashboardEventStats
 
     private function getTotalEvents(): int
     {
-        return $this->user->events()->count();
+        return Event::forCurrentUser()->count();
+    }
+
+    private function getTotalCalendars(): int
+    {
+        return Calendar::forCurrentUser()->count();
     }
 
     private function getEventsForDate(CarbonImmutable $date, ?CarbonImmutable $endDate = null): int
     {
-        return $this->user->events()
+        return Event::forCurrentUser()
             ->where(function ($query) use ($date, $endDate): void {
                 $query->where(function (EventBuilder $q) use ($date): void {
                     $q->where('all_day', true)
@@ -66,7 +71,7 @@ class GetDashboardEventStats
 
     private function getEventsBetween(CarbonImmutable $start, CarbonImmutable $end): int
     {
-        return $this->user->events()
+        return Event::forCurrentUser()
             ->whereBetween('starts_at', [$start, $end])
             ->count();
     }
@@ -76,7 +81,7 @@ class GetDashboardEventStats
      */
     private function getAveragePerDayOfWeek(): array
     {
-        $averagePerDayOfWeek = $this->user->events()
+        $averagePerDayOfWeek = Event::forCurrentUser()
             ->select(DB::raw('DAYOFWEEK(starts_at) - 1 as day_of_week, COUNT(*) as count'))
             ->groupBy('day_of_week')
             ->pluck('count', 'day_of_week')

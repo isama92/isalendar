@@ -10,6 +10,7 @@ return [
     'starts_at' => 'Starts At',
     'ends_at' => 'Ends At',
     'description' => 'Description',
+    'calendar_name' => 'Calendar Name',
     'created_at' => 'Created At',
     'updated_at' => 'Updated At',
     'date' => 'Date',

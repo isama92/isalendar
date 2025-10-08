@@ -16,7 +16,7 @@ class GoogleServiceProvider extends ServiceProvider implements DeferrableProvide
         $this->app->scoped(GoogleClient::class, fn (Application $app): GoogleClient => new GoogleClient([
             'client_id' => config('services.google.client_id'),
             'client_secret' => config('services.google.client_secret'),
-            'redirect_uri' => route('services.google.redirect'),
+            'redirect_uri' => route('services.google.auth.redirect'),
         ]));
     }
 

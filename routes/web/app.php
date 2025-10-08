@@ -1,8 +1,10 @@
 <?php
 
+use App\Http\Controllers\Web\CalendarsController;
 use App\Http\Controllers\Web\DashboardController;
 use App\Http\Controllers\Web\EventsController;
 use App\Http\Controllers\Web\ProfileController;
+use App\Http\Controllers\Web\ProvidersController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware('auth')->group(function (): void {
@@ -13,6 +15,28 @@ Route::middleware('auth')->group(function (): void {
         ->name('profile.edit');
     Route::put('/profile', [ProfileController::class, 'update'])
         ->name('profile.update');
+
+    Route::prefix('/providers')
+        ->name('providers.')
+        ->group(function (): void {
+            Route::get('/choose', [ProvidersController::class, 'create'])
+                ->name('create');
+            Route::post('/choose', [ProvidersController::class, 'store'])
+                ->name('store');
+        });
+
+    Route::prefix('/calendars')
+        ->name('calendars.')
+        ->group(function (): void {
+            Route::get('/', [CalendarsController::class, 'index'])
+                ->name('index');
+            Route::get('/create/{connector}', [CalendarsController::class, 'create'])
+                ->name('create');
+            Route::post('/create/{connector}', [CalendarsController::class, 'store'])
+                ->name('store');
+            Route::delete('/{calendar}', [CalendarsController::class, 'destroy'])
+                ->name('destroy');
+        });
 
     Route::prefix('/events')
         ->name('events.')

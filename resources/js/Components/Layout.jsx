@@ -4,7 +4,7 @@ import LanguageSwitcher from './LanguageSwitcher';
 import UserDropdown from './UserDropdown';
 
 const Layout = ({ children }) => {
-    const { user, locale } = usePage().props;
+    const { user, locale, connectorEnabled } = usePage().props;
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
     return (
@@ -42,12 +42,21 @@ const Layout = ({ children }) => {
                                 {__('dashboard.dashboard')}
                             </Link>
                             <Link
-                                href={route('events.index')}
+                                href={route('calendars.index')}
                                 onClick={() => setIsSidebarOpen(false)}
                                 className="block rounded-md px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700"
                             >
-                                {__('events.events')}
+                                {__('calendars.calendars')}
                             </Link>
+                            {connectorEnabled && (
+                                <Link
+                                    href={route('events.index')}
+                                    onClick={() => setIsSidebarOpen(false)}
+                                    className="block rounded-md px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700"
+                                >
+                                    {__('events.events')}
+                                </Link>
+                            )}
                         </nav>
                     </aside>
                 </>

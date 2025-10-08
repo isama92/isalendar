@@ -1,9 +1,10 @@
 <?php
 
-use App\Console\Commands\SyncCalendars;
+use App\Console\Commands\SynchronizeGoogleCalendarCommand;
 use Illuminate\Support\Facades\Schedule;
 
-Schedule::command(SyncCalendars::class)
-    ->hourly()
+Schedule::command(SynchronizeGoogleCalendarCommand::class)
+    ->everyTenMinutes()
+    ->withoutOverlapping()
     ->timezone('Europe/Amsterdam')
     ->environments('production');

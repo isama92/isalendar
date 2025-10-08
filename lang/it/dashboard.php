@@ -4,6 +4,7 @@ return [
     'dashboard' => 'Dashboard',
     'welcome_message' => 'Benvenuto nella tua dashboard.',
     'total_events' => 'Eventi Totali',
+    'total_calendars' => 'Calendar Totali',
     'events_today' => 'Eventi Oggi',
     'events_tomorrow' => 'Eventi Domani',
     'events_this_week' => 'Eventi Questa Settimana',

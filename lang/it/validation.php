@@ -109,6 +109,7 @@ return [
     'multiple_of' => ':Attribute deve essere un multiplo di :value',
     'not_in' => 'Il valore selezionato per :attribute non è valido.',
     'not_regex' => 'Il formato di :attribute non è valido.',
+    'not_valid' => 'Il campo :attribute non è valido.',
     'numeric' => ':Attribute deve essere un numero.',
     'password' => [
         'letters' => ':Attribute deve contenere almeno un carattere.',
@@ -195,6 +196,7 @@ return [
         'email' => 'e-mail',
         'ends_at' => 'fine',
         'excerpt' => 'estratto',
+        'external_id' => 'calendario',
         'filter' => 'filtro',
         'finished_at' => 'finito alle',
         'first_name' => 'nome',
@@ -239,6 +241,7 @@ return [
         'product_uid' => 'ID del prodotto',
         'product_uuid' => 'UUID del prodotto',
         'promo_code' => 'codice promozionale',
+        'provider_id' => 'provider',
         'province' => 'Provincia',
         'quantity' => 'quantità',
         'reason' => 'motivo',

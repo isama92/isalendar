@@ -3,42 +3,45 @@
 namespace App\Http\Controllers\Services\GoogleCalendar;
 
 use App\Http\Controllers\Controller;
+use App\Models\Calendar;
 use App\Services\GoogleCalendar\Actions\Auth\RequestAccess;
 use App\Services\GoogleCalendar\Actions\Auth\SaveCredentials;
+use App\Services\GoogleCalendar\Actions\Calendars\FetchNormalizedCalendars;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Gate;
+use Inertia\Inertia;
 use Laravel\Socialite\Facades\Socialite;
+use Laravel\Socialite\Two\InvalidStateException;
 use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
 
 class AuthController extends Controller
 {
-    public function redirect(RequestAccess $requestAccess): RedirectResponse
+    public function create(RequestAccess $requestAccess): SymfonyResponse
     {
-        abort_if(Auth::user()->calendar()->exists(), SymfonyResponse::HTTP_FORBIDDEN);
+        Gate::authorize('create', Calendar::class);
 
-        return $requestAccess->execute();
+        return Inertia::location(
+            $requestAccess->execute()->getTargetUrl()
+        );
     }
 
-    public function callback(SaveCredentials $saveGoogleUser): RedirectResponse
+    public function store(Request $request, SaveCredentials $saveGoogleUser, FetchNormalizedCalendars $getCalendars): RedirectResponse
     {
-        abort_if(Auth::user()->calendar()->exists(), SymfonyResponse::HTTP_FORBIDDEN);
+        Gate::authorize('create', Calendar::class);
 
-        $saveGoogleUser->execute(
+        try {
+            $googleCalendarUser = Socialite::driver('google')->user();
+        } catch (InvalidStateException) {
+            abort(SymfonyResponse::HTTP_FORBIDDEN);
+        }
+
+        $connector = $saveGoogleUser->execute(
             Auth::user(),
-            Socialite::driver('google')->user()
+            $googleCalendarUser,
         );
 
-        return redirect()->route('services.google.calendar.index');
-    }
-
-    public function disconnect(): RedirectResponse
-    {
-        $user = Auth::user();
-
-        abort_if(is_null($user->calendar), SymfonyResponse::HTTP_FORBIDDEN);
-
-        $user->calendar->delete();
-
-        return redirect()->route('profile.edit')->with('success', __('profile.google_calendar_disconnected'));
+        return redirect()->route('calendars.create', $connector->getRouteKey());
     }
 }

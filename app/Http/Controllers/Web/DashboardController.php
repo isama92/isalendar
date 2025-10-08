@@ -15,22 +15,6 @@ class DashboardController extends Controller
 
     public function index(): Response
     {
-        [
-            'totalEvents' => $totalEvents,
-            'eventsToday' => $eventsToday,
-            'eventsTomorrow' => $eventsTomorrow,
-            'eventsThisWeek' => $eventsThisWeek,
-            'eventsNextWeek' => $eventsNextWeek,
-            'averagePerDayOfWeek' => $averagePerDayOfWeek,
-        ] = $this->getDashboardEventStats->execute(auth()->user());
-
-        return Inertia::render('Dashboard', [
-            'totalEvents' => $totalEvents,
-            'eventsToday' => $eventsToday,
-            'eventsTomorrow' => $eventsTomorrow,
-            'eventsThisWeek' => $eventsThisWeek,
-            'eventsNextWeek' => $eventsNextWeek,
-            'averagePerDayOfWeek' => $averagePerDayOfWeek,
-        ]);
+        return Inertia::render('Dashboard', $this->getDashboardEventStats->execute());
     }
 }

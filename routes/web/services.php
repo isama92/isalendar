@@ -1,7 +1,6 @@
 <?php
 
 use App\Http\Controllers\Services\GoogleCalendar\AuthController;
-use App\Http\Controllers\Services\GoogleCalendar\CalendarsController;
 use Illuminate\Support\Facades\Route;
 
 Route::prefix('/services/google')
@@ -10,21 +9,11 @@ Route::prefix('/services/google')
     ->group(function (): void {
 
         Route::prefix('/auth')
+            ->name('auth.')
             ->group(function (): void {
-                Route::get('/connect', [AuthController::class, 'redirect'])
+                Route::get('/connect', [AuthController::class, 'create'])
                     ->name('connect');
-                Route::get('/redirect', [AuthController::class, 'callback'])
+                Route::get('/redirect', [AuthController::class, 'store'])
                     ->name('redirect');
-                Route::post('/disconnect', [AuthController::class, 'disconnect'])
-                    ->name('disconnect');
-            });
-
-        Route::prefix('/calendar')
-            ->name('calendar.')
-            ->group(function (): void {
-                Route::get('/select', [CalendarsController::class, 'index'])
-                    ->name('index');
-                Route::post('/select', [CalendarsController::class, 'update'])
-                    ->name('update');
             });
     });

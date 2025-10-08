@@ -10,7 +10,7 @@ trait ToEvent
     public static function fromGoogleEvent(GoogleEventData $googleEventData): self
     {
         return new self(
-            externalIdentifier: $googleEventData->id,
+            externalId: $googleEventData->id,
             title: $googleEventData->summary,
             allDay: is_null($googleEventData->startDateTime),
             startsAt: Carbon::parse($googleEventData->startDateTime ?? $googleEventData->startDate),

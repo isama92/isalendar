@@ -10,6 +10,7 @@ return [
     'starts_at' => 'Inizio',
     'ends_at' => 'Fine',
     'description' => 'Descrizione',
+    'calendar_name' => 'Nome Calendario',
     'created_at' => 'Creato il',
     'updated_at' => 'Aggiornato il',
     'date' => 'Data',

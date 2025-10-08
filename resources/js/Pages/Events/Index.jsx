@@ -29,13 +29,12 @@ const Index = ({ events }) => {
     const columns = useMemo(
         () => [
             {
-                accessorKey: 'title',
                 header: __('events.title'),
-                cell: info => info.getValue(),
+                accessorKey: 'title',
             },
             {
-                accessorKey: 'all_day',
                 header: __('events.all_day'),
+                accessorKey: 'all_day',
                 cell: info =>
                     info.getValue() ? (
                         <CheckIcon className="h-5 w-5 text-green-500" />
@@ -48,8 +47,8 @@ const Index = ({ events }) => {
                 },
             },
             {
-                accessorKey: 'starts_at',
                 header: __('events.starts_at'),
+                accessorKey: 'starts_at',
                 cell: info =>
                     info.row.original.all_day ? formatDate(info.getValue()) : formatDateTime(info.getValue()),
                 filterFn: (row, id, value) => {
@@ -58,13 +57,22 @@ const Index = ({ events }) => {
                 },
             },
             {
-                accessorKey: 'ends_at',
                 header: __('events.ends_at'),
-                cell: info => (info.row.original.all_day ? '' : formatDateTime(info.getValue())),
+                accessorKey: 'ends_at',
+                cell: info =>
+                    info.row.original.all_day
+                        ? // TODO: sub a day if it's all day
+                          formatDate(info.getValue())
+                        : formatDateTime(info.getValue()),
                 filterFn: (row, id, value) => {
                     if (!value) return true;
                     return formatWithFormat(row.getValue(id), 'YYYY-MM-DD') === value;
                 },
+            },
+            {
+                header: __('events.calendar_name'),
+                id: 'calendar_name',
+                accessorFn: row => row.calendar.name,
             },
             {
                 id: 'actions',

@@ -3,6 +3,7 @@ import { Link, router } from '@inertiajs/react';
 import { formatDate, formatDateTime } from '../../utils/date';
 
 const Show = ({ event }) => {
+    const format = event.all_day ? formatDate : formatDateTime;
     const handleDelete = () => {
         if (confirm(__('events.delete_confirm'))) {
             router.delete(route('events.destroy', event.id));
@@ -39,34 +40,19 @@ const Show = ({ event }) => {
                     </dd>
                 </div>
 
-                {!event.all_day && (
-                    <>
-                        <div>
-                            <dt className="text-sm font-medium text-gray-500 dark:text-gray-400">
-                                {__('events.starts_at')}
-                            </dt>
-                            <dd className="mt-1 text-sm text-gray-900 dark:text-gray-100">
-                                {formatDateTime(event.starts_at)}
-                            </dd>
-                        </div>
-
-                        <div>
-                            <dt className="text-sm font-medium text-gray-500 dark:text-gray-400">
-                                {__('events.ends_at')}
-                            </dt>
-                            <dd className="mt-1 text-sm text-gray-900 dark:text-gray-100">
-                                {formatDateTime(event.ends_at)}
-                            </dd>
-                        </div>
-                    </>
-                )}
-
-                {event.all_day && (
+                <>
                     <div>
-                        <dt className="text-sm font-medium text-gray-500 dark:text-gray-400">{__('events.date')}</dt>
-                        <dd className="mt-1 text-sm text-gray-900 dark:text-gray-100">{formatDate(event.starts_at)}</dd>
+                        <dt className="text-sm font-medium text-gray-500 dark:text-gray-400">
+                            {__('events.starts_at')}
+                        </dt>
+                        <dd className="mt-1 text-sm text-gray-900 dark:text-gray-100">{format(event.starts_at)}</dd>
                     </div>
-                )}
+
+                    <div>
+                        <dt className="text-sm font-medium text-gray-500 dark:text-gray-400">{__('events.ends_at')}</dt>
+                        <dd className="mt-1 text-sm text-gray-900 dark:text-gray-100">{format(event.ends_at)}</dd>
+                    </div>
+                </>
 
                 {event.description && (
                     <div>

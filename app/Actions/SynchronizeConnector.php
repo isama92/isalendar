@@ -1,0 +1,21 @@
+<?php
+
+namespace App\Actions;
+
+use App\Enums\Service;
+use App\Models\Connector;
+use App\Services\GoogleCalendar\Actions\Synchronize as GoogleCalendarSynchronize;
+
+class SynchronizeConnector
+{
+    public function execute(Connector $connector): void
+    {
+        $synchronizeAction = match (Service::fromId($connector->provider_id)) {
+            Service::GOOGLE_CALENDAR => GoogleCalendarSynchronize::class,
+        };
+
+        app($synchronizeAction)
+            ->onQueue()
+            ->execute($connector);
+    }
+}

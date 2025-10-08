@@ -14,8 +14,9 @@ return new class extends Migration
             $table->foreignId('provider_id')->constrained()->restrictOnUpdate()->restrictOnDelete();
             $table->string('external_id');
             $table->text('access_details');
-            $table->boolean('enabled')->default(false);
+            $table->boolean('enabled')->default(true);
             $table->timestamps();
+            $table->softDeletes();
 
             $table->index('external_id');
         });

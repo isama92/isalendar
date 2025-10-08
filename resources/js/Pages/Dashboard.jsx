@@ -3,6 +3,7 @@ import StatCard from '../Components/StatCard';
 
 const Dashboard = ({
     totalEvents,
+    totalCalendars,
     eventsToday,
     eventsTomorrow,
     eventsThisWeek,
@@ -22,6 +23,8 @@ const Dashboard = ({
                 <StatCard label={__('dashboard.events_today')} value={eventsToday} />
 
                 <StatCard label={__('dashboard.events_tomorrow')} value={eventsTomorrow} />
+
+                <StatCard label={__('dashboard.total_calendars')} value={totalCalendars} />
 
                 <StatCard label={__('dashboard.events_this_week')} value={eventsThisWeek} />
 

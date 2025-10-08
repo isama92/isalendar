@@ -24,6 +24,6 @@ class EventBuilder extends Builder
             return $this;
         }
 
-        return $this->whereRelation('user', 'id', $user->id);
+        return $this->whereRelation('calendar.connectors', 'user_id', $user->id);
     }
 }

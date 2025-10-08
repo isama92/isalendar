@@ -3,10 +3,11 @@ import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import { formatWithFormat } from '../../utils/date';
 
-const Form = ({ event = null }) => {
+const Form = ({ calendars, event = null }) => {
     const isEditing = !!event;
 
     const { data, setData, post, put, processing, errors, transform } = useForm({
+        calendar_id: event?.calendar?.id || '',
         title: event?.title || '',
         all_day: event?.all_day || false,
         starts_at: event?.starts_at || '',
@@ -17,27 +18,17 @@ const Form = ({ event = null }) => {
     const handleSubmit = (e, redirectToShow = false) => {
         e.preventDefault();
 
-        transform(data => {
-            let submitData = { ...data };
-
-            if (data.all_day) {
-                submitData.ends_at = null;
-            }
-
-            submitData.redirect_to_show = redirectToShow;
-
-            return submitData;
-        });
-
-        const options = {
-            onFinish: () => transform(d => d),
-        };
+        transform(data => ({
+            ...data,
+            redirect_to_show: redirectToShow,
+        }));
 
         if (isEditing) {
-            put(route('events.update', event.id), options);
-        } else {
-            post(route('events.store'), options);
+            put(route('events.update', event.id));
+            return;
         }
+
+        post(route('events.store'));
     };
 
     return (
@@ -47,6 +38,26 @@ const Form = ({ event = null }) => {
             </h2>
 
             <form className="space-y-6">
+                <div>
+                    <label htmlFor="calendar" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                        {__('calendars.calendar')}
+                    </label>
+                    <select
+                        id="calendar_id"
+                        name="calendar_id"
+                        value={data.calendar_id}
+                        onChange={e => setData('calendar_id', e.target.value)}
+                        className="mt-1 block w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-gray-900 shadow-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100"
+                    >
+                        <option value=""></option>
+                        {calendars.map(calendar => (
+                            <option key={calendar.id} value={calendar.id}>
+                                {calendar.name}
+                            </option>
+                        ))}
+                    </select>
+                    {errors.calendar_id && <p className="mt-1 text-sm text-red-600">{errors.calendar_id}</p>}
+                </div>
                 <div>
                     <label htmlFor="title" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
                         {__('events.title')}
@@ -101,31 +112,30 @@ const Form = ({ event = null }) => {
                         />
                         {errors.starts_at && <p className="mt-1 text-sm text-red-600">{errors.starts_at}</p>}
                     </div>
-
-                    {!data.all_day && (
-                        <div>
-                            <label
-                                htmlFor="ends_at"
-                                className="block text-sm font-medium text-gray-700 dark:text-gray-300"
-                            >
-                                {__('events.ends_at')}
-                            </label>
-                            <DatePicker
-                                id="ends_at"
-                                selected={data.ends_at ? new Date(data.ends_at) : null}
-                                onChange={date =>
-                                    setData('ends_at', date ? formatWithFormat(date, 'YYYY-MM-DD HH:mm:ss') : '')
-                                }
-                                showTimeSelect
-                                timeFormat="HH:mm"
-                                timeIntervals={15}
-                                dateFormat="dd/MM/yyyy HH:mm"
-                                calendarStartDay={1}
-                                className="mt-1 block w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-gray-900 shadow-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100"
-                            />
-                            {errors.ends_at && <p className="mt-1 text-sm text-red-600">{errors.ends_at}</p>}
-                        </div>
-                    )}
+                    <div>
+                        <label htmlFor="ends_at" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                            {__('events.ends_at')}
+                        </label>
+                        <DatePicker
+                            id="ends_at"
+                            selected={data.ends_at ? new Date(data.ends_at) : null}
+                            onChange={date =>
+                                setData(
+                                    'ends_at',
+                                    date
+                                        ? formatWithFormat(date, data.all_day ? 'YYYY-MM-DD' : 'YYYY-MM-DD HH:mm:ss')
+                                        : ''
+                                )
+                            }
+                            showTimeSelect={!data.all_day}
+                            timeFormat="HH:mm"
+                            timeIntervals={15}
+                            dateFormat={data.all_day ? 'dd/MM/yyyy' : 'dd/MM/yyyy HH:mm'}
+                            calendarStartDay={1}
+                            className="mt-1 block w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-gray-900 shadow-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100"
+                        />
+                        {errors.ends_at && <p className="mt-1 text-sm text-red-600">{errors.ends_at}</p>}
+                    </div>
                 </div>
 
                 <div>

@@ -12,7 +12,8 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->boolean('enabled')->default(false);
-            $table->timestamps();
+            $table->string('access_object');
+            $table->string('auth_route');
 
             $table->index('name');
         });

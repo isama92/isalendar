@@ -2,7 +2,7 @@
 
 namespace Database\Factories;
 
-use App\Models\User;
+use App\Models\Calendar;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -11,13 +11,11 @@ use Illuminate\Database\Eloquent\Factories\Factory;
  */
 class EventFactory extends Factory
 {
-    /**
-     * @return array<string, mixed>
-     */
     public function definition(): array
     {
         return [
-            'user_id' => User::factory(),
+            'calendar_id' => Calendar::factory(),
+            'external_id' => fake()->uuid(),
             'title' => fake()->sentence(3),
             'all_day' => fake()->boolean(20),
             'starts_at' => function (array $attributes) {

@@ -2,12 +2,15 @@
 
 namespace App\Http\Requests;
 
+use App\Concerns\NormalizesEventTimestamps;
 use App\Models\Event;
-use Carbon\Carbon;
+use App\Rules\CalendarBelongsToUser;
 use Illuminate\Foundation\Http\FormRequest;
 
 class StoreEventRequest extends FormRequest
 {
+    use NormalizesEventTimestamps;
+
     public function authorize(): bool
     {
         return $this->user()->can('create', Event::class);
@@ -15,15 +18,14 @@ class StoreEventRequest extends FormRequest
 
     protected function prepareForValidation(): void
     {
-        if ($this->boolean('all_day')) {
-            $merge = ['ends_at' => null];
+        // TODO: get timezone from UI, let the user select it
+        $tz = 'Europe/Amsterdam';
+        $allDay = $this->boolean('all_day');
 
-            if ($this->filled('starts_at')) {
-                $merge['starts_at'] = Carbon::parse($this->input('starts_at'))->startOfDay()->toDateTimeString();
-            }
-
-            $this->merge($merge);
-        }
+        $this->merge([
+            'starts_at' => $this->normalizeEventTimestamp($this->input('starts_at'), $tz, $allDay),
+            'ends_at' => $this->normalizeEventTimestamp($this->input('ends_at'), $tz, $allDay),
+        ]);
     }
 
     /**
@@ -32,10 +34,11 @@ class StoreEventRequest extends FormRequest
     public function rules(): array
     {
         return [
+            'calendar_id' => ['required', 'exists:calendars,id', new CalendarBelongsToUser],
             'title' => ['required', 'string', 'max:255'],
             'all_day' => ['boolean'],
             'starts_at' => ['required', 'date'],
-            'ends_at' => ['nullable', 'required_if:all_day,false', 'date', 'after_or_equal:starts_at'],
+            'ends_at' => ['nullable', 'required', 'date', 'after_or_equal:starts_at'],
             'description' => ['nullable', 'string'],
         ];
     }

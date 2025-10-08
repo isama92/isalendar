@@ -109,6 +109,7 @@ return [
     'multiple_of' => 'The :attribute field must be a multiple of :value.',
     'not_in' => 'The selected :attribute is invalid.',
     'not_regex' => 'The :attribute field format is invalid.',
+    'not_valid' => 'The :attribute field is not valid.',
     'numeric' => 'The :attribute field must be a number.',
     'password' => [
         'letters' => 'The :attribute field must contain at least one letter.',
@@ -195,6 +196,7 @@ return [
         'email' => 'email',
         'ends_at' => 'ends at',
         'excerpt' => 'excerpt',
+        'external_id' => 'calendar',
         'filter' => 'filter',
         'finished_at' => 'finished at',
         'first_name' => 'first name',
@@ -239,6 +241,7 @@ return [
         'product_uid' => 'product UID',
         'product_uuid' => 'product UUID',
         'promo_code' => 'promo code',
+        'provider_id' => 'provider',
         'province' => 'province',
         'quantity' => 'quantity',
         'reason' => 'reason',

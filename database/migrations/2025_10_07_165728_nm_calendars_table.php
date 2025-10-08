@@ -26,6 +26,7 @@ return new class extends Migration
             $table->string('name')->after('external_id');
             $table->text('description')->nullable()->after('name');
             $table->boolean('enabled')->default(true)->after('description');
+            $table->softDeletes();
 
             $table->unique('external_id');
             $table->index('name');
@@ -35,7 +36,6 @@ return new class extends Migration
             $table->id();
             $table->foreignId('calendar_id')->constrained()->restrictOnUpdate()->restrictOnDelete();
             $table->foreignId('connector_id')->constrained()->restrictOnUpdate()->restrictOnDelete();
-            $table->timestamps();
         });
     }
 };

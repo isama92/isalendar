@@ -26,11 +26,7 @@ arch()
     ->not->toBeEnums()
     ->ignoring([
         'App\Enums',
-        'App\Services\Common\Enums',
-        'App\Services\AFAS\Enums',
-        'App\Services\Exact\Enums',
-        'App\Services\Loket\Enums',
-        'App\Services\Nmbrs\Enums',
+        'App\Services\GoogleCalendar\Enums',
     ]);
 
 arch()
@@ -57,17 +53,7 @@ arch()
 arch()
     ->expect('App')
     ->not->toImplement(Throwable::class)
-    ->ignoring([
-        'App\Exceptions',
-        'App\Services\ADP\Exceptions',
-        'App\Services\AFAS\Exceptions',
-        'App\Services\Cobra\Exceptions',
-        'App\Services\Common\Exceptions',
-        'App\Services\Exact\Exceptions',
-        'App\Services\Loket\Exceptions',
-        'App\Services\Nmbrs\Exceptions',
-        'App\Services\YouServe\Exceptions',
-    ]);
+    ->ignoring('App\Exceptions');
 
 arch()
     ->expect('App\Http\Middleware')
@@ -106,10 +92,7 @@ arch()
 arch()
     ->expect('App')
     ->not->toExtend(FormRequest::class)
-    ->ignoring([
-        'App\Http\Requests',
-        'App\JsonApi',
-    ]);
+    ->ignoring('App\Http\Requests');
 
 arch()
     ->expect('App\Console\Commands')

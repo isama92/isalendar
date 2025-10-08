@@ -7,8 +7,8 @@
         "dev": "vite",
         "lint": "eslint ./resources/**/*.{js,jsx}",
         "lint:fix": "npm run lint -- --fix",
-        "prettier": "prettier ./resources/**/*.{js,jsx,css} ./*.{js,mjs} --check",
-        "prettier:fix": "prettier ./resources/**/*.{js,jsx,css} ./*.{js,mjs} --write",
+        "prettier": "prettier ./resources/**/*.{js,jsx,css} ./*.{js,mjs} --check --log-level error",
+        "prettier:fix": "prettier ./resources/**/*.{js,jsx,css} ./*.{js,mjs} --write --log-level error",
         "format": "npm run prettier:fix && npm run lint:fix"
     },
     "devDependencies": {
@@ -36,7 +36,8 @@
         "dayjs": "^1.11.18",
         "echarts": "^5.6.0",
         "echarts-for-react": "^3.0.2",
-        "es-toolkit": "^1.39.10",
+        "install": "^0.13.0",
+        "npm": "^11.6.2",
         "react": "^19.2.0",
         "react-datepicker": "^8.7.0",
         "react-dom": "^19.2.0",
