@@ -20,6 +20,8 @@ return [
     'not_all_day' => 'Not All Day',
     'search_events' => 'Search events...',
     'show_event' => 'Event Details',
+    'event_details' => 'Event Details',
+    'event_information' => 'View event information and details',
     'delete_confirm' => 'Are you sure you want to delete this event?',
     'filter_by_title' => 'Filter by title...',
     'filter_by_starts_at' => 'Filter by starts at...',

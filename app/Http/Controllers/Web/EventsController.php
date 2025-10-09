@@ -36,7 +36,8 @@ class EventsController extends Controller
     public function show(Event $event): Response
     {
         Gate::authorize('view', $event);
-        // TODO: show calendar
+
+        $event->loadMissing('calendar:id,name');
 
         return Inertia::render('Events/Show', [
             'event' => $event,

@@ -20,6 +20,8 @@ return [
     'not_all_day' => 'Non Tutto il Giorno',
     'search_events' => 'Cerca eventi...',
     'show_event' => 'Dettagli Evento',
+    'event_details' => 'Dettagli Evento',
+    'event_information' => 'Visualizza le informazioni e i dettagli dell\'evento',
     'delete_confirm' => 'Sei sicuro di voler eliminare questo evento?',
     'filter_by_title' => 'Filtra per titolo...',
     'filter_by_starts_at' => 'Filtra per inizio...',

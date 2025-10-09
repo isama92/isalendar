@@ -5,7 +5,6 @@ import { useForm } from '@inertiajs/react';
 import clsx from 'clsx';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
-import ButtonBack from '../../Components/ButtonBack';
 import { formatWithFormat } from '../../utils/date';
 
 const Form = ({ calendars, event = null }) => {
@@ -338,7 +337,13 @@ const Form = ({ calendars, event = null }) => {
 
                 {/* actions */}
                 <div className="mt-6 flex items-center justify-end gap-x-6">
-                    <ButtonBack />
+                    <button
+                        type="button"
+                        onClick={() => window.history.back()}
+                        className="cursor-pointer text-sm/6 font-semibold text-gray-900 dark:text-white"
+                    >
+                        {__('common.back')}
+                    </button>
                     <button
                         type="button"
                         onClick={handleSubmit}
