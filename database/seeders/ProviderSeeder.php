@@ -15,6 +15,7 @@ class ProviderSeeder extends Seeder
                 ->upsert([
                     'id' => $service->id(),
                     'name' => $service->value,
+                    'image_path' => $service->imagePath(),
                     'enabled' => $service->enabled(),
                     'access_object' => $service->accessObject(),
                     'auth_route' => $service->authRoute(),

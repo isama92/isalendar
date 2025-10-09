@@ -22,6 +22,6 @@ return [
     'no' => 'No',
     'dark_mode' => 'Dark Mode',
     'light_mode' => 'Light Mode',
-    'processing' => 'processing',
-    'choose' => 'choose',
+    'processing' => 'Processing',
+    'choose' => 'Choose',
 ];

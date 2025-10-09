@@ -1,4 +1,5 @@
 import { useForm } from '@inertiajs/react';
+import Logo from '../../../images/logo-light.png';
 
 const Login = () => {
     const { data, setData, post, processing, errors } = useForm({
@@ -16,7 +17,7 @@ const Login = () => {
         <div className="flex min-h-screen items-center justify-center bg-gray-100">
             <div className="w-full max-w-md rounded-lg bg-white p-8 shadow-md">
                 <div className="mb-6 flex justify-center">
-                    <img src="/assets/logo.png" alt="Isalendar" className="h-12" />
+                    <img src={Logo} alt="Isalendar" className="h-12" />
                 </div>
 
                 <form onSubmit={submit}>

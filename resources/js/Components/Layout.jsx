@@ -1,11 +1,16 @@
 import { Link, usePage } from '@inertiajs/react';
 import { useState } from 'react';
+import LogoDark from '../../images/logo-dark.png';
+import LogoLight from '../../images/logo-light.png';
+import { useTheme } from '../Contexts/ThemeContext.jsx';
 import LanguageSwitcher from './LanguageSwitcher';
 import UserDropdown from './UserDropdown';
 
 const Layout = ({ children }) => {
     const { user, locale, connectorEnabled } = usePage().props;
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+    const { theme } = useTheme();
+    const logo = theme === 'dark' ? LogoDark : LogoLight;
 
     return (
         <div className="flex min-h-screen bg-gray-50 dark:bg-gray-900">
@@ -31,7 +36,7 @@ const Layout = ({ children }) => {
                             onClick={() => setIsSidebarOpen(false)}
                             className="flex h-16 items-center justify-center border-b border-gray-200 px-6 dark:border-gray-700"
                         >
-                            <img src="/assets/logo.png" alt="Isalendar" className="h-8" />
+                            <img src={logo} alt="Isalendar" className="h-8" />
                         </Link>
                         <nav className="p-4">
                             <Link
@@ -85,7 +90,7 @@ const Layout = ({ children }) => {
                                 href={route('dashboard')}
                                 className="hidden flex-1 justify-center min-[400px]:flex sm:absolute sm:left-1/2 sm:-translate-x-1/2 lg:hidden"
                             >
-                                <img src="/assets/logo.png" alt="Isalendar" className="h-8" />
+                                <img src={logo} alt="Isalendar" className="h-8" />
                             </Link>
                             <div className="ml-auto flex items-center gap-2">
                                 <LanguageSwitcher locale={locale} />

@@ -16,6 +16,13 @@ enum Service: string
         };
     }
 
+    public function imagePath(): string
+    {
+        return match ($this) {
+            self::GOOGLE_CALENDAR => 'google.webp',
+        };
+    }
+
     public function enabled(): bool
     {
         return match ($this) {

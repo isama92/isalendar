@@ -22,7 +22,7 @@ class ProvidersController
         $providers = Provider::query()
             ->enabled()
             ->orderBy('name')
-            ->get(['id', 'name']);
+            ->get(['id', 'name', 'image_path']);
 
         return Inertia::render('Providers/Create', [
             'providers' => $providers,
