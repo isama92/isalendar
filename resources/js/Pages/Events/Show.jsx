@@ -1,6 +1,6 @@
+import { formatDate, formatDateTime } from '@/utils/date';
 import { PencilIcon, TrashIcon } from '@heroicons/react/20/solid';
 import { Link, router } from '@inertiajs/react';
-import { formatDate, formatDateTime } from '../../utils/date';
 
 const Show = ({ event }) => {
     const format = event.all_day ? formatDate : formatDateTime;

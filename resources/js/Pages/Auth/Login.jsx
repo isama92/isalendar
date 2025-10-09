@@ -1,5 +1,5 @@
+import Logo from '@/../images/logo-light.png';
 import { useForm } from '@inertiajs/react';
-import Logo from '../../../images/logo-light.png';
 
 const Login = () => {
     const { data, setData, post, processing, errors } = useForm({

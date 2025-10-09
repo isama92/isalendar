@@ -1,10 +1,10 @@
+import LogoDark from '@/../images/logo-dark.png';
+import LogoLight from '@/../images/logo-light.png';
+import LanguageSwitcher from '@/Components/LanguageSwitcher';
+import UserDropdown from '@/Components/UserDropdown';
+import { useTheme } from '@/Contexts/ThemeContext.jsx';
 import { Link, usePage } from '@inertiajs/react';
 import { useState } from 'react';
-import LogoDark from '../../images/logo-dark.png';
-import LogoLight from '../../images/logo-light.png';
-import { useTheme } from '../Contexts/ThemeContext.jsx';
-import LanguageSwitcher from './LanguageSwitcher';
-import UserDropdown from './UserDropdown';
 
 const Layout = ({ children }) => {
     const { user, locale, connectorEnabled } = usePage().props;

@@ -1,3 +1,5 @@
+import Pagination from '@/Components/Pagination';
+import { formatDate, formatDateTime, formatWithFormat } from '@/utils/date';
 import {
     CheckIcon,
     ChevronDownIcon,
@@ -20,8 +22,6 @@ import dayjs from 'dayjs';
 import { useMemo, useState } from 'react';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
-import Pagination from '../../Components/Pagination';
-import { formatDate, formatDateTime, formatWithFormat } from '../../utils/date';
 
 const Index = ({ events }) => {
     const [sorting, setSorting] = useState([]);

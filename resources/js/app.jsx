@@ -1,3 +1,6 @@
+import Layout from '@/Components/Layout';
+import { ThemeProvider } from '@/Contexts/ThemeContext';
+import { __, setGlobalTranslations } from '@/utils/translate';
 import { createInertiaApp } from '@inertiajs/react';
 import axios from 'axios';
 import dayjs from 'dayjs';
@@ -5,9 +8,6 @@ import 'dayjs/locale/it';
 import updateLocale from 'dayjs/plugin/updateLocale';
 import { createRoot } from 'react-dom/client';
 import { route } from 'ziggy-js';
-import Layout from './Components/Layout';
-import { ThemeProvider } from './Contexts/ThemeContext';
-import { __, setGlobalTranslations } from './utils/translate';
 
 dayjs.extend(updateLocale);
 

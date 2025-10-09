@@ -1,5 +1,5 @@
-import EventsByDayOfWeekChart from '../Components/EventsByDayOfWeekChart';
-import StatCard from '../Components/StatCard';
+import EventsByDayOfWeekChart from '@/Components/EventsByDayOfWeekChart';
+import StatCard from '@/Components/StatCard';
 
 const Dashboard = ({
     totalEvents,

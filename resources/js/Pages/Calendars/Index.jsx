@@ -1,3 +1,4 @@
+import Pagination from '@/Components/Pagination';
 import { ChevronDownIcon, ChevronUpIcon, TrashIcon } from '@heroicons/react/24/solid';
 import { PlusIcon } from '@heroicons/react/24/solid/index.js';
 import { Link, router } from '@inertiajs/react';
@@ -9,7 +10,6 @@ import {
     useReactTable,
 } from '@tanstack/react-table';
 import { useMemo, useState } from 'react';
-import Pagination from '../../Components/Pagination';
 
 const Index = ({ calendars }) => {
     const [sorting, setSorting] = useState([]);

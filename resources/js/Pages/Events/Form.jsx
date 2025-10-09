@@ -1,3 +1,4 @@
+import { formatWithFormat } from '@/utils/date';
 import { Listbox, ListboxButton, ListboxOption, ListboxOptions } from '@headlessui/react';
 import { ChevronUpDownIcon } from '@heroicons/react/16/solid';
 import { CheckIcon } from '@heroicons/react/20/solid';
@@ -5,7 +6,6 @@ import { useForm } from '@inertiajs/react';
 import clsx from 'clsx';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
-import { formatWithFormat } from '../../utils/date';
 
 const Form = ({ calendars, event = null }) => {
     const isEditing = !!event;

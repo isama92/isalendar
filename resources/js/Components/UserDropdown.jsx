@@ -1,7 +1,7 @@
+import { useTheme } from '@/Contexts/ThemeContext';
 import { ArrowRightOnRectangleIcon, MoonIcon, SunIcon, UserCircleIcon } from '@heroicons/react/24/outline';
 import { Link } from '@inertiajs/react';
 import { useState } from 'react';
-import { useTheme } from '../Contexts/ThemeContext';
 
 const UserDropdown = ({ user }) => {
     const { theme, toggleTheme } = useTheme();

@@ -1,6 +1,6 @@
+import ProviderLogo from '@/Components/ProviderLogo';
 import { router } from '@inertiajs/react';
 import { useState } from 'react';
-import ProviderLogo from '../../Components/ProviderLogo';
 const Create = ({ providers }) => {
     const [processing, setProcessing] = useState(false);
 
