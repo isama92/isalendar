@@ -3,12 +3,11 @@
 declare(strict_types=1);
 
 return [
-    'email' => 'Email',
-    'failed' => 'Credenziali non valide.',
+    'sign_in_to_your_account' => 'Accedi al tuo account',
+    'email' => 'Indirizzo email',
+    'password' => 'Password',
     'logging_in' => 'Accesso in corso...',
     'login' => 'Accedi',
     'logout' => 'Esci',
-    'password' => 'Il campo :attribute non è corretto.',
     'remember_me' => 'Ricordami',
-    'throttle' => 'Troppi tentativi di accesso. Riprova tra :seconds secondi.',
 ];

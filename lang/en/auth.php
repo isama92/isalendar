@@ -3,12 +3,11 @@
 declare(strict_types=1);
 
 return [
-    'email' => 'Email',
-    'failed' => 'These credentials do not match our records.',
+    'sign_in_to_your_account' => 'Sign in to your account',
+    'email' => 'Email address',
+    'password' => 'Password',
     'logging_in' => 'Logging in...',
     'login' => 'Login',
     'logout' => 'Logout',
-    'password' => 'The provided password is incorrect.',
     'remember_me' => 'Remember me',
-    'throttle' => 'Too many login attempts. Please try again in :seconds seconds.',
 ];

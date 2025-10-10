@@ -2,15 +2,12 @@ import LogoDark from '@/../images/logo-dark.png';
 import LogoLight from '@/../images/logo-light.png';
 import LanguageSwitcher from '@/Components/LanguageSwitcher';
 import UserDropdown from '@/Components/UserDropdown';
-import { useTheme } from '@/Contexts/ThemeContext.jsx';
 import { Link, usePage } from '@inertiajs/react';
 import { useState } from 'react';
 
 const Layout = ({ children }) => {
-    const { user, locale, connectorEnabled } = usePage().props;
+    const { appName, user, locale, connectorEnabled } = usePage().props;
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-    const { theme } = useTheme();
-    const logo = theme === 'dark' ? LogoDark : LogoLight;
 
     return (
         <div className="flex min-h-screen bg-gray-50 dark:bg-gray-900">
@@ -36,7 +33,8 @@ const Layout = ({ children }) => {
                             onClick={() => setIsSidebarOpen(false)}
                             className="flex h-16 items-center justify-center border-b border-gray-200 px-6 dark:border-gray-700"
                         >
-                            <img src={logo} alt="Isalendar" className="h-8" />
+                            <img src={LogoLight} alt={appName} className="h-8 dark:hidden" />
+                            <img src={LogoDark} alt={appName} className="h-8 not-dark:hidden" />
                         </Link>
                         <nav className="p-4">
                             <Link
@@ -90,7 +88,8 @@ const Layout = ({ children }) => {
                                 href={route('dashboard')}
                                 className="hidden flex-1 justify-center min-[400px]:flex sm:absolute sm:left-1/2 sm:-translate-x-1/2 lg:hidden"
                             >
-                                <img src={logo} alt="Isalendar" className="h-8" />
+                                <img src={LogoLight} alt={appName} className="h-8 dark:hidden" />
+                                <img src={LogoDark} alt={appName} className="h-8 not-dark:hidden" />
                             </Link>
                             <div className="ml-auto flex items-center gap-2">
                                 <LanguageSwitcher locale={locale} />
