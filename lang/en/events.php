@@ -22,9 +22,15 @@ return [
     'show_event' => 'Event Details',
     'event_details' => 'Event Details',
     'event_information' => 'View event information and details',
+    'delete_event' => 'Delete Event',
     'delete_confirm' => 'Are you sure you want to delete this event?',
+    'delete_confirm_message' => 'Are you sure you want to delete this event? This action cannot be undone.',
     'filter_by_title' => 'Filter by title...',
     'filter_by_starts_at' => 'Filter by starts at...',
     'filter_by_ends_at' => 'Filter by ends at...',
     'no_events_found' => 'No events found.',
-    'event_will_be_uploaded_after_save' => 'The event will be updated immediately after saving.', ];
+    'event_will_be_uploaded_after_save' => 'The event will be updated immediately after saving.',
+    'event_created' => 'Event created successfully!',
+    'event_updated' => 'Event updated successfully!',
+    'event_deleted' => 'Event deleted successfully!',
+];

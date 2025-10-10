@@ -1,3 +1,4 @@
+import Modal from '@/Components/Modal';
 import Pagination from '@/Components/Pagination';
 import { ChevronDownIcon, ChevronUpIcon, TrashIcon } from '@heroicons/react/24/solid';
 import { PlusIcon } from '@heroicons/react/24/solid/index.js';
@@ -14,6 +15,8 @@ import { useMemo, useState } from 'react';
 const Index = ({ calendars }) => {
     const [sorting, setSorting] = useState([]);
     const [columnFilters, setColumnFilters] = useState([]);
+    const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+    const [calendarToDelete, setCalendarToDelete] = useState(null);
 
     const columns = useMemo(
         () => [
@@ -38,9 +41,8 @@ const Index = ({ calendars }) => {
                     <div className="flex items-center gap-2">
                         <button
                             onClick={() => {
-                                if (confirm(__('calendars.delete_confirm'))) {
-                                    router.delete(route('calendars.destroy', info.row.original.id));
-                                }
+                                setCalendarToDelete(info.row.original);
+                                setDeleteModalOpen(true);
                             }}
                             title={__('common.delete')}
                             className="cursor-pointer text-red-600 hover:text-red-800 dark:text-red-400 dark:hover:text-red-300"
@@ -147,6 +149,23 @@ const Index = ({ calendars }) => {
             </div>
 
             <Pagination data={calendars} routeName="calendars.index" />
+
+            <Modal
+                open={deleteModalOpen}
+                onClose={() => setDeleteModalOpen(false)}
+                title={__('calendars.delete_calendar')}
+                message={__('calendars.delete_confirm_message')}
+                confirmText={__('common.delete')}
+                cancelText={__('common.cancel')}
+                variant="danger"
+                onConfirm={() => {
+                    if (calendarToDelete) {
+                        router.delete(route('calendars.destroy', calendarToDelete.id));
+                        setDeleteModalOpen(false);
+                        setCalendarToDelete(null);
+                    }
+                }}
+            />
         </div>
     );
 };

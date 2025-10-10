@@ -1,6 +1,7 @@
 import LogoDark from '@/../images/logo-dark.png';
 import LogoLight from '@/../images/logo-light.png';
 import LanguageSwitcher from '@/Components/LanguageSwitcher';
+import Notification from '@/Components/Notification';
 import ThemeSwitcher from '@/Components/ThemeSwitcher';
 import UserDropdown from '@/Components/UserDropdown';
 import { Dialog, DialogBackdrop, DialogPanel, TransitionChild } from '@headlessui/react';
@@ -29,6 +30,7 @@ const Layout = ({ children }) => {
 
     return (
         <>
+            <Notification />
             <div>
                 <Dialog open={sidebarOpen} onClose={setSidebarOpen} className="relative z-50 xl:hidden">
                     <DialogBackdrop

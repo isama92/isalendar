@@ -1,13 +1,15 @@
+import Modal from '@/Components/Modal';
 import { formatDate, formatDateTime } from '@/utils/date';
 import { PencilIcon, TrashIcon } from '@heroicons/react/20/solid';
 import { Link, router } from '@inertiajs/react';
+import { useState } from 'react';
 
 const Show = ({ event }) => {
     const format = event.all_day ? formatDate : formatDateTime;
+    const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+
     const handleDelete = () => {
-        if (confirm(__('events.delete_confirm'))) {
-            router.delete(route('events.destroy', event.id));
-        }
+        setDeleteModalOpen(true);
     };
 
     return (
@@ -79,6 +81,20 @@ const Show = ({ event }) => {
                     )}
                 </dl>
             </div>
+
+            <Modal
+                open={deleteModalOpen}
+                onClose={() => setDeleteModalOpen(false)}
+                title={__('events.delete_event')}
+                message={__('events.delete_confirm_message')}
+                confirmText={__('common.delete')}
+                cancelText={__('common.cancel')}
+                variant="danger"
+                onConfirm={() => {
+                    router.delete(route('events.destroy', event.id));
+                    setDeleteModalOpen(false);
+                }}
+            />
         </div>
     );
 };

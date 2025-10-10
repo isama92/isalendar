@@ -1,3 +1,4 @@
+import Modal from '@/Components/Modal';
 import Pagination from '@/Components/Pagination';
 import { formatDate, formatDateTime, formatWithFormat } from '@/utils/date';
 import {
@@ -26,6 +27,8 @@ import 'react-datepicker/dist/react-datepicker.css';
 const Index = ({ events }) => {
     const [sorting, setSorting] = useState([]);
     const [columnFilters, setColumnFilters] = useState([]);
+    const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+    const [eventToDelete, setEventToDelete] = useState(null);
 
     const columns = useMemo(
         () => [
@@ -96,9 +99,8 @@ const Index = ({ events }) => {
                         </Link>
                         <button
                             onClick={() => {
-                                if (confirm(__('events.delete_confirm'))) {
-                                    router.delete(route('events.destroy', info.row.original.id));
-                                }
+                                setEventToDelete(info.row.original);
+                                setDeleteModalOpen(true);
                             }}
                             title={__('common.delete')}
                             className="cursor-pointer text-red-600 hover:text-red-800 dark:text-red-400 dark:hover:text-red-300"
@@ -244,6 +246,23 @@ const Index = ({ events }) => {
             </div>
 
             <Pagination data={events} routeName="events.index" />
+
+            <Modal
+                open={deleteModalOpen}
+                onClose={() => setDeleteModalOpen(false)}
+                title={__('events.delete_event')}
+                message={__('events.delete_confirm_message')}
+                confirmText={__('common.delete')}
+                cancelText={__('common.cancel')}
+                variant="danger"
+                onConfirm={() => {
+                    if (eventToDelete) {
+                        router.delete(route('events.destroy', eventToDelete.id));
+                        setDeleteModalOpen(false);
+                        setEventToDelete(null);
+                    }
+                }}
+            />
         </div>
     );
 };
