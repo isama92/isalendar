@@ -1,4 +1,4 @@
-import { ArrowDownIcon, UserCircleIcon } from '@heroicons/react/20/solid';
+import { ArrowLeftEndOnRectangleIcon, UserCircleIcon } from '@heroicons/react/20/solid';
 import { Link } from '@inertiajs/react';
 import { useState } from 'react';
 
@@ -35,7 +35,7 @@ const UserDropdown = ({ user }) => {
                             className="flex w-full cursor-pointer items-center gap-2 px-4 py-2 text-left text-sm text-red-600 hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-900/20"
                             onClick={() => setDropdownOpen(false)}
                         >
-                            <ArrowDownIcon className="h-5 w-5" />
+                            <ArrowLeftEndOnRectangleIcon className="h-5 w-5" />
                             <span>{__('auth.logout')}</span>
                         </Link>
                     </div>

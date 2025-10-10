@@ -10,4 +10,5 @@ return [
     'login' => 'Accedi',
     'logout' => 'Esci',
     'remember_me' => 'Ricordami',
+    'invalid_credentials' => 'Le credenziali fornite non sono corrette.',
 ];

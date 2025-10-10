@@ -2,11 +2,11 @@ import { useTheme } from '@/Contexts/ThemeContext';
 import { MoonIcon, SunIcon } from '@heroicons/react/20/solid';
 import clsx from 'clsx';
 
-const ThemeSwitcher = () => {
+const ThemeSwitcher = ({ className = null }) => {
     const { theme, toggleTheme } = useTheme();
 
     return (
-        <div className="grid grid-cols-1">
+        <div className={clsx('grid grid-cols-1', className)}>
             <div className="relative z-0 inline-grid grid-cols-2 gap-0.5 rounded-full bg-gray-950/5 p-0.5 text-gray-950 dark:bg-white/10 dark:text-white">
                 <div
                     className={clsx(

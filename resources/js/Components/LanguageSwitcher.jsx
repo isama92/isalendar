@@ -1,12 +1,14 @@
 import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react';
 import { LanguageIcon } from '@heroicons/react/20/solid';
-import { router } from '@inertiajs/react';
+import { router, usePage } from '@inertiajs/react';
 import clsx from 'clsx';
 
-const LanguageSwitcher = ({ locale }) => {
+const LanguageSwitcher = () => {
+    const { locale } = usePage().props;
+
     const locales = [
         { code: 'en', label: 'English' },
-        { code: 'it', label: 'Italian' },
+        { code: 'it', label: 'Italiano' },
     ];
 
     const switchLanguage = newLocale => {
@@ -29,7 +31,7 @@ const LanguageSwitcher = ({ locale }) => {
 
             <MenuItems
                 transition
-                className="absolute right-0 z-10 mt-2 w-56 origin-top-right rounded-md bg-white shadow-lg outline-1 outline-black/5 transition data-closed:scale-95 data-closed:transform data-closed:opacity-0 data-enter:duration-100 data-enter:ease-out data-leave:duration-75 data-leave:ease-in dark:bg-gray-800 dark:shadow-none dark:-outline-offset-1 dark:outline-white/10"
+                className="absolute left-0 z-10 mt-2 w-40 origin-top-left rounded-md bg-white shadow-lg outline-1 outline-black/5 transition data-closed:scale-95 data-closed:transform data-closed:opacity-0 data-enter:duration-100 data-enter:ease-out data-leave:duration-75 data-leave:ease-in dark:bg-gray-800 dark:shadow-none dark:-outline-offset-1 dark:outline-white/10"
             >
                 <div className="py-1">
                     {locales.map(loc => (

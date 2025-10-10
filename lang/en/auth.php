@@ -7,7 +7,8 @@ return [
     'email' => 'Email address',
     'password' => 'Password',
     'logging_in' => 'Logging in...',
-    'login' => 'Login',
-    'logout' => 'Logout',
+    'login' => 'Sign in',
+    'logout' => 'Sign out',
     'remember_me' => 'Remember me',
+    'invalid_credentials' => 'The provided credentials are incorrect.',
 ];
