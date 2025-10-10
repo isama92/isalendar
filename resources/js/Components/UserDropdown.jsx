@@ -1,8 +1,9 @@
+import UserPhoto from '@/Components/UserPhoto';
 import { ArrowLeftEndOnRectangleIcon, UserCircleIcon } from '@heroicons/react/20/solid';
 import { Link } from '@inertiajs/react';
 import { useState } from 'react';
 
-const UserDropdown = ({ user }) => {
+const UserDropdown = () => {
     const [dropdownOpen, setDropdownOpen] = useState(false);
 
     return (
@@ -11,10 +12,8 @@ const UserDropdown = ({ user }) => {
                 onClick={() => setDropdownOpen(!dropdownOpen)}
                 className="flex cursor-pointer items-center gap-2 rounded-md px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700"
             >
-                <span>{user.name}</span>
-                <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                </svg>
+                <span className="sr-only">{__('profile.profile')}</span>
+                <UserPhoto className="size-8" iconClassName="size-8" />
             </button>
 
             {dropdownOpen && (

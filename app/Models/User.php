@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -21,7 +22,8 @@ class User extends Authenticatable implements MustVerifyEmail
      * @var list<string>
      */
     protected $fillable = [
-        'name',
+        'first_name',
+        'last_name',
         'email',
         'password',
     ];
@@ -51,5 +53,25 @@ class User extends Authenticatable implements MustVerifyEmail
     public function connectors(): HasMany
     {
         return $this->hasMany(Connector::class);
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Casts\Attribute<string, null>
+     */
+    protected function photoPath(): Attribute
+    {
+        return Attribute::make(
+            get: fn (): string => sprintf('%s.webp', $this->id),
+        );
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Casts\Attribute<string, null>
+     */
+    protected function fullName(): Attribute
+    {
+        return Attribute::make(
+            get: fn (): string => sprintf('%s %s', $this->first_name, $this->last_name),
+        );
     }
 }

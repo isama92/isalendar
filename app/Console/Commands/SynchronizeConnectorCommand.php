@@ -35,7 +35,7 @@ class SynchronizeConnectorCommand extends Command implements PromptsForMissingIn
         }
 
         $this->info('<comment>Connector\'s information:</comment>');
-        $this->info(sprintf('User full name: %s', $connector->user->name));
+        $this->info(sprintf('User full name: %s', $connector->user->full_name));
         $this->info(sprintf('Provider: %s', $connector->provider->name ?? 'None'));
         $this->info(sprintf('Number of calendars linked to this connector: %d', $connector->calendars()->count()));
 

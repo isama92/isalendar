@@ -18,6 +18,13 @@ return [
             'throw' => false,
             'report' => false,
         ],
+        'profile_photos' => [
+            'driver' => 'local',
+            'root' => storage_path('app/profile_photos'),
+            'serve' => true,
+            'throw' => true,
+            'report' => false,
+        ],
     ],
     'links' => [
         public_path('storage') => storage_path('app/public'),

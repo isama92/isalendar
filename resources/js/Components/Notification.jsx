@@ -20,7 +20,7 @@ const Notification = () => {
 
             return () => clearTimeout(timer);
         }
-    }, [flash.success]);
+    }, [flash]);
 
     if (!message) {
         return null;

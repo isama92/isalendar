@@ -28,7 +28,7 @@ class HandleInertiaRequests extends Middleware
                 'location' => $request->url(),
             ],
             'user' => $loggedIn
-                ? $user->only(['name', 'email'])
+                ? $user->only(['first_name', 'last_name', 'full_name', 'email'])
                 : null,
             'connectorEnabled' => $loggedIn
                 ? $user->connectors()->enabled()->exists()

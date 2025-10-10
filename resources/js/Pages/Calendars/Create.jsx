@@ -7,7 +7,6 @@ const Create = ({ connectorRouteKey, calendars }) => {
 
     const handleSubmit = e => {
         e.preventDefault();
-        console.log(connectorRouteKey);
         post(route('calendars.store', connectorRouteKey));
     };
 

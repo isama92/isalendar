@@ -4,6 +4,7 @@ use App\Http\Controllers\Web\CalendarsController;
 use App\Http\Controllers\Web\DashboardController;
 use App\Http\Controllers\Web\EventsController;
 use App\Http\Controllers\Web\ProfileController;
+use App\Http\Controllers\Web\ProfilePhotoController;
 use App\Http\Controllers\Web\ProvidersController;
 use Illuminate\Support\Facades\Route;
 
@@ -15,6 +16,8 @@ Route::middleware('auth')->group(function (): void {
         ->name('profile.edit');
     Route::put('/profile', [ProfileController::class, 'update'])
         ->name('profile.update');
+    Route::get('/profile/photo', [ProfilePhotoController::class, 'show'])
+        ->name('profile.photo');
 
     Route::prefix('/providers')
         ->name('providers.')

@@ -1,8 +1,9 @@
 <?php
 
 return [
-    'edit_profile' => 'Modifica Profilo',
-    'name' => 'Nome',
-    'update_profile' => 'Aggiorna Profilo',
+    'profile' => 'Profilo',
+    'first_name' => 'Nome',
+    'last_name' => 'Cognome',
+    'photo' => 'Photo',
     'profile_updated_successfully' => 'Profilo aggiornato con successo.',
 ];
