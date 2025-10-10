@@ -24,9 +24,9 @@ class CalendarsController extends Controller
         Gate::authorize('viewAny', Calendar::class);
 
         $calendars = Calendar::with([
-            'connectors:id,provider_id,user_id',
+            'connectors' => fn ($query) => $query->select('connectors.id', 'provider_id', 'user_id')
+                ->whereBelongsTo(Auth::user()),
             'connectors.provider:id,name',
-            // TODO: filter connectors by user or every connector will be added in the response
         ])
             ->forCurrentUser()
             ->withCount('events')
