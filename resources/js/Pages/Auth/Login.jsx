@@ -1,6 +1,6 @@
-import {useForm, usePage} from '@inertiajs/react';
 import LogoDark from '@/../images/logo-dark.png';
 import LogoLight from '@/../images/logo-light.png';
+import { useForm, usePage } from '@inertiajs/react';
 
 const Login = () => {
     const { appName } = usePage().props;
@@ -19,8 +19,8 @@ const Login = () => {
     return (
         <div className="flex min-h-full flex-col justify-center px-6 py-12 lg:px-8">
             <div className="sm:mx-auto sm:w-full sm:max-w-sm">
-                <img alt={appName} src={LogoLight} className="mx-auto h-10 w-auto dark:hidden"/>
-                <img alt={appName} src={LogoDark} className="mx-auto h-10 w-auto not-dark:hidden"/>
+                <img alt={appName} src={LogoLight} className="mx-auto h-10 w-auto dark:hidden" />
+                <img alt={appName} src={LogoDark} className="mx-auto h-10 w-auto not-dark:hidden" />
                 <h2 className="mt-10 text-center text-2xl/9 font-bold tracking-tight text-gray-900 dark:text-white">
                     {__('auth.sign_in_to_your_account')}
                 </h2>
@@ -49,7 +49,10 @@ const Login = () => {
 
                     <div>
                         <div className="flex items-center justify-between">
-                            <label htmlFor="password" className="block text-sm/6 font-medium text-gray-900 dark:text-gray-100">
+                            <label
+                                htmlFor="password"
+                                className="block text-sm/6 font-medium text-gray-900 dark:text-gray-100"
+                            >
                                 {__('auth.password')}
                             </label>
                         </div>
