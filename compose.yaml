@@ -1,5 +1,6 @@
 services:
     laravel.test:
+        container_name: isalendar-test
         build:
             context: './vendor/laravel/sail/runtimes/8.4'
             dockerfile: Dockerfile
@@ -26,6 +27,7 @@ services:
             - redis
             - mailpit
     mysql:
+        container_name: isalendar-mysql
         image: 'mysql/mysql-server:8.0'
         ports:
             - '${FORWARD_DB_PORT:-3306}:3306'
@@ -52,6 +54,7 @@ services:
             retries: 3
             timeout: 5s
     redis:
+        container_name: isalendar-redis
         image: 'redis:alpine'
         ports:
             - '${FORWARD_REDIS_PORT:-6379}:6379'
@@ -67,6 +70,7 @@ services:
             retries: 3
             timeout: 5s
     mailpit:
+        container_name: isalendar-mailpit
         image: 'axllent/mailpit:latest'
         ports:
             - '${FORWARD_MAILPIT_PORT:-1025}:1025'
