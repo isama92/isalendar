@@ -1,9 +1,11 @@
 import LogoDark from '@/../images/logo-dark.png';
 import LogoLight from '@/../images/logo-light.png';
+import LanguageSwitcher from '@/Components/LanguageSwitcher';
+import ThemeSwitcher from '@/Components/ThemeSwitcher';
 import { useForm, usePage } from '@inertiajs/react';
 
 const Login = () => {
-    const { appName } = usePage().props;
+    const { appName, locale } = usePage().props;
 
     const { data, setData, post, processing, errors } = useForm({
         email: '',
@@ -17,7 +19,11 @@ const Login = () => {
     };
 
     return (
-        <div className="flex min-h-full flex-col justify-center px-6 py-12 lg:px-8">
+        <div className="relative flex min-h-full flex-col justify-center px-6 py-12 lg:px-8">
+            <div className="absolute top-6 right-6 flex items-center gap-3">
+                <ThemeSwitcher />
+                <LanguageSwitcher locale={locale} />
+            </div>
             <div className="sm:mx-auto sm:w-full sm:max-w-sm">
                 <img alt={appName} src={LogoLight} className="mx-auto h-10 w-auto dark:hidden" />
                 <img alt={appName} src={LogoDark} className="mx-auto h-10 w-auto not-dark:hidden" />

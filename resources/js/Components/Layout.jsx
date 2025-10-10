@@ -1,6 +1,7 @@
 import LogoDark from '@/../images/logo-dark.png';
 import LogoLight from '@/../images/logo-light.png';
 import LanguageSwitcher from '@/Components/LanguageSwitcher';
+import ThemeSwitcher from '@/Components/ThemeSwitcher';
 import UserDropdown from '@/Components/UserDropdown';
 import { Link, usePage } from '@inertiajs/react';
 import { useState } from 'react';
@@ -93,6 +94,7 @@ const Layout = ({ children }) => {
                             </Link>
                             <div className="ml-auto flex items-center gap-2">
                                 <LanguageSwitcher locale={locale} />
+                                <ThemeSwitcher />
                                 <UserDropdown user={user} />
                             </div>
                         </div>
