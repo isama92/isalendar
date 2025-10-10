@@ -1,6 +1,8 @@
 import ProviderLogo from '@/Components/ProviderLogo';
 import { router } from '@inertiajs/react';
+import clsx from 'clsx';
 import { useState } from 'react';
+
 const Create = ({ providers }) => {
     const [processing, setProcessing] = useState(false);
 
@@ -29,7 +31,20 @@ const Create = ({ providers }) => {
                                     <p className="text-sm/6 font-semibold text-gray-900 dark:text-white">
                                         {provider.name}
                                     </p>
-                                    <p className="mt-1 truncate text-xs/5 text-gray-500 dark:text-gray-400">status</p>
+                                    <p className="mt-1 truncate text-xs/5 text-gray-500 dark:text-gray-400">
+                                        <span
+                                            className={clsx(
+                                                'inline-flex items-center rounded-full px-2 py-1 text-xs font-medium',
+                                                provider.connectors_count > 0
+                                                    ? 'bg-green-50 text-green-700 inset-ring inset-ring-green-600/20 dark:bg-green-400/10 dark:text-green-400 dark:inset-ring-green-500/20'
+                                                    : 'bg-red-50 text-red-700 inset-ring inset-ring-red-600/10 dark:bg-red-400/10 dark:text-red-400 dark:inset-ring-red-400/20'
+                                            )}
+                                        >
+                                            {provider.connectors_count > 0
+                                                ? __('calendars.connected')
+                                                : __('calendars.disconnected')}
+                                        </span>
+                                    </p>
                                 </div>
                             </div>
                             <button

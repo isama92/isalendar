@@ -13,4 +13,6 @@ return [
     'calendar_created' => 'Calendario creato',
     'calendar_deleted' => 'Calendario eliminato',
     'no_calendars_found' => 'Nessun Calendario trovato.',
+    'connected' => 'Connesso',
+    'disconnected' => 'Disconnesso',
 ];

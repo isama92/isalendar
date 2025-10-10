@@ -9,8 +9,12 @@ The Laravel Boost guidelines are specifically curated by Laravel maintainers for
 This application is a Laravel application and its main Laravel ecosystems package & versions are below. You are an expert with them all. Ensure you abide by these specific packages & versions.
 
 - php - 8.4.13
+- inertiajs/inertia-laravel (INERTIA) - v2
 - laravel/framework (LARAVEL) - v12
+- laravel/horizon (HORIZON) - v5
 - laravel/prompts (PROMPTS) - v0
+- laravel/socialite (SOCIALITE) - v5
+- tightenco/ziggy (ZIGGY) - v2
 - larastan/larastan (LARASTAN) - v3
 - laravel/mcp (MCP) - v0
 - laravel/pint (PINT) - v1
@@ -18,16 +22,79 @@ This application is a Laravel application and its main Laravel ecosystems packag
 - pestphp/pest (PEST) - v4
 - phpunit/phpunit (PHPUNIT) - v12
 - rector/rector (RECTOR) - v2
+- @inertiajs/react (INERTIA) - v2
+- react (REACT) - v19
+- eslint (ESLINT) - v9
+- prettier (PRETTIER) - v3
+- tailwindcss (TAILWINDCSS) - v4
 
 ## Application Domain
-- **Isalendar** is a calendar application for managing events.
-- **Events** are calendar events with properties like:
-  - Title
-  - Start date/time
-  - End date/time (optional for all-day events)
-  - All-day flag (boolean)
-  - Description (optional)
-- The application supports bilingual functionality (English and Italian).
+**Isalendar** is a calendar application that allows users to synchronize and manage events from multiple external calendar providers (like Google Calendar and Microsoft Outlook) in a unified interface.
+
+### Core Entities
+
+#### Users
+Authenticated users who can connect to calendar providers and manage their events. Users have standard authentication fields (name, email, password) and support roles and permissions through Laravel's permission system.
+
+#### Providers
+External calendar services (e.g., Google Calendar, Microsoft Outlook) that users can connect to. Each provider has:
+- `name` - Provider name (e.g., "Google", "Microsoft")
+- `image_path` - Logo/icon for the provider
+- `enabled` - Whether the provider is currently available for connections
+- `access_object` - The class/service used to interact with the provider's API
+- `auth_route` - The route used to initiate OAuth authentication
+
+#### Connectors
+The authentication bridge between a user and a provider. Each connector represents one user's OAuth connection to a specific provider and contains:
+- `user_id` - The user who owns this connection
+- `provider_id` - The provider being connected to
+- `external_id` - The user's ID on the external provider
+- `access_details` - Encrypted OAuth tokens and credentials (JSON)
+- `enabled` - Whether this connector is active
+- Soft deletes supported
+- Connectors cannot be soft deleted
+
+**Relationship**: A connector belongs to both a user and a provider. One user can have multiple connectors (one per provider), and one provider can have many connectors (one per user).
+
+#### Calendars
+Individual calendars synced from external providers. A calendar can be shared across multiple connectors (many-to-many relationship via `calendar_connector` pivot table). Properties include:
+- `external_id` - Unique identifier from the external provider
+- `name` - Calendar display name
+- `description` - Calendar description (nullable)
+- `enabled` - Whether the calendar is actively syncing
+- Soft deletes supported
+- Indexed on `name` for search performance
+- Calendars cannot be force deleted
+
+**Relationship**: Calendars have a many-to-many relationship with connectors, allowing shared calendars across multiple users.
+
+#### Events
+Calendar events belonging to a specific calendar. Properties include:
+- `calendar_id` - Parent calendar
+- `external_id` - Unique identifier from the external provider
+- `title` - Event title (indexed for search)
+- `starts_at` - Start date/time
+- `ends_at` - End date/time
+- `all_day` - Boolean flag for all-day events
+- `description` - Event description (nullable)
+- Soft deletes supported
+- Events cannot be force deleted
+
+**Relationship**: Events belong to a calendar.
+
+### Domain Flow
+1. User authenticates with the application
+2. User selects a provider and initiates OAuth connection
+3. A connector is created with encrypted access tokens
+4. User selects which calendars to sync from that provider
+5. Calendars and their events are synchronized and stored locally
+6. Users can view and manage events across all connected calendars
+
+### Additional Features
+- **Soft Deletes**: Users, connectors, calendars, and events support soft deletion for data recovery
+- **Permissions System**: Role-based access control using Laravel's permission package
+- **Bilingual Support**: Full internationalization in English and Italian
+- **Background Jobs**: Uses Laravel Horizon for queue management and calendar synchronization
 
 
 ## Conventions
@@ -134,6 +201,46 @@ protected function isAccessible(User $user, ?string $path = null): bool
 
 ## Enums
 - Typically, keys in an Enum should be TitleCase. For example: `FavoritePerson`, `BestLake`, `Monthly`.
+
+
+=== inertia-laravel/core rules ===
+
+## Inertia Core
+
+- Inertia.js components should be placed in the `resources/js/Pages` directory unless specified differently in the JS bundler (vite.config.js).
+- Use `Inertia::render()` for server-side routing instead of traditional Blade views.
+- Use `search-docs` for accurate guidance on all things Inertia.
+
+<code-snippet lang="php" name="Inertia::render Example">
+// routes/web.php example
+Route::get('/users', function () {
+    return Inertia::render('Users/Index', [
+        'users' => User::all()
+    ]);
+});
+</code-snippet>
+
+
+=== inertia-laravel/v2 rules ===
+
+## Inertia v2
+
+- Make use of all Inertia features from v1 & v2. Check the documentation before making any changes to ensure we are taking the correct approach.
+
+### Inertia v2 New Features
+- Polling
+- Prefetching
+- Deferred props
+- Infinite scrolling using merging props and `WhenVisible`
+- Lazy loading data on scroll
+
+### Deferred Props & Empty States
+- When using deferred props on the frontend, you should add a nice empty state with pulsing / animated skeleton.
+
+### Inertia Form General Guidance
+- The recommended way to build forms when using Inertia is with the `<Form>` component - a useful example is below. Use `search-docs` with a query of `form component` for guidance.
+- Forms can also be built using the `useForm` helper for more programmatic control, or to follow existing conventions. Use `search-docs` with a query of `useForm helper` for guidance.
+- `resetOnError`, `resetOnSuccess`, and `setDefaultsOnSuccess` are available on the `<Form>` component. Use `search-docs` with a query of 'form component resetting' for guidance.
 
 
 === laravel/core rules ===
@@ -320,4 +427,124 @@ $pages = visit(['/', '/about', '/contact']);
 
 $pages->assertNoJavascriptErrors()->assertNoConsoleLogs();
 </code-snippet>
+
+
+=== inertia-react/core rules ===
+
+## Inertia + React
+
+- Use `router.visit()` or `<Link>` for navigation instead of traditional links.
+
+<code-snippet name="Inertia Client Navigation" lang="react">
+
+import { Link } from '@inertiajs/react'
+<Link href="/">Home</Link>
+
+</code-snippet>
+
+
+=== inertia-react/v2/forms rules ===
+
+## Inertia + React Forms
+
+<code-snippet name="`<Form>` Component Example" lang="react">
+
+import { Form } from '@inertiajs/react'
+
+export default () => (
+    <Form action="/users" method="post">
+        {({
+            errors,
+            hasErrors,
+            processing,
+            wasSuccessful,
+            recentlySuccessful,
+            clearErrors,
+            resetAndClearErrors,
+            defaults
+        }) => (
+        <>
+        <input type="text" name="name" />
+
+        {errors.name && <div>{errors.name}</div>}
+
+        <button type="submit" disabled={processing}>
+            {processing ? 'Creating...' : 'Create User'}
+        </button>
+
+        {wasSuccessful && <div>User created successfully!</div>}
+        </>
+    )}
+    </Form>
+)
+
+</code-snippet>
+
+
+=== tailwindcss/core rules ===
+
+## Tailwind Core
+
+- Use Tailwind CSS classes to style HTML, check and use existing tailwind conventions within the project before writing your own.
+- Offer to extract repeated patterns into components that match the project's conventions (i.e. Blade, JSX, Vue, etc..)
+- Think through class placement, order, priority, and defaults - remove redundant classes, add classes to parent or child carefully to limit repetition, group elements logically
+- You can use the `search-docs` tool to get exact examples from the official documentation when needed.
+
+### Spacing
+- When listing items, use gap utilities for spacing, don't use margins.
+
+    <code-snippet name="Valid Flex Gap Spacing Example" lang="html">
+        <div class="flex gap-8">
+            <div>Superior</div>
+            <div>Michigan</div>
+            <div>Erie</div>
+        </div>
+    </code-snippet>
+
+
+### Dark Mode
+- If existing pages and components support dark mode, new pages and components must support dark mode in a similar way, typically using `dark:`.
+
+
+=== tailwindcss/v4 rules ===
+
+## Tailwind 4
+
+- Always use Tailwind CSS v4 - do not use the deprecated utilities.
+- `corePlugins` is not supported in Tailwind v4.
+- In Tailwind v4, you import Tailwind using a regular CSS `@import` statement, not using the `@tailwind` directives used in v3:
+
+<code-snippet name="Tailwind v4 Import Tailwind Diff" lang="diff">
+   - @tailwind base;
+   - @tailwind components;
+   - @tailwind utilities;
+   + @import "tailwindcss";
+</code-snippet>
+
+
+### Replaced Utilities
+- Tailwind v4 removed deprecated utilities. Do not use the deprecated option - use the replacement.
+- Opacity values are still numeric.
+
+| Deprecated |	Replacement |
+|------------+--------------|
+| bg-opacity-* | bg-black/* |
+| text-opacity-* | text-black/* |
+| border-opacity-* | border-black/* |
+| divide-opacity-* | divide-black/* |
+| ring-opacity-* | ring-black/* |
+| placeholder-opacity-* | placeholder-black/* |
+| flex-shrink-* | shrink-* |
+| flex-grow-* | grow-* |
+| overflow-ellipsis | text-ellipsis |
+| decoration-slice | box-decoration-slice |
+| decoration-clone | box-decoration-clone |
+
+
+=== tests rules ===
+
+## Test Enforcement
+
+- Every change must be programmatically tested. Write a new test or update an existing test, then run the affected tests to make sure they pass.
+- Run the minimum number of tests needed to ensure code quality and speed. Use `php artisan test` with a specific filename or filter.
 </laravel-boost-guidelines>
