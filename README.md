@@ -16,8 +16,7 @@ Add events to a shared calendar.
 
 - add observer on event creation/edit, push the event immediately
 - add a scheduled command that checks if there are not synchronized events (lock when pushing in observer, check if it's locked in scheduled command, in case they run at the same time)
-- add tags to actions/batches so to know what is being processed in horizon ui
+
 - add timezone to events
   - let the user select the timezone when creating event
-  - add default timezone for user in profile
   - when fetching or pushing events, also save timezone

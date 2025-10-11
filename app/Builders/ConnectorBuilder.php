@@ -12,9 +12,7 @@ class ConnectorBuilder extends Builder
 {
     public function forCurrentUser(): self
     {
-        $user = Auth::user();
-
-        return $this->whereBelongsTo($user);
+        return $this->whereBelongsTo(Auth::user());
     }
 
     public function enabled(): self

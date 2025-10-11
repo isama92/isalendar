@@ -18,7 +18,7 @@ class HandleInertiaRequests extends Middleware
     public function share(Request $request): array
     {
         $loggedIn = Auth::check();
-        $user = Auth::user();
+        $user = Auth::user()->loadMissing('settings');
 
         return [
             ...parent::share($request),
@@ -28,7 +28,7 @@ class HandleInertiaRequests extends Middleware
                 'location' => $request->url(),
             ],
             'user' => $loggedIn
-                ? $user->only(['first_name', 'last_name', 'full_name', 'email'])
+                ? $user
                 : null,
             'connectorEnabled' => $loggedIn
                 ? $user->connectors()->enabled()->exists()

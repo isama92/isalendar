@@ -20,6 +20,13 @@
         --color-text-secondary: 55 65 81;
         --color-border: 229 231 235;
         --color-hover: 243 244 246;
+        --color-bg-control: 255 255 255;
+        --color-border-control: 209 213 219;
+        --color-bg-menu: 255 255 255;
+        --color-border-menu: 229 231 235;
+        --color-bg-option-hover: 243 244 246;
+        --color-text: 17 24 39;
+        --color-text-muted: 107 114 128;
     }
 
     .dark {
@@ -29,5 +36,12 @@
         --color-text-secondary: 209 213 219;
         --color-border: 55 65 81;
         --color-hover: 55 65 81;
+        --color-bg-control: 255 255 255 / 0.05;
+        --color-border-control: 255 255 255 / 0.1;
+        --color-bg-menu: 31 41 55;
+        --color-border-menu: 55 65 81;
+        --color-bg-option-hover: 55 65 81;
+        --color-text: 243 244 246;
+        --color-text-muted: 156 163 175;
     }
 }

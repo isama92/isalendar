@@ -1,11 +1,13 @@
 import UserPhoto from '@/Components/UserPhoto';
 import { router, useForm } from '@inertiajs/react';
 import { useRef, useState } from 'react';
+import Select from 'react-select';
 
-const Edit = ({ user }) => {
+const Edit = ({ user, timezones }) => {
     const { data, setData, processing, errors } = useForm({
         first_name: user.first_name || '',
         last_name: user.last_name || '',
+        default_timezone: user.settings.default_timezone,
     });
 
     const [photoPreview, setPhotoPreview] = useState(null);
@@ -154,6 +156,102 @@ const Edit = ({ user }) => {
                                         {errors.photo}
                                     </p>
                                 )}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="grid grid-cols-1 gap-x-8 gap-y-10 border-b border-gray-900/10 pb-12 md:grid-cols-3 dark:border-white/10">
+                        <div>
+                            <h2 className="text-base/7 font-semibold text-gray-900 dark:text-white">
+                                {__('profile.app_settings')}
+                            </h2>
+                        </div>
+
+                        <div className="grid max-w-2xl grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6 md:col-span-2">
+                            <div className="sm:col-span-4">
+                                <label
+                                    htmlFor="default_timezone"
+                                    className="block text-sm/6 font-medium text-gray-900 dark:text-white"
+                                >
+                                    {__('profile.default_timezone')}
+                                </label>
+                                <div className="mt-2">
+                                    <Select
+                                        id="default_timezone"
+                                        name="default_timezone"
+                                        value={
+                                            data.default_timezone
+                                                ? { value: data.default_timezone, label: data.default_timezone }
+                                                : null
+                                        }
+                                        onChange={option => setData('default_timezone', option?.value)}
+                                        options={timezones}
+                                        isSearchable
+                                        classNames={{
+                                            control: () => 'rounded-md',
+                                            menu: () => 'rounded-md shadow-lg mt-1',
+                                            option: () => 'cursor-pointer px-3 py-2',
+                                            groupHeading: () => 'text-sm font-semibold px-3 py-2 uppercase',
+                                        }}
+                                        styles={{
+                                            control: (base, state) => ({
+                                                ...base,
+                                                backgroundColor: 'rgb(var(--color-bg-control))',
+                                                borderColor: state.isFocused
+                                                    ? 'rgb(99 102 241)'
+                                                    : 'rgb(var(--color-border-control))',
+                                                borderWidth: '1px',
+                                                boxShadow: state.isFocused ? '0 0 0 2px rgb(99 102 241 / 0.2)' : 'none',
+                                                '&:hover': {
+                                                    borderColor: state.isFocused
+                                                        ? 'rgb(99 102 241)'
+                                                        : 'rgb(var(--color-border-control))',
+                                                },
+                                            }),
+                                            menu: base => ({
+                                                ...base,
+                                                backgroundColor: 'rgb(var(--color-bg-menu) / 1)',
+                                                border: '1px solid rgb(var(--color-border-menu) / 1)',
+                                            }),
+                                            option: (base, state) => ({
+                                                ...base,
+                                                backgroundColor: state.isSelected
+                                                    ? 'rgb(99 102 241)'
+                                                    : state.isFocused
+                                                      ? 'rgb(var(--color-bg-option-hover) / 1)'
+                                                      : 'transparent',
+                                                color: state.isSelected ? 'white' : 'rgb(var(--color-text) / 1)',
+                                                '&:hover': {
+                                                    backgroundColor: state.isSelected
+                                                        ? 'rgb(99 102 241)'
+                                                        : 'rgb(var(--color-bg-option-hover) / 1)',
+                                                },
+                                            }),
+                                            input: base => ({
+                                                ...base,
+                                                color: 'rgb(var(--color-text) / 1)',
+                                            }),
+                                            singleValue: base => ({
+                                                ...base,
+                                                color: 'rgb(var(--color-text) / 1)',
+                                            }),
+                                            groupHeading: base => ({
+                                                ...base,
+                                                color: 'rgb(var(--color-text-muted) / 1)',
+                                            }),
+                                        }}
+                                    />
+
+                                    {errors.default_timezone && (
+                                        <p
+                                            id="default_timezone-error"
+                                            role="alert"
+                                            className="mt-2 text-sm text-red-600 dark:text-red-400"
+                                        >
+                                            {errors.default_timezone}
+                                        </p>
+                                    )}
+                                </div>
                             </div>
                         </div>
                     </div>

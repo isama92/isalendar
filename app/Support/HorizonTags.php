@@ -2,13 +2,14 @@
 
 namespace App\Support;
 
-use App\Builders\ConnectorBuilder;
 use App\Enums\Service;
 use App\Models\Calendar;
 use App\Models\Connector;
 use App\Models\Event;
 use App\Models\Provider;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Support\Facades\Auth;
 use UnitEnum;
 
 class HorizonTags
@@ -24,9 +25,9 @@ class HorizonTags
             switch (true) {
                 case $object instanceof Calendar:
                     $object->loadMissing([
-                        'connectors' => fn (ConnectorBuilder $query) => $query
+                        'connectors' => fn (BelongsToMany $query) => $query
                             ->select('connectors.id', 'provider_id', 'user_id')
-                            ->forCurrentUser(),
+                            ->whereBelongsTo(Auth::user()),
                         'connectors.provider',
                     ]);
                     $tags[] = static::forEnum($object->connectors->first()->provider->service());
@@ -42,9 +43,9 @@ class HorizonTags
 
                 case $object instanceof Event:
                     $object->loadMissing([
-                        'calendar.connectors' => fn (ConnectorBuilder $query) => $query
+                        'calendar.connectors' => fn (BelongsToMany $query) => $query
                             ->select('connectors.id', 'provider_id', 'user_id')
-                            ->forCurrentUser(),
+                            ->whereBelongsTo(Auth::user()),
                         'calendar.connectors.provider',
                     ]);
                     $tags[] = static::forEnum($object->calendar->connector->first()->provider->service());

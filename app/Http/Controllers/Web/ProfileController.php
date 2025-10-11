@@ -7,7 +7,9 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\UpdateProfileRequest;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Str;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -15,7 +17,20 @@ class ProfileController extends Controller
 {
     public function edit(): Response
     {
-        return Inertia::render('Profile/Edit');
+        return Inertia::render('Profile/Edit', [
+            'timezones' => collect(timezone_identifiers_list())
+                ->groupBy(fn ($tz) => Str::before($tz, '/'))
+                ->map(fn (Collection $zones, string $label): array => [
+                    'label' => $label,
+                    'options' => $zones
+                        ->sort()
+                        ->values() // ensure numeric keys (JSON -> array, not object)
+                        ->map(fn (string $tz): array => ['value' => $tz, 'label' => $tz])
+                        ->all(),
+                ])
+                ->sortBy('label')
+                ->values(),
+        ]);
     }
 
     public function update(UpdateProfileRequest $request, SaveUserPhoto $saveUserPhoto): RedirectResponse
@@ -27,7 +42,12 @@ class ProfileController extends Controller
             $saveUserPhoto->execute($user, $request->file('photo'));
         }
 
-        $user->update(Arr::except($validated, 'photo'));
+        $user->update(Arr::except($validated, ['photo', 'default_timezone']));
+
+        $user->settings()->updateOrCreate(
+            ['user_id' => $user->id],
+            ['default_timezone' => $validated['default_timezone']]
+        );
 
         return redirect()->route('profile.edit')
             ->with('success', __('profile.profile_updated_successfully'));

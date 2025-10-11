@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Web;
 
 use App\Actions\GetProviderCalendars;
-use App\Builders\ConnectorBuilder;
 use App\Data\CalendarData;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreCalendarRequest;
@@ -11,6 +10,7 @@ use App\Http\Requests\UpdateCalendarRequest;
 use App\Models\Calendar;
 use App\Models\Connector;
 use App\Models\Provider;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -28,9 +28,9 @@ class CalendarsController extends Controller
 
         // TODO: fix pagination
         $calendars = Calendar::with([
-            'connectors' => fn (ConnectorBuilder $query) => $query
+            'connectors' => fn (BelongsToMany $query) => $query
                 ->select('connectors.id', 'provider_id', 'user_id')
-                ->forCurrentUser(),
+                ->whereBelongsTo(Auth::user()),
             'connectors.provider:id,name',
         ])
             ->forCurrentUser()

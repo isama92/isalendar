@@ -15,6 +15,7 @@ class UpdateProfileRequest extends FormRequest
             'first_name' => ['required', 'string', 'max:255'],
             'last_name' => ['required', 'string', 'max:255'],
             'photo' => ['nullable', 'image', 'mimes:jpeg,jpg,png', 'max:2048'],
+            'default_timezone' => ['required', 'string', 'timezone:all'],
         ];
     }
 }
