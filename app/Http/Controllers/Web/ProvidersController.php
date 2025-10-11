@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers\Web;
 
+use App\Builders\ConnectorBuilder;
 use App\Http\Requests\StoreProviderRequest;
 use App\Models\Calendar;
 use App\Models\Connector;
 use App\Models\Provider;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
@@ -22,7 +22,7 @@ class ProvidersController
 
         $providers = Provider::query()
             ->enabled()
-            ->withCount(['connectors' => function (Builder $query): void {
+            ->withCount(['connectors' => function (ConnectorBuilder $query): void {
                 $query->where('user_id', Auth::id());
             }])
             ->orderBy('name')

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Web;
 
+use App\Builders\ConnectorBuilder;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreEventRequest;
 use App\Http\Requests\UpdateEventRequest;
@@ -9,7 +10,6 @@ use App\Models\Calendar;
 use App\Models\Event;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -23,9 +23,9 @@ class EventsController extends Controller
         // TODO: fix pagination
         $events = Event::with([
             'calendar:id,name',
-            'calendar.connectors' => fn ($query) => $query
+            'calendar.connectors' => fn (ConnectorBuilder $query) => $query
                 ->select('connectors.id', 'provider_id', 'user_id')
-                ->whereBelongsTo(Auth::user()),
+                ->forCurrentUser(),
             'calendar.connectors.provider:id,name',
         ])
             ->forCurrentUser()
@@ -116,9 +116,9 @@ class EventsController extends Controller
     private function getCalendarsForSelect(): Collection
     {
         return Calendar::with([
-            'connectors' => fn ($query) => $query
+            'connectors' => fn (ConnectorBuilder $query) => $query
                 ->select('connectors.id', 'provider_id', 'user_id')
-                ->whereBelongsTo(Auth::user()),
+                ->forCurrentUser(),
             'connectors.provider:id,name',
         ])
             ->forCurrentUser(true)

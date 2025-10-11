@@ -49,7 +49,7 @@ class GetDashboardEventStats
     private function getEventsForDate(CarbonImmutable $date, ?CarbonImmutable $endDate = null): int
     {
         return Event::forCurrentUser()
-            ->where(function ($query) use ($date, $endDate): void {
+            ->where(function (EventBuilder $query) use ($date, $endDate): void {
                 $query->where(function (EventBuilder $q) use ($date): void {
                     $q->where('all_day', true)
                         ->whereDate('starts_at', $date);

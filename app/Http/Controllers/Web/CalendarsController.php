@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Web;
 
 use App\Actions\GetProviderCalendars;
+use App\Builders\ConnectorBuilder;
 use App\Data\CalendarData;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreCalendarRequest;
@@ -27,9 +28,9 @@ class CalendarsController extends Controller
 
         // TODO: fix pagination
         $calendars = Calendar::with([
-            'connectors' => fn ($query) => $query
+            'connectors' => fn (ConnectorBuilder $query) => $query
                 ->select('connectors.id', 'provider_id', 'user_id')
-                ->whereBelongsTo(Auth::user()),
+                ->forCurrentUser(),
             'connectors.provider:id,name',
         ])
             ->forCurrentUser()
@@ -51,7 +52,8 @@ class CalendarsController extends Controller
         // Filter out existing calendars
         $existingCalendarsExtIds = $connector->calendars()->pluck('external_id');
         $calendarDataCollection = $getProviderCalendars->execute($connector)
-            ->filter(fn (CalendarData $calendarData) => $existingCalendarsExtIds->doesntContain($calendarData->externalId))
+            ->filter(fn (CalendarData $calendarData) => $existingCalendarsExtIds
+                ->doesntContain($calendarData->externalId))
             ->values();
 
         $request->session()->put('calendars.create.list', $calendarDataCollection);
@@ -104,7 +106,7 @@ class CalendarsController extends Controller
         Gate::authorize('delete', $calendar);
 
         $connector = $calendar->connectors()
-            ->whereBelongsTo(Auth::user())
+            ->forCurrentUser()
             ->sole();
 
         $connector->calendars()->detach($calendar);
