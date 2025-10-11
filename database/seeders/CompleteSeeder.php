@@ -35,7 +35,8 @@ class CompleteSeeder extends Seeder
     private function createUsers(): Collection
     {
         $user = User::factory()->create([
-            'name' => 'Test User',
+            'first_name' => 'Test',
+            'last_name' => 'User',
             'email' => 'test@example.com',
         ]);
         $user->assignRole(Role::SUPER_ADMIN);
