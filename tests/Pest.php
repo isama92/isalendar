@@ -3,8 +3,6 @@
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
-pest()->printer()->compact();
-
 pest()->extend(TestCase::class)
     ->use(RefreshDatabase::class)
     ->in('Feature');

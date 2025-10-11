@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Builders\ConnectorBuilder;
 use App\Casts\ProviderAccessDetailsCast;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\HasBuilder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -12,6 +13,9 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Connector extends Model
 {
+    /** @use HasFactory<\Database\Factories\ConnectorFactory> */
+    use HasFactory;
+
     /** @use \Illuminate\Database\Eloquent\HasBuilder<\App\Builders\ConnectorBuilder> */
     use HasBuilder;
 
@@ -24,6 +28,10 @@ class Connector extends Model
         'external_id',
         'access_details',
         'enabled',
+    ];
+
+    protected $hidden = [
+        'access_details',
     ];
 
     /**

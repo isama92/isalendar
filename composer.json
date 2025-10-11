@@ -20,6 +20,7 @@
         "spatie/laravel-data": "^4.17",
         "spatie/laravel-permission": "^6.21",
         "spatie/laravel-queueable-action": "^2.16",
+        "staudenmeir/eloquent-has-many-deep": "^1.21",
         "tightenco/ziggy": "^2.6",
         "torann/geoip": "^3.0"
     },

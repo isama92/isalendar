@@ -13,6 +13,8 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Spatie\Permission\Traits\HasRoles;
+use Staudenmeir\EloquentHasManyDeep\HasManyDeep;
+use Staudenmeir\EloquentHasManyDeep\HasRelationships;
 
 #[ObservedBy([UserObserver::class])]
 class User extends Authenticatable implements MustVerifyEmail
@@ -23,6 +25,7 @@ class User extends Authenticatable implements MustVerifyEmail
     use HasRoles;
     use Notifiable;
     use SoftDeletes;
+    use HasRelationships;
 
     protected $fillable = [
         'first_name',
@@ -51,6 +54,14 @@ class User extends Authenticatable implements MustVerifyEmail
     }
 
     /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne<\App\Models\UserSetting, $this>
+     */
+    public function settings(): HasOne
+    {
+        return $this->hasOne(UserSetting::class);
+    }
+
+    /**
      * @return \Illuminate\Database\Eloquent\Relations\HasMany<\App\Models\Connector, $this>
      */
     public function connectors(): HasMany
@@ -59,11 +70,19 @@ class User extends Authenticatable implements MustVerifyEmail
     }
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasOne<\App\Models\UserSetting, $this>
+     * if paginating $user->calendars()->distinct('calendars.id')->paginate()
+     * use the distinct to get unique records
+     *
+     * @return \Staudenmeir\EloquentHasManyDeep\HasManyDeep<\App\Models\Calendar, $this>
      */
-    public function settings(): HasOne
+    public function calendars(): HasManyDeep
     {
-        return $this->hasOne(UserSetting::class);
+        return $this->hasManyDeep(
+            related: Calendar::class,
+            through: [Connector::class, 'calendar_connector'],
+            foreignKeys: ['user_id', 'connector_id', 'id'],
+            localKeys: ['id', 'id', 'calendar_id']
+        )->distinct();
     }
 
     /**
