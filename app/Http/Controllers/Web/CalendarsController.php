@@ -49,12 +49,14 @@ class CalendarsController extends Controller
         // Filter out existing calendars
         $existingCalendarsExtIds = $connector->calendars()->pluck('external_id');
         $calendarDataCollection = $getProviderCalendars->execute($connector)
-            ->filter(fn (CalendarData $calendarData) => $existingCalendarsExtIds->doesntContain($calendarData->externalId));
+            ->filter(fn (CalendarData $calendarData) => $existingCalendarsExtIds->doesntContain($calendarData->externalId))
+            ->values();
 
         $request->session()->put('calendars.create.list', $calendarDataCollection);
 
         return Inertia::render('Calendars/Create', [
             'connectorRouteKey' => $connector->getRouteKey(),
+            'provider' => $connector->provider->only(['id', 'name', 'image_path']),
             'calendars' => $calendarDataCollection,
         ]);
     }
@@ -111,6 +113,7 @@ class CalendarsController extends Controller
                 ->lazyById()
                 ->each
                 ->deleteQuietly();
+            $calendar->update(['enabled' => true]);
             $calendar->delete();
         }
 

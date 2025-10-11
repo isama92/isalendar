@@ -70,8 +70,8 @@ const Index = ({ calendars }) => {
                             }}
                             title={
                                 info.row.original.enabled
-                                    ? __('calendars.disable_calendar')
-                                    : __('calendars.enable_calendar')
+                                    ? __('calendars.disable_calendar_sync')
+                                    : __('calendars.enable_calendar_sync')
                             }
                             className={
                                 info.row.original.enabled
