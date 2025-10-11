@@ -2,9 +2,15 @@
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
+use Torann\GeoIP\Facades\GeoIP;
 
 pest()->extend(TestCase::class)
     ->use(RefreshDatabase::class)
+    ->beforeEach(function (): void {
+        GeoIP::shouldReceive('getLocation')
+            ->zeroOrMoreTimes()
+            ->andReturn(['timezone' => 'Europe/Amsterdam']);
+    })
     ->in('Feature');
 
 pest()->extend(
