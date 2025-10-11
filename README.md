@@ -28,7 +28,6 @@ Add events to a shared calendar.
 - add filter by provider in calendars index
 - add observer on event creation/edit, push the event immediately
 - add a scheduled command that checks if there are not synchronized events (lock when pushing in observer, check if it's locked in scheduled command, in case they run at the same time)
-- change position of dashboard stats based on screen size
 - add tags to actions/batches so to know what is being processed in horizon ui
 - soft delete users
 - allow the user to disable calendars

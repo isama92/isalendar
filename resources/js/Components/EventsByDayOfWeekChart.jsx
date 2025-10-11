@@ -47,11 +47,13 @@ const EventsByDayOfWeekChart = ({ averagePerDayOfWeek }) => {
     };
 
     return (
-        <div className="rounded-lg bg-white p-4 shadow sm:p-6 dark:bg-gray-800">
-            <h3 className="mb-4 text-base font-semibold text-gray-900 sm:text-lg dark:text-gray-100">
+        <div className="overflow-hidden rounded-lg bg-white px-4 py-5 shadow-sm sm:p-6 dark:bg-gray-800/75 dark:inset-ring dark:inset-ring-white/10">
+            <h3 className="text-base font-semibold text-gray-900 dark:text-white">
                 {__('dashboard.events_by_day_of_week')}
             </h3>
-            <ReactECharts option={chartOptions} style={{ height: '300px' }} className="sm:h-[400px]" />
+            <div className="mt-5">
+                <ReactECharts option={chartOptions} style={{ height: '300px' }} className="sm:h-[400px]" />
+            </div>
         </div>
     );
 };

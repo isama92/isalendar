@@ -1,8 +1,15 @@
-const StatCard = ({ label, value }) => {
+import clsx from 'clsx';
+
+const StatCard = ({ label, value, className = '' }) => {
     return (
-        <div className="rounded-lg bg-white p-6 shadow dark:bg-gray-800">
-            <h3 className="text-sm font-medium text-gray-500 dark:text-gray-400">{label}</h3>
-            <p className="mt-2 text-3xl font-semibold text-gray-900 dark:text-gray-100">{value}</p>
+        <div
+            className={clsx(
+                'overflow-hidden rounded-lg bg-white px-4 py-5 shadow-sm sm:p-6 dark:bg-gray-800/75 dark:inset-ring dark:inset-ring-white/10',
+                className
+            )}
+        >
+            <dt className="truncate text-sm font-medium text-gray-500 dark:text-gray-400">{label}</dt>
+            <dd className="mt-1 text-3xl font-semibold tracking-tight text-gray-900 dark:text-white">{value}</dd>
         </div>
     );
 };
