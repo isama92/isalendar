@@ -8,6 +8,7 @@ use App\Http\Requests\UpdateEventRequest;
 use App\Models\Calendar;
 use App\Models\Event;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -21,9 +22,10 @@ class EventsController extends Controller
         // TODO: fix pagination
         $events = Event::with([
             'calendar:id,name',
-            'calendar.connectors:id,provider_id,user_id',
+            'calendar.connectors' => fn ($query) => $query
+                ->select('connectors.id', 'provider_id', 'user_id')
+                ->whereBelongsTo(Auth::user()),
             'calendar.connectors.provider:id,name',
-            // TODO: filter connectors by user or every connector will be added in the response
         ])
             ->forCurrentUser()
             ->paginate(10);
@@ -48,9 +50,8 @@ class EventsController extends Controller
     {
         Gate::authorize('create', Event::class);
 
-        // TODO: danger - super admin can create events for other users
         $calendars = Calendar::query()
-            ->forCurrentUser()
+            ->forCurrentUser(true)
             ->select('id', 'name')
             ->get();
 
@@ -73,9 +74,8 @@ class EventsController extends Controller
 
         $event->loadMissing('calendar:id');
 
-        // TODO: danger - super admin can create events for other users
         $calendars = Calendar::query()
-            ->forCurrentUser()
+            ->forCurrentUser(true)
             ->select('id', 'name')
             ->get();
 

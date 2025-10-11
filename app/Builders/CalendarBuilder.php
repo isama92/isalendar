@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\Auth;
  */
 class CalendarBuilder extends Builder
 {
-    public function forCurrentUser(): self
+    public function forCurrentUser(bool $skipSuperAdmin = false): self
     {
         $user = Auth::user();
 
@@ -20,7 +20,7 @@ class CalendarBuilder extends Builder
             return $this;
         }
 
-        if ($user->hasRole(Role::SUPER_ADMIN)) {
+        if (! $skipSuperAdmin && $user->hasRole(Role::SUPER_ADMIN)) {
             return $this;
         }
 

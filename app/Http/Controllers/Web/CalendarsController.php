@@ -23,8 +23,10 @@ class CalendarsController extends Controller
     {
         Gate::authorize('viewAny', Calendar::class);
 
+        // TODO: fix pagination
         $calendars = Calendar::with([
-            'connectors' => fn ($query) => $query->select('connectors.id', 'provider_id', 'user_id')
+            'connectors' => fn ($query) => $query
+                ->select('connectors.id', 'provider_id', 'user_id')
                 ->whereBelongsTo(Auth::user()),
             'connectors.provider:id,name',
         ])
@@ -78,7 +80,6 @@ class CalendarsController extends Controller
             $connector->update(['enabled' => true]);
         });
 
-        // TODO: render success message
         return redirect()->route('calendars.index')
             ->with('success', __('calendars.calendar_created'));
     }
@@ -106,7 +107,6 @@ class CalendarsController extends Controller
             $connector->delete();
         }
 
-        // TODO: render success message
         return redirect()->route('calendars.index')
             ->with('success', __('calendars.calendar_deleted'));
     }
