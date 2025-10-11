@@ -18,6 +18,7 @@ import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 
 const Form = ({ calendars, event = null }) => {
+    console.log(calendars);
     const isEditing = !!event;
 
     const { data, setData, post, put, processing, transform, errors, reset } = useForm({
@@ -106,7 +107,7 @@ const Form = ({ calendars, event = null }) => {
                                                         : 'text-gray-500 dark:text-gray-400'
                                                 )}
                                             >
-                                                {selected?.name}
+                                                {selected?.connector?.provider?.name}
                                             </span>
                                         </span>
                                         <ChevronUpDownIcon
@@ -130,7 +131,7 @@ const Form = ({ calendars, event = null }) => {
                                                         {calendar.name}
                                                     </span>
                                                     <span className="ml-2 truncate text-gray-500 group-data-focus:text-indigo-200 dark:text-gray-400 dark:group-data-focus:text-indigo-100">
-                                                        {calendar.name}
+                                                        {calendar.connector.provider.name}
                                                     </span>
                                                 </div>
 

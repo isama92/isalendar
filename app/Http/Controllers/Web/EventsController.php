@@ -8,6 +8,7 @@ use App\Http\Requests\UpdateEventRequest;
 use App\Models\Calendar;
 use App\Models\Event;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
 use Inertia\Inertia;
@@ -50,13 +51,8 @@ class EventsController extends Controller
     {
         Gate::authorize('create', Event::class);
 
-        $calendars = Calendar::query()
-            ->forCurrentUser(true)
-            ->select('id', 'name')
-            ->get();
-
         return Inertia::render('Events/Form', [
-            'calendars' => $calendars,
+            'calendars' => $this->getCalendarsForSelect(),
         ]);
     }
 
@@ -82,14 +78,9 @@ class EventsController extends Controller
 
         $event->loadMissing('calendar:id');
 
-        $calendars = Calendar::query()
-            ->forCurrentUser(true)
-            ->select('id', 'name')
-            ->get();
-
         return Inertia::render('Events/Form', [
             'event' => $event,
-            'calendars' => $calendars,
+            'calendars' => $this->getCalendarsForSelect(),
         ]);
     }
 
@@ -117,5 +108,21 @@ class EventsController extends Controller
 
         return redirect()->route('events.index')
             ->with('success', __('events.event_deleted'));
+    }
+
+    /**
+     * @return \Illuminate\Support\Collection<int, \App\Models\Calendar>
+     */
+    private function getCalendarsForSelect(): Collection
+    {
+        return Calendar::with([
+            'connectors' => fn ($query) => $query
+                ->select('connectors.id', 'provider_id', 'user_id')
+                ->whereBelongsTo(Auth::user()),
+            'connectors.provider:id,name',
+        ])
+            ->forCurrentUser(true)
+            ->select('id', 'name')
+            ->get();
     }
 }
