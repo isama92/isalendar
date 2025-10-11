@@ -6,6 +6,7 @@ use App\Actions\GetProviderCalendars;
 use App\Data\CalendarData;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreCalendarRequest;
+use App\Http\Requests\UpdateCalendarRequest;
 use App\Models\Calendar;
 use App\Models\Connector;
 use Illuminate\Http\RedirectResponse;
@@ -82,6 +83,16 @@ class CalendarsController extends Controller
 
         return redirect()->route('calendars.index')
             ->with('success', __('calendars.calendar_created'));
+    }
+
+    public function update(UpdateCalendarRequest $request, Calendar $calendar): RedirectResponse
+    {
+        $calendar->update($request->validated());
+
+        return redirect()->route('calendars.index')
+            ->with('success', $calendar->enabled
+                ? __('calendars.calendar_enabled')
+                : __('calendars.calendar_disabled'));
     }
 
     public function destroy(Calendar $calendar): RedirectResponse

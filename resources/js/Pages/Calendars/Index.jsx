@@ -1,6 +1,14 @@
 import Modal from '@/Components/Modal';
 import Pagination from '@/Components/Pagination';
-import { ChevronDownIcon, ChevronUpIcon, TrashIcon } from '@heroicons/react/24/solid';
+import {
+    CheckIcon,
+    ChevronDownIcon,
+    ChevronUpIcon,
+    LockClosedIcon,
+    LockOpenIcon,
+    TrashIcon,
+    XMarkIcon,
+} from '@heroicons/react/24/solid';
 import { PlusIcon } from '@heroicons/react/24/solid/index.js';
 import { Link, router } from '@inertiajs/react';
 import {
@@ -17,12 +25,28 @@ const Index = ({ calendars }) => {
     const [columnFilters, setColumnFilters] = useState([]);
     const [deleteModalOpen, setDeleteModalOpen] = useState(false);
     const [calendarToDelete, setCalendarToDelete] = useState(null);
+    const [toggleModalOpen, setToggleModalOpen] = useState(false);
+    const [calendarToToggle, setCalendarToToggle] = useState(null);
 
     const columns = useMemo(
         () => [
             {
                 header: __('calendars.name'),
                 accessorKey: 'name',
+            },
+            {
+                header: __('calendars.enabled'),
+                accessorKey: 'enabled',
+                cell: info =>
+                    info.getValue() ? (
+                        <CheckIcon className="h-5 w-5 text-green-500" />
+                    ) : (
+                        <XMarkIcon className="h-5 w-5 text-gray-400" />
+                    ),
+                filterFn: (row, id, value) => {
+                    if (value === 'all') return true;
+                    return row.getValue(id) === (value === 'true');
+                },
             },
             {
                 header: __('calendars.events_count'),
@@ -36,15 +60,37 @@ const Index = ({ calendars }) => {
             },
             {
                 id: 'actions',
-                header: __('common.actions'),
+                header: __('actions.actions'),
                 cell: info => (
                     <div className="flex items-center gap-2">
+                        <button
+                            onClick={() => {
+                                setCalendarToToggle(info.row.original);
+                                setToggleModalOpen(true);
+                            }}
+                            title={
+                                info.row.original.enabled
+                                    ? __('calendars.disable_calendar')
+                                    : __('calendars.enable_calendar')
+                            }
+                            className={
+                                info.row.original.enabled
+                                    ? 'cursor-pointer text-yellow-600 hover:text-yellow-800 dark:text-yellow-400 dark:hover:text-yellow-300'
+                                    : 'cursor-pointer text-green-600 hover:text-green-800 dark:text-green-400 dark:hover:text-green-300'
+                            }
+                        >
+                            {info.row.original.enabled ? (
+                                <LockClosedIcon className="h-5 w-5" />
+                            ) : (
+                                <LockOpenIcon className="h-5 w-5" />
+                            )}
+                        </button>
                         <button
                             onClick={() => {
                                 setCalendarToDelete(info.row.original);
                                 setDeleteModalOpen(true);
                             }}
-                            title={__('common.delete')}
+                            title={__('actions.delete')}
                             className="cursor-pointer text-red-600 hover:text-red-800 dark:text-red-400 dark:hover:text-red-300"
                         >
                             <TrashIcon className="h-5 w-5" />
@@ -94,6 +140,15 @@ const Index = ({ calendars }) => {
                     onChange={e => table.getColumn('name')?.setFilterValue(e.target.value)}
                     className="rounded-md border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100"
                 />
+                <select
+                    value={table.getColumn('enabled')?.getFilterValue() ?? 'all'}
+                    onChange={e => table.getColumn('enabled')?.setFilterValue(e.target.value)}
+                    className="rounded-md border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100"
+                >
+                    <option value="all">{__('calendars.all_calendars')}</option>
+                    <option value="true">{__('calendars.enabled_only')}</option>
+                    <option value="false">{__('calendars.disabled_only')}</option>
+                </select>
             </div>
 
             <div className="-mx-4 overflow-x-auto sm:mx-0">
@@ -151,12 +206,39 @@ const Index = ({ calendars }) => {
             <Pagination data={calendars} routeName="calendars.index" />
 
             <Modal
+                open={toggleModalOpen}
+                onClose={() => setToggleModalOpen(false)}
+                title={
+                    calendarToToggle?.enabled
+                        ? __('calendars.disable_calendar_sync')
+                        : __('calendars.enable_calendar_sync')
+                }
+                message={
+                    calendarToToggle?.enabled
+                        ? __('calendars.disable_confirm_message')
+                        : __('calendars.enable_confirm_message')
+                }
+                confirmText={calendarToToggle?.enabled ? __('actions.disable') : __('actions.enable')}
+                cancelText={__('actions.cancel')}
+                variant="warning"
+                onConfirm={() => {
+                    if (calendarToToggle) {
+                        router.put(route('calendars.update', calendarToToggle.id), {
+                            enabled: !calendarToToggle.enabled,
+                        });
+                        setToggleModalOpen(false);
+                        setCalendarToToggle(null);
+                    }
+                }}
+            />
+
+            <Modal
                 open={deleteModalOpen}
                 onClose={() => setDeleteModalOpen(false)}
                 title={__('calendars.delete_calendar')}
                 message={__('calendars.delete_confirm_message')}
-                confirmText={__('common.delete')}
-                cancelText={__('common.cancel')}
+                confirmText={__('actions.delete')}
+                cancelText={__('actions.cancel')}
                 variant="danger"
                 onConfirm={() => {
                     if (calendarToDelete) {

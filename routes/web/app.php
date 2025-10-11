@@ -37,6 +37,8 @@ Route::middleware('auth')->group(function (): void {
                 ->name('create');
             Route::post('/create/{connector}', [CalendarsController::class, 'store'])
                 ->name('store');
+            Route::put('/{calendar}', [CalendarsController::class, 'update'])
+                ->name('update');
             Route::delete('/{calendar}', [CalendarsController::class, 'destroy'])
                 ->name('destroy');
         });
