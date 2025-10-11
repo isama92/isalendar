@@ -1,8 +1,17 @@
 import Checkbox from '@/Components/Checkbox';
 import { formatWithFormat } from '@/utils/date';
-import { Listbox, ListboxButton, ListboxOption, ListboxOptions } from '@headlessui/react';
+import {
+    Listbox,
+    ListboxButton,
+    ListboxOption,
+    ListboxOptions,
+    Menu,
+    MenuButton,
+    MenuItem,
+    MenuItems,
+} from '@headlessui/react';
 import { ChevronUpDownIcon } from '@heroicons/react/16/solid';
-import { CheckIcon } from '@heroicons/react/20/solid';
+import { CheckIcon, ChevronDownIcon } from '@heroicons/react/20/solid';
 import { useForm } from '@inertiajs/react';
 import clsx from 'clsx';
 import DatePicker from 'react-datepicker';
@@ -11,7 +20,7 @@ import 'react-datepicker/dist/react-datepicker.css';
 const Form = ({ calendars, event = null }) => {
     const isEditing = !!event;
 
-    const { data, setData, post, put, processing, errors } = useForm({
+    const { data, setData, post, put, processing, transform, errors, reset } = useForm({
         calendar_id: event?.calendar?.id || '',
         title: event?.title || '',
         all_day: event?.all_day || false,
@@ -20,15 +29,31 @@ const Form = ({ calendars, event = null }) => {
         description: event?.description || '',
     });
 
-    const handleSubmit = e => {
+    const handleSubmit = (e, redirectTo = null) => {
         e.preventDefault();
+
+        const defaultRedirect = isEditing ? 'show' : 'new';
+        const actualRedirect = redirectTo || defaultRedirect;
+
+        transform(() => {
+            return {
+                ...data,
+                redirect_to: actualRedirect,
+            };
+        });
 
         if (isEditing) {
             put(route('events.update', event.id));
             return;
         }
 
-        post(route('events.store'));
+        post(route('events.store'), {
+            onSuccess: () => {
+                if (actualRedirect === 'new') {
+                    reset();
+                }
+            },
+        });
     };
 
     const selected = calendars.find(cal => cal.id === data.calendar_id);
@@ -319,20 +344,86 @@ const Form = ({ calendars, event = null }) => {
                     >
                         {__('common.back')}
                     </button>
-                    <button
-                        type="button"
-                        onClick={handleSubmit}
-                        disabled={processing}
-                        className="inline-flex cursor-pointer justify-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-xs hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 dark:bg-indigo-500 dark:shadow-none dark:hover:bg-indigo-400 dark:focus-visible:outline-indigo-500"
-                    >
-                        {processing
-                            ? isEditing
-                                ? __('common.updating')
-                                : __('common.creating')
-                            : isEditing
-                              ? __('common.update')
-                              : __('common.create')}
-                    </button>
+                    <div className="inline-flex rounded-md shadow-xs dark:shadow-none">
+                        <button
+                            type="button"
+                            onClick={e => handleSubmit(e)}
+                            disabled={processing}
+                            className="relative inline-flex items-center rounded-l-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white inset-ring-1 inset-ring-indigo-600 hover:bg-indigo-500 focus:z-10 dark:bg-indigo-500 dark:inset-ring-indigo-500 dark:hover:bg-indigo-400"
+                        >
+                            {processing
+                                ? isEditing
+                                    ? __('common.updating')
+                                    : __('common.creating')
+                                : isEditing
+                                  ? __('actions.update_and_view')
+                                  : __('actions.create_and_new')}
+                        </button>
+                        <Menu as="div" className="relative -ml-px block">
+                            <MenuButton
+                                disabled={processing}
+                                className="relative inline-flex items-center rounded-r-md bg-indigo-600 px-2 py-2 text-white inset-ring-1 inset-ring-indigo-600 hover:bg-indigo-500 focus:z-10 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-indigo-500 dark:inset-ring-indigo-500 dark:hover:bg-indigo-400"
+                            >
+                                <span className="sr-only">Open options</span>
+                                <ChevronDownIcon aria-hidden="true" className="size-5" />
+                            </MenuButton>
+                            <MenuItems
+                                anchor="bottom end"
+                                transition
+                                className="z-10 w-56 rounded-md bg-white shadow-lg outline-1 outline-black/5 transition data-closed:scale-95 data-closed:transform data-closed:opacity-0 data-enter:duration-100 data-enter:ease-out data-leave:duration-75 data-leave:ease-in dark:bg-gray-800 dark:shadow-none dark:-outline-offset-1 dark:outline-white/10"
+                            >
+                                <div className="py-1">
+                                    {isEditing ? (
+                                        <>
+                                            <MenuItem>
+                                                <button
+                                                    type="button"
+                                                    onClick={e => handleSubmit(e, 'edit')}
+                                                    disabled={processing}
+                                                    className="block w-full px-4 py-2 text-left text-sm text-gray-700 disabled:cursor-not-allowed disabled:opacity-50 data-focus:bg-gray-100 data-focus:text-gray-900 data-focus:outline-hidden dark:text-gray-300 dark:data-focus:bg-white/5 dark:data-focus:text-white"
+                                                >
+                                                    {__('actions.update_and_stay')}
+                                                </button>
+                                            </MenuItem>
+                                            <MenuItem>
+                                                <button
+                                                    type="button"
+                                                    onClick={e => handleSubmit(e, 'index')}
+                                                    disabled={processing}
+                                                    className="block w-full px-4 py-2 text-left text-sm text-gray-700 disabled:cursor-not-allowed disabled:opacity-50 data-focus:bg-gray-100 data-focus:text-gray-900 data-focus:outline-hidden dark:text-gray-300 dark:data-focus:bg-white/5 dark:data-focus:text-white"
+                                                >
+                                                    {__('actions.update_and_list')}
+                                                </button>
+                                            </MenuItem>
+                                        </>
+                                    ) : (
+                                        <>
+                                            <MenuItem>
+                                                <button
+                                                    type="button"
+                                                    onClick={e => handleSubmit(e, 'show')}
+                                                    disabled={processing}
+                                                    className="block w-full px-4 py-2 text-left text-sm text-gray-700 disabled:cursor-not-allowed disabled:opacity-50 data-focus:bg-gray-100 data-focus:text-gray-900 data-focus:outline-hidden dark:text-gray-300 dark:data-focus:bg-white/5 dark:data-focus:text-white"
+                                                >
+                                                    {__('actions.create_and_view')}
+                                                </button>
+                                            </MenuItem>
+                                            <MenuItem>
+                                                <button
+                                                    type="button"
+                                                    onClick={e => handleSubmit(e, 'index')}
+                                                    disabled={processing}
+                                                    className="block w-full px-4 py-2 text-left text-sm text-gray-700 disabled:cursor-not-allowed disabled:opacity-50 data-focus:bg-gray-100 data-focus:text-gray-900 data-focus:outline-hidden dark:text-gray-300 dark:data-focus:bg-white/5 dark:data-focus:text-white"
+                                                >
+                                                    {__('actions.create_and_list')}
+                                                </button>
+                                            </MenuItem>
+                                        </>
+                                    )}
+                                </div>
+                            </MenuItems>
+                        </Menu>
+                    </div>
                 </div>
             </form>
         </div>

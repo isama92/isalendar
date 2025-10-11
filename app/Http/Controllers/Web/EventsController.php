@@ -62,9 +62,17 @@ class EventsController extends Controller
 
     public function store(StoreEventRequest $request): RedirectResponse
     {
-        Event::create($request->validated());
+        $event = Event::create($request->validated());
 
-        return redirect()->route('events.index')
+        $redirectTo = $request->input('redirect_to', 'index');
+
+        $route = match ($redirectTo) {
+            'new' => route('events.create'),
+            'show' => route('events.show', $event),
+            default => route('events.index'),
+        };
+
+        return redirect($route)
             ->with('success', __('events.event_created'));
     }
 
@@ -89,7 +97,15 @@ class EventsController extends Controller
     {
         $event->update($request->validated());
 
-        return redirect()->route('events.index')
+        $redirectTo = $request->input('redirect_to', 'show');
+
+        $route = match ($redirectTo) {
+            'edit' => route('events.edit', $event),
+            'index' => route('events.index'),
+            default => route('events.show', $event),
+        };
+
+        return redirect($route)
             ->with('success', __('events.event_updated'));
     }
 
