@@ -10,7 +10,6 @@ return [
     'delete_calendar' => 'Elimina Calendario',
     'delete_confirm' => 'Sei sicuro di voler eliminare questo calendario?',
     'delete_confirm_message' => 'Sei sicuro di voler eliminare questo calendario? Questa azione non può essere annullata.',
-    'filter_by_name' => 'Filtra per titolo...',
     'choose_calendar' => 'Scegli il Calendario',
     'calendar_created' => 'Calendario creato',
     'calendar_deleted' => 'Calendario eliminato',
@@ -24,7 +23,6 @@ return [
     'calendar_disabled' => 'Calendario disabilitato',
     'calendar_enabled' => 'Calendario abilitato',
     'enabled' => 'Abilitato',
-    'all_calendars' => 'Tutti i calendari',
     'enabled_only' => 'Solo abilitati',
     'disabled_only' => 'Solo disabilitati',
 ];

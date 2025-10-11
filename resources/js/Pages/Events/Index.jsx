@@ -147,7 +147,7 @@ const Index = ({ events }) => {
             <div className="mb-4 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
                 <input
                     type="text"
-                    placeholder={__('events.filter_by_title')}
+                    placeholder={__('actions.named.filter_by', { name: __('events.title') })}
                     value={table.getColumn('title')?.getFilterValue() ?? ''}
                     onChange={e => table.getColumn('title')?.setFilterValue(e.target.value)}
                     className="rounded-md border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100"
@@ -171,7 +171,7 @@ const Index = ({ events }) => {
                         table.getColumn('starts_at')?.setFilterValue(date ? formatWithFormat(date, 'YYYY-MM-DD') : '')
                     }
                     dateFormat="dd/MM/yyyy"
-                    placeholderText={__('events.filter_by_starts_at')}
+                    placeholderText={__('actions.named.filter_by', { name: __('events.starts_at') })}
                     isClearable
                     calendarStartDay={1}
                     withPortal
@@ -187,7 +187,7 @@ const Index = ({ events }) => {
                         table.getColumn('ends_at')?.setFilterValue(date ? formatWithFormat(date, 'YYYY-MM-DD') : '')
                     }
                     dateFormat="dd/MM/yyyy"
-                    placeholderText={__('events.filter_by_ends_at')}
+                    placeholderText={__('actions.named.filter_by', { name: __('events.ends_at') })}
                     isClearable
                     calendarStartDay={1}
                     withPortal

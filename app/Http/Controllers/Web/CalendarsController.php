@@ -9,6 +9,7 @@ use App\Http\Requests\StoreCalendarRequest;
 use App\Http\Requests\UpdateCalendarRequest;
 use App\Models\Calendar;
 use App\Models\Connector;
+use App\Models\Provider;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -37,6 +38,7 @@ class CalendarsController extends Controller
 
         return Inertia::render('Calendars/Index', [
             'calendars' => $calendars,
+            'providers' => Provider::enabled()->get(['id', 'name']),
         ]);
     }
 

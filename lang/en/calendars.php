@@ -10,7 +10,6 @@ return [
     'delete_calendar' => 'Delete Calendar',
     'delete_confirm' => 'Are you sure you want to delete this calendar?',
     'delete_confirm_message' => 'Are you sure you want to delete this calendar? This action cannot be undone.',
-    'filter_by_name' => 'Filter by title...',
     'choose_calendar' => 'Choose the Calendar',
     'calendar_created' => 'Calendar created',
     'calendar_deleted' => 'Calendar has been deleted',
@@ -24,7 +23,6 @@ return [
     'calendar_disabled' => 'Calendar disabled',
     'calendar_enabled' => 'Calendar enabled',
     'enabled' => 'Enabled',
-    'all_calendars' => 'All calendars',
     'enabled_only' => 'Enabled only',
     'disabled_only' => 'Disabled only',
 ];

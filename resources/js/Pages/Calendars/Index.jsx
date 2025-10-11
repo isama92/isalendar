@@ -20,7 +20,7 @@ import {
 } from '@tanstack/react-table';
 import { useMemo, useState } from 'react';
 
-const Index = ({ calendars }) => {
+const Index = ({ calendars, providers }) => {
     const [sorting, setSorting] = useState([]);
     const [columnFilters, setColumnFilters] = useState([]);
     const [deleteModalOpen, setDeleteModalOpen] = useState(false);
@@ -57,6 +57,10 @@ const Index = ({ calendars }) => {
                 header: __('calendars.provider_name'),
                 id: 'provider_name',
                 accessorFn: row => row.connector.provider.name,
+                filterFn: (row, id, value) => {
+                    if (value === 'all') return true;
+                    return row.original.id.toString() === value;
+                },
             },
             {
                 id: 'actions',
@@ -135,7 +139,7 @@ const Index = ({ calendars }) => {
             <div className="mb-4 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
                 <input
                     type="text"
-                    placeholder={__('calendars.filter_by_name')}
+                    placeholder={__('actions.named.filter_by', { name: __('calendars.name') })}
                     value={table.getColumn('name')?.getFilterValue() ?? ''}
                     onChange={e => table.getColumn('name')?.setFilterValue(e.target.value)}
                     className="rounded-md border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100"
@@ -145,9 +149,21 @@ const Index = ({ calendars }) => {
                     onChange={e => table.getColumn('enabled')?.setFilterValue(e.target.value)}
                     className="rounded-md border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100"
                 >
-                    <option value="all">{__('calendars.all_calendars')}</option>
+                    <option value="all">{__('actions.named.all', { name: __('calendars.calendars') })}</option>
                     <option value="true">{__('calendars.enabled_only')}</option>
                     <option value="false">{__('calendars.disabled_only')}</option>
+                </select>
+                <select
+                    value={table.getColumn('provider_name')?.getFilterValue() ?? 'all'}
+                    onChange={e => table.getColumn('provider_name')?.setFilterValue(e.target.value)}
+                    className="rounded-md border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100"
+                >
+                    <option value="all">{__('actions.named.all', { name: __('providers.providers') })}</option>
+                    {providers.map(provider => (
+                        <option key={provider.id} value={provider.id}>
+                            {provider.name}
+                        </option>
+                    ))}
                 </select>
             </div>
 
