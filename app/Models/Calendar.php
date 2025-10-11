@@ -3,6 +3,8 @@
 namespace App\Models;
 
 use App\Builders\CalendarBuilder;
+use App\Observers\CalendarObserver;
+use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\HasBuilder;
@@ -13,6 +15,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\MultipleItemsFoundException;
 
+#[ObservedBy([CalendarObserver::class])]
 class Calendar extends Model
 {
     /** @use HasFactory<\Database\Factories\CalendarFactory> */

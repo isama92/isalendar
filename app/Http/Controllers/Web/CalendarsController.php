@@ -113,11 +113,6 @@ class CalendarsController extends Controller
 
         // TODO: needs testing
         if (! $calendar->connectors()->exists()) {
-            $calendar->events()
-                ->lazyById()
-                ->each
-                ->deleteQuietly();
-            $calendar->update(['enabled' => true]);
             $calendar->delete();
         }
 
