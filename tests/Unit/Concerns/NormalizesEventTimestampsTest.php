@@ -6,19 +6,19 @@ uses(NormalizesEventTimestamps::class)
     ->group('concerns');
 
 it('returns null when value is null', function (): void {
-    $result = $this->normalizeEventTimestamp(null, 'Europe/Amsterdam', false);
+    $result = $this->normalizeEventTimestamp(null, false, 'Europe/Amsterdam');
 
     expect($result)->toBeNull();
 });
 
 it('returns null when value is empty string', function (): void {
-    $result = $this->normalizeEventTimestamp('', 'Europe/Amsterdam', false);
+    $result = $this->normalizeEventTimestamp('', false, 'Europe/Amsterdam');
 
     expect($result)->toBeNull();
 });
 
 it('normalizes non-all-day event to UTC', function (): void {
-    $result = $this->normalizeEventTimestamp('2025-01-15 14:30:00', 'Europe/Amsterdam', false);
+    $result = $this->normalizeEventTimestamp('2025-01-15 14:30:00', false, 'Europe/Amsterdam');
 
     expect($result)
         ->toBeString()
@@ -26,7 +26,7 @@ it('normalizes non-all-day event to UTC', function (): void {
 });
 
 it('normalizes all-day event to start of day in UTC', function (): void {
-    $result = $this->normalizeEventTimestamp('2025-01-15', 'Europe/Amsterdam', true);
+    $result = $this->normalizeEventTimestamp('2025-01-15', true, 'Europe/Amsterdam');
 
     expect($result)
         ->toBeString()
@@ -34,7 +34,7 @@ it('normalizes all-day event to start of day in UTC', function (): void {
 });
 
 it('handles ISO 8601 format', function (): void {
-    $result = $this->normalizeEventTimestamp('2025-06-15T18:30:00+02:00', 'Europe/Amsterdam', false);
+    $result = $this->normalizeEventTimestamp('2025-06-15T18:30:00+02:00', false, 'Europe/Amsterdam');
 
     expect($result)
         ->toBeString()

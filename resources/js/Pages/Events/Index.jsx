@@ -1,6 +1,12 @@
 import Modal from '@/Components/Modal';
 import Pagination from '@/Components/Pagination';
-import { formatDate, formatDateTimeWithTimezone, formatWithFormat, formatWithFormatAndTimezone } from '@/utils/date';
+import {
+    formatDate,
+    formatDateTimeWithTimezone,
+    formatWithFormat,
+    formatWithFormatAndTimezone,
+    subtractDays,
+} from '@/utils/date';
 import {
     CheckIcon,
     ChevronDownIcon,
@@ -74,8 +80,7 @@ const Index = ({ events, providers }) => {
                 accessorKey: 'ends_at',
                 cell: info =>
                     info.row.original.all_day
-                        ? // TODO: sub a day if it's all day
-                          formatDate(info.getValue())
+                        ? formatDate(subtractDays(info.getValue(), 1, 'YYYY-MM-DD'))
                         : formatDateTimeWithTimezone(info.getValue(), info.row.original.timezone),
                 filterFn: (row, id, value) => {
                     if (!value) return true;

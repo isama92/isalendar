@@ -14,3 +14,5 @@ Add events to a shared calendar.
 - add observer on event creation/edit, push the event immediately
 - add a scheduled command that checks if there are not synchronized events (lock when pushing in observer, check if it's locked in scheduled command, in case they run at the same time)
 - add OIDC for authentik
+- add +/- offset to timezones in select (also order by offset)
+- strip html from event description when fetching from google calendar

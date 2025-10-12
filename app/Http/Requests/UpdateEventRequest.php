@@ -22,8 +22,8 @@ class UpdateEventRequest extends FormRequest
 
         $this->merge([
             'timezone' => $tz,
-            'starts_at' => $this->normalizeEventTimestamp($this->input('starts_at'), $tz, $allDay),
-            'ends_at' => $this->normalizeEventTimestamp($this->input('ends_at'), $tz, $allDay),
+            'starts_at' => $this->normalizeEventTimestamp($this->input('starts_at'), $allDay, $tz),
+            'ends_at' => $this->normalizeEventTimestamp($this->input('ends_at'), $allDay, $tz),
         ]);
     }
 

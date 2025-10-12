@@ -1,6 +1,6 @@
 import Checkbox from '@/Components/Checkbox';
 import TimezoneSelect from '@/Components/TimezoneSelect';
-import { formatWithFormat, formatWithFormatAndTimezone } from '@/utils/date';
+import { addDays, formatWithFormat, formatWithFormatAndTimezone, subtractDays } from '@/utils/date';
 import {
     Listbox,
     ListboxButton,
@@ -32,7 +32,11 @@ const Form = ({ user, calendars, timezones, event = null }) => {
         title: event?.title || '',
         all_day: event?.all_day || false,
         starts_at: event ? convertUtcToEventTimezone(event.starts_at, event.timezone, event.all_day) : '',
-        ends_at: event ? convertUtcToEventTimezone(event.ends_at, event.timezone, event.all_day) : '',
+        ends_at: event
+            ? event.all_day
+                ? subtractDays(event.ends_at, 1, 'YYYY-MM-DD')
+                : convertUtcToEventTimezone(event.ends_at, event.timezone, event.all_day)
+            : '',
         timezone: event?.timezone || user.settings.default_timezone,
         description: event?.description || '',
     });
@@ -46,6 +50,7 @@ const Form = ({ user, calendars, timezones, event = null }) => {
         transform(() => {
             return {
                 ...data,
+                ends_at: data.all_day && data.ends_at ? addDays(data.ends_at, 1, 'YYYY-MM-DD') : data.ends_at,
                 redirect_to: actualRedirect,
             };
         });

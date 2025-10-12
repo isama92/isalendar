@@ -1,6 +1,28 @@
 import dayjs from 'dayjs';
 
 /**
+ * Subtract days from a date
+ * @param {string|Date} date - The date to subtract from
+ * @param {number} days - Number of days to subtract
+ * @param {string} format - The format string (defaults to 'YYYY-MM-DD')
+ * @returns {string} Formatted date string
+ */
+export const subtractDays = (date, days = 1, format = 'YYYY-MM-DD') => {
+    return dayjs(date).subtract(days, 'day').format(format);
+};
+
+/**
+ * Add days to a date
+ * @param {string|Date} date - The date to add to
+ * @param {number} days - Number of days to add
+ * @param {string} format - The format string (defaults to 'YYYY-MM-DD')
+ * @returns {string} Formatted date string
+ */
+export const addDays = (date, days = 1, format = 'YYYY-MM-DD') => {
+    return dayjs(date).add(days, 'day').format(format);
+};
+
+/**
  * Format a date/datetime string
  * @param {string|Date} date - The date to format
  * @param {string} format - The format string (defaults to 'DD/MM/YYYY HH:mm:ss')

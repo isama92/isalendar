@@ -6,7 +6,7 @@ use Carbon\Carbon;
 
 trait NormalizesEventTimestamps
 {
-    public function normalizeEventTimestamp(?string $value, string $tz, bool $allDay): ?string
+    public function normalizeEventTimestamp(?string $value, bool $allDay, ?string $tz = null): ?string
     {
         if ($value === null || $value === '') {
             return null;

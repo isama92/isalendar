@@ -1,11 +1,14 @@
 import Modal from '@/Components/Modal';
-import { formatDate, formatDateTimeWithTimezone } from '@/utils/date';
+import { formatDate, formatDateTimeWithTimezone, subtractDays } from '@/utils/date';
 import { PencilIcon, TrashIcon } from '@heroicons/react/20/solid';
 import { Link, router } from '@inertiajs/react';
 import { useState } from 'react';
 
 const Show = ({ event }) => {
-    const format = event.all_day ? formatDate : date => formatDateTimeWithTimezone(date, event.timezone);
+    const formatStartsAt = event.all_day ? formatDate : date => formatDateTimeWithTimezone(date, event.timezone);
+    const formatEndsAt = event.all_day
+        ? date => formatDate(subtractDays(date, 1, 'YYYY-MM-DD'))
+        : date => formatDateTimeWithTimezone(date, event.timezone);
     const [deleteModalOpen, setDeleteModalOpen] = useState(false);
 
     const handleDelete = () => {
@@ -60,13 +63,13 @@ const Show = ({ event }) => {
                             {__('events.starts_at')}
                         </dt>
                         <dd className="mt-1 text-sm/6 text-gray-700 sm:mt-2 dark:text-gray-400">
-                            {format(event.starts_at)}
+                            {formatStartsAt(event.starts_at)}
                         </dd>
                     </div>
                     <div className="border-t border-gray-100 px-4 py-6 sm:col-span-1 sm:px-6 dark:border-white/10">
                         <dt className="text-sm/6 font-medium text-gray-900 dark:text-white">{__('events.ends_at')}</dt>
                         <dd className="mt-1 text-sm/6 text-gray-700 sm:mt-2 dark:text-gray-400">
-                            {format(event.ends_at)}
+                            {formatEndsAt(event.ends_at)}
                         </dd>
                     </div>
                     {!event.all_day && event.timezone && (
