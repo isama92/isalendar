@@ -18,7 +18,7 @@ class HandleInertiaRequests extends Middleware
     public function share(Request $request): array
     {
         $loggedIn = Auth::check();
-        $user = Auth::user()?->loadMissing('settings');
+        $user = Auth::user();
 
         return [
             ...parent::share($request),

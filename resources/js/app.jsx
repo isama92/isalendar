@@ -5,11 +5,15 @@ import { createInertiaApp } from '@inertiajs/react';
 import axios from 'axios';
 import dayjs from 'dayjs';
 import 'dayjs/locale/it';
+import timezone from 'dayjs/plugin/timezone';
 import updateLocale from 'dayjs/plugin/updateLocale';
+import utc from 'dayjs/plugin/utc';
 import { createRoot } from 'react-dom/client';
 import { route } from 'ziggy-js';
 
 dayjs.extend(updateLocale);
+dayjs.extend(utc);
+dayjs.extend(timezone);
 
 // Configure Axios to use the same origin as the current page
 axios.defaults.baseURL = window.location.origin;
@@ -39,6 +43,10 @@ createInertiaApp({
         // Set Monday as the first day of the week
         dayjs.updateLocale('en', { weekStart: 1 });
         dayjs.updateLocale('it', { weekStart: 1 });
+
+        if (props.initialPage.props.user?.settings?.default_timezone) {
+            dayjs.tz.setDefault(props.initialPage.props.user.settings.default_timezone);
+        }
 
         createRoot(el).render(
             <ThemeProvider>

@@ -27,6 +27,8 @@ class User extends Authenticatable implements MustVerifyEmail
     use SoftDeletes;
     use HasRelationships;
 
+    protected $with = ['settings'];
+
     protected $fillable = [
         'first_name',
         'last_name',
