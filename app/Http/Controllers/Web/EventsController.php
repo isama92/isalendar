@@ -11,9 +11,11 @@ use App\Models\Event;
 use App\Models\Provider;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
 use Inertia\Inertia;
 use Inertia\Response;
+use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
 
 class EventsController extends Controller
 {
@@ -48,6 +50,7 @@ class EventsController extends Controller
     public function create(): Response
     {
         Gate::authorize('create', Event::class);
+        abort_if(Auth::user()->connectors()->doesntExist(), SymfonyResponse::HTTP_FORBIDDEN);
 
         return Inertia::render('Events/Form', [
             'calendars' => $this->getCalendarsForSelect(),

@@ -40,7 +40,7 @@ class CalendarsController extends Controller
     {
         Gate::authorize('create', Calendar::class);
         abort_unless($connector->provider->enabled, SymfonyResponse::HTTP_NOT_FOUND);
-        abort_unless($connector->user_id === Auth::id(), SymfonyResponse::HTTP_NOT_FOUND);
+        abort_unless($connector->user_id === Auth::id(), SymfonyResponse::HTTP_FORBIDDEN);
 
         // Filter out existing calendars
         $existingCalendarsExtIds = $connector->calendars()->pluck('external_id');
@@ -62,7 +62,7 @@ class CalendarsController extends Controller
     {
         Gate::authorize('create', Calendar::class);
         abort_unless($connector->provider->enabled, SymfonyResponse::HTTP_NOT_FOUND);
-        abort_unless($connector->user_id === Auth::id(), SymfonyResponse::HTTP_NOT_FOUND);
+        abort_unless($connector->user_id === Auth::id(), SymfonyResponse::HTTP_FORBIDDEN);
 
         /** @var \App\Data\CalendarData $calendarData */
         $calendarData = $request->session()->get('calendars.create.list')

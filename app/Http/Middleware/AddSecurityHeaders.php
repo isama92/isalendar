@@ -4,11 +4,11 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
-use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
 
 class AddSecurityHeaders
 {
-    public function handle(Request $request, Closure $next): Response
+    public function handle(Request $request, Closure $next): SymfonyResponse
     {
         /** @var \Symfony\Component\HttpFoundation\Response $response */
         $response = $next($request);

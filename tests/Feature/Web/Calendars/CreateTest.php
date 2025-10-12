@@ -69,7 +69,7 @@ describe('calendars create', function (): void {
         actingAs($user);
 
         get(route('calendars.create', $connector))
-            ->assertNotFound();
+            ->assertForbidden();
     });
 
     it('returns 404 when connector provider is disabled', function (): void {
@@ -83,7 +83,7 @@ describe('calendars create', function (): void {
             ->assertNotFound();
     });
 
-    it('returns 404 when connector does not belong to authenticated user', function (): void {
+    it('returns 403 when connector does not belong to authenticated user', function (): void {
         $user = User::factory()->create();
         $otherUser = User::factory()->create();
         $provider = Provider::googleCalendar();
@@ -92,7 +92,7 @@ describe('calendars create', function (): void {
         actingAs($user);
 
         get(route('calendars.create', $connector))
-            ->assertNotFound();
+            ->assertForbidden();
     });
 
     it('filters out existing calendars from connector', function (): void {
@@ -339,7 +339,7 @@ describe('calendars store', function (): void {
         post(route('calendars.store', $connector), [
             'external_id' => 'ext-1',
         ])
-            ->assertNotFound();
+            ->assertForbidden();
     });
 
     it('returns 404 when connector provider is disabled', function (): void {
@@ -355,7 +355,7 @@ describe('calendars store', function (): void {
             ->assertNotFound();
     });
 
-    it('returns 404 when connector does not belong to authenticated user', function (): void {
+    it('returns 403 when connector does not belong to authenticated user', function (): void {
         $user = User::factory()->create();
         $otherUser = User::factory()->create();
         $provider = Provider::googleCalendar();
@@ -366,7 +366,7 @@ describe('calendars store', function (): void {
         post(route('calendars.store', $connector), [
             'external_id' => 'ext-1',
         ])
-            ->assertNotFound();
+            ->assertForbidden();
     });
 
     it('requires external_id field', function (): void {
