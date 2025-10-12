@@ -7,6 +7,8 @@ use App\Models\User;
 
 use function Pest\Laravel\actingAs;
 
+uses()->group('models');
+
 it('loads the connector for the logged in user with hidden access details', function (): void {
     $user = User::factory()->create();
     $connector = Connector::factory()->for($user)->create();
@@ -15,12 +17,12 @@ it('loads the connector for the logged in user with hidden access details', func
     $connector->calendars()->attach($calendar->id);
 
     actingAs($user);
-    $calendar = Calendar::sole();
-    expect($calendar->relationLoaded('connectorsForUser'))->toBeTrue()
-        ->and($calendar->connectorsForUser)->toHaveCount(1)
-        ->and($calendar->connectorsForUser->sole()->is($connector))->toBeTrue()
-        ->and($calendar->connector?->is($connector))->toBeTrue()
-        ->and($calendar->connector->toArray())->not()->toHaveKey('access_details');
+    expect(Calendar::sole())
+        ->relationLoaded('connectorsForUser')->toBeTrue()
+        ->connectorsForUser->toHaveCount(1)
+        ->connectorsForUser->sole()->is($connector)->toBeTrue()
+        ->connector?->is($connector)->toBeTrue()
+        ->connector->toArray()->not()->toHaveKey('access_details');
 });
 
 it('can access to the authenticated user connector', function (): void {
@@ -54,8 +56,9 @@ it('can access users through connectors', function (): void {
     $connector1->calendars()->attach($calendar);
     $connector2->calendars()->attach($calendar);
 
-    expect($calendar->users)->toHaveCount(2)
-        ->and($calendar->users->pluck('id')->toArray())->toContain($user1->id, $user2->id);
+    expect($calendar->users)
+        ->toHaveCount(2)
+        ->pluck('id')->toArray()->toContain($user1->id, $user2->id);
 });
 
 it('can access multiple users when shared across connectors', function (): void {
@@ -73,10 +76,9 @@ it('can access multiple users when shared across connectors', function (): void 
     $connector2->calendars()->attach($calendar);
     $connector3->calendars()->attach($calendar);
 
-    $calendar->refresh();
-
-    expect($calendar->users)->toHaveCount(3)
-        ->and($calendar->users->pluck('id')->toArray())->toContain($user1->id, $user2->id, $user3->id);
+    expect($calendar->refresh()->users)
+        ->toHaveCount(3)
+        ->pluck('id')->toArray()->toContain($user1->id, $user2->id, $user3->id);
 });
 
 it('only includes users who have connectors attached to it', function (): void {
@@ -90,10 +92,9 @@ it('only includes users who have connectors attached to it', function (): void {
 
     $connector1->calendars()->attach($calendar);
 
-    $calendar->refresh();
-
-    expect($calendar->users)->toHaveCount(1)
-        ->and($calendar->users->first()->id)->toBe($user1->id);
+    expect($calendar->refresh()->users)
+        ->toHaveCount(1)
+        ->first()->id->toBe($user1->id);
 });
 
 it('does not return duplicate users when user has multiple connectors attached', function (): void {
@@ -107,10 +108,9 @@ it('does not return duplicate users when user has multiple connectors attached',
     $connector1->calendars()->attach($calendar);
     $connector2->calendars()->attach($calendar);
 
-    $calendar->refresh();
-
-    expect($calendar->users)->toHaveCount(1)
-        ->and($calendar->users->first()->id)->toBe($user->id);
+    expect($calendar->refresh()->users)
+        ->toHaveCount(1)
+        ->first()->id->toBe($user->id);
 });
 
 it('returns empty collection when no connectors are attached', function (): void {
@@ -126,12 +126,9 @@ it('can access users and their connectors relationship data', function (): void 
 
     $connector->calendars()->attach($calendar);
 
-    $calendar->refresh();
-
-    $calendarUser = $calendar->users->firstOrFail();
-
-    expect($calendarUser->id)->toBe($user->id)
-        ->and($calendarUser->email)->toBe($user->email);
+    expect($calendar->refresh()->users->firstOrFail())
+        ->id->toBe($user->id)
+        ->email->toBe($user->email);
 });
 
 it('can access provider through connectors', function (): void {
@@ -147,9 +144,9 @@ it('can access provider through connectors', function (): void {
     $connector1->calendars()->attach($calendar);
     $connector2->calendars()->attach($calendar);
 
-    $calendar = Calendar::sole();
-    expect($calendar->provider)->not->toBeNull()
-        ->and($calendar->provider->id)->toBe($provider->id);
+    expect(Calendar::sole()->provider)
+        ->not->toBeNull()
+        ->id->toBe($provider->id);
 });
 
 it('sets enabled to true when calendar is restored', function (): void {

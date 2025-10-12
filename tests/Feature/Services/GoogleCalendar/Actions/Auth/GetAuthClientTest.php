@@ -89,10 +89,9 @@ it('refreshes the token via cache lock when the token is expired and persists th
 
     $client = app(GetAuthClient::class)->execute($connector);
 
-    expect($client)->toBeInstanceOf(GoogleClient::class);
-
-    $updated = $connector->fresh()->access_details;
-    expect($updated)->toBeInstanceOf(AccessToken::class)
+    expect($client)->toBeInstanceOf(GoogleClient::class)
+        ->and($connector->fresh()->access_details)
+        ->toBeInstanceOf(AccessToken::class)
         ->id->toBe($oldToken->id)
         ->token->toBe($newTokenPayload['access_token'])
         ->refreshToken->toBe($newTokenPayload['refresh_token'])

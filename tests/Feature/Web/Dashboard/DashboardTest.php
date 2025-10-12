@@ -9,6 +9,8 @@ use Carbon\Carbon;
 use function Pest\Laravel\actingAs;
 use function Pest\Laravel\get;
 
+uses()->group('web', 'dashboard');
+
 it('displays stats for authenticated user', function (): void {
     $user = User::factory()->create();
 

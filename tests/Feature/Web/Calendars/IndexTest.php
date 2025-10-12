@@ -12,6 +12,8 @@ use function Pest\Laravel\delete;
 use function Pest\Laravel\get;
 use function Pest\Laravel\put;
 
+uses()->group('web', 'calendars');
+
 describe('calendars index', function (): void {
     it('displays calendars for authenticated user', function (): void {
         $user = User::factory()->create();
@@ -198,7 +200,8 @@ describe('calendar toggle enable/disable', function (): void {
             ->assertRedirect(route('calendars.index'))
             ->assertSessionHas('success');
 
-        expect($calendar->fresh()->enabled)->toBeFalse();
+        expect($calendar->fresh())
+            ->enabled->toBeFalse();
     });
 
     it('can enable a disabled calendar', function (): void {
@@ -216,7 +219,8 @@ describe('calendar toggle enable/disable', function (): void {
             ->assertRedirect(route('calendars.index'))
             ->assertSessionHas('success');
 
-        expect($calendar->fresh()->enabled)->toBeTrue();
+        expect($calendar->fresh())
+            ->enabled->toBeTrue();
     });
 
     it('prevents unauthenticated user from updating calendar', function (): void {
@@ -227,7 +231,8 @@ describe('calendar toggle enable/disable', function (): void {
         ])
             ->assertRedirect(route('login'));
 
-        expect($calendar->fresh()->enabled)->toBeTrue();
+        expect($calendar->fresh())
+            ->enabled->toBeTrue();
     });
 
     it('prevents user from updating another users calendar', function (): void {
@@ -245,7 +250,8 @@ describe('calendar toggle enable/disable', function (): void {
         ])
             ->assertForbidden();
 
-        expect($otherCalendar->fresh()->enabled)->toBeTrue();
+        expect($otherCalendar->fresh())
+            ->enabled->toBeTrue();
     });
 
     it('requires enabled field', function (): void {
@@ -260,7 +266,8 @@ describe('calendar toggle enable/disable', function (): void {
         put(route('calendars.update', $calendar), [])
             ->assertSessionHasErrors('enabled');
 
-        expect($calendar->fresh()->enabled)->toBeTrue();
+        expect($calendar->fresh())
+            ->enabled->toBeTrue();
     });
 
     it('validates enabled field must be boolean', function (): void {
@@ -277,7 +284,8 @@ describe('calendar toggle enable/disable', function (): void {
         ])
             ->assertSessionHasErrors('enabled');
 
-        expect($calendar->fresh()->enabled)->toBeTrue();
+        expect($calendar->fresh())
+            ->enabled->toBeTrue();
     });
 });
 
@@ -295,7 +303,8 @@ describe('calendar deletion', function (): void {
             ->assertRedirect(route('calendars.index'))
             ->assertSessionHas('success');
 
-        expect($calendar->connectors()->count())->toBe(0);
+        expect($calendar->connectors())
+            ->count()->toBe(0);
     });
 
     it('soft deletes calendar when no connectors remain', function (): void {
@@ -328,9 +337,11 @@ describe('calendar deletion', function (): void {
 
         delete(route('calendars.destroy', $calendar));
 
-        expect($calendar->fresh())->not->toBeNull()
-            ->and($calendar->connectors()->count())->toBe(1)
-            ->and($calendar->connectors()->first()->id)->toBe($connector2->id);
+        expect($calendar->fresh())
+            ->not->toBeNull()
+            ->and($calendar->connectors())
+            ->count()->toBe(1)
+            ->first()->id->toBe($connector2->id);
     });
 
     it('deletes connector when no calendars remain', function (): void {
@@ -344,7 +355,8 @@ describe('calendar deletion', function (): void {
 
         delete(route('calendars.destroy', $calendar));
 
-        expect(Connector::find($connector->id))->toBeNull();
+        expect(Connector::find($connector->id))
+            ->toBeNull();
     });
 
     it('does not delete connector when other calendars remain', function (): void {
@@ -361,9 +373,11 @@ describe('calendar deletion', function (): void {
 
         delete(route('calendars.destroy', $calendar1));
 
-        expect(Connector::find($connector->id))->not->toBeNull()
-            ->and($connector->calendars()->count())->toBe(1)
-            ->and($connector->calendars()->first()->id)->toBe($calendar2->id);
+        expect(Connector::find($connector->id))
+            ->not->toBeNull()
+            ->and($connector->calendars())
+            ->count()->toBe(1)
+            ->first()->id->toBe($calendar2->id);
     });
 
     it('prevents unauthenticated user from deleting calendar', function (): void {
@@ -376,7 +390,8 @@ describe('calendar deletion', function (): void {
         delete(route('calendars.destroy', $calendar))
             ->assertRedirect(route('login'));
 
-        expect($calendar->connectors()->count())->toBe(1);
+        expect($calendar->connectors())
+            ->count()->toBe(1);
     });
 
     it('prevents user from deleting another users calendar', function (): void {
@@ -392,7 +407,8 @@ describe('calendar deletion', function (): void {
         delete(route('calendars.destroy', $otherCalendar))
             ->assertForbidden();
 
-        expect($otherCalendar->connectors()->count())->toBe(1);
+        expect($otherCalendar->connectors())
+            ->count()->toBe(1);
     });
 
     it('detaches calendar from connector on deletion', function (): void {
@@ -404,11 +420,13 @@ describe('calendar deletion', function (): void {
 
         actingAs($user);
 
-        expect($calendar->connectors()->count())->toBe(1);
+        expect($calendar->connectors())
+            ->count()->toBe(1);
 
         delete(route('calendars.destroy', $calendar));
 
-        expect($calendar->connectors()->count())->toBe(0);
+        expect($calendar->connectors())
+            ->count()->toBe(0);
     });
 
     it('soft deletes all events when calendar is deleted', function (): void {
@@ -422,10 +440,12 @@ describe('calendar deletion', function (): void {
 
         actingAs($user);
 
-        expect($calendar->events()->count())->toBe(5);
+        expect($calendar->events())
+            ->count()->toBe(5);
 
         delete(route('calendars.destroy', $calendar));
 
-        expect(Event::where('calendar_id', $calendar->id)->count())->toBe(0);
+        expect(Event::where('calendar_id', $calendar->id))
+            ->count()->toBe(0);
     });
 });
