@@ -53,6 +53,37 @@ enum Service: string
         };
     }
 
+    /**
+     * @return array<int, string>
+     */
+    public function scopes(): array
+    {
+        return match ($this) {
+            self::GOOGLE_CALENDAR => [
+                'https://www.googleapis.com/auth/calendar',
+                'https://www.googleapis.com/auth/calendar.events',
+                'openid',
+                'profile',
+                'email',
+            ],
+            self::MICROSOFT_OUTLOOK => [],
+        };
+    }
+
+    /**
+     * @return array<int, string>
+     */
+    public function accessParams(): array
+    {
+        return match ($this) {
+            self::GOOGLE_CALENDAR => [
+                'access_type' => 'offline',
+                'prompt' => 'consent',
+            ],
+            self::MICROSOFT_OUTLOOK => [],
+        };
+    }
+
     public static function fromId(?int $id): self
     {
         return match ($id) {

@@ -3,6 +3,7 @@
 use App\Models\Calendar;
 use App\Models\Connector;
 use App\Models\User;
+use App\Models\UserSetting;
 
 uses()->group('models');
 
@@ -84,4 +85,19 @@ it('returns empty collection when connectors have no calendars', function (): vo
     Connector::factory()->for($user)->create();
 
     expect($user->calendars)->toBeEmpty();
+});
+
+it('user settings are automatically created on user creation', function (): void {
+    $user = User::factory()->create();
+
+    expect($user->settings)
+        ->not->toBeNull()
+        ->toBeInstanceOf(UserSetting::class)
+        ->default_timezone->toBe(config('app.default_user_timezone'));
+});
+
+it('uses user photo_path attribute', function (): void {
+    $user = User::factory()->create();
+
+    expect($user->photo_path)->toBe("{$user->id}.webp");
 });

@@ -1,6 +1,6 @@
 <?php
 
-use App\Providers\Services\GoogleServiceProvider;
+use App\Enums\Service;
 use App\Services\GoogleCalendar\Actions\Auth\RequestAccess;
 use Illuminate\Http\RedirectResponse;
 use Laravel\Socialite\Facades\Socialite;
@@ -22,7 +22,7 @@ it('builds the google oauth redirect with expected scopes, prompt and access_typ
         ->with(Mockery::on(function ($scopes) use (&$capturedScopes): bool {
             $capturedScopes = $scopes;
 
-            return $scopes === GoogleServiceProvider::ACCESS_SCOPES;
+            return $scopes === Service::GOOGLE_CALENDAR->scopes();
         }))
         ->andReturnSelf();
 
@@ -31,7 +31,7 @@ it('builds the google oauth redirect with expected scopes, prompt and access_typ
         ->with(Mockery::on(function ($with) use (&$capturedWith): bool {
             $capturedWith = $with;
 
-            return $with === GoogleServiceProvider::ACCESS_PARAMS;
+            return $with === Service::GOOGLE_CALENDAR->accessParams();
         }))
         ->andReturnSelf();
 
@@ -66,5 +66,5 @@ it('builds the google oauth redirect with expected scopes, prompt and access_typ
     expect($response)->toBeInstanceOf(RedirectResponse::class)
         ->and($query['access_type'] ?? null)->toBe('offline')
         ->and($query['prompt'] ?? null)->toBe('consent')
-        ->and($query['scope'] ?? null)->toBe(implode(' ', GoogleServiceProvider::ACCESS_SCOPES));
+        ->and($query['scope'] ?? null)->toBe(implode(' ', Service::GOOGLE_CALENDAR->scopes()));
 });

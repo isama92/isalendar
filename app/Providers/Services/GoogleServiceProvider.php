@@ -10,19 +10,6 @@ use Override;
 
 class GoogleServiceProvider extends ServiceProvider implements DeferrableProvider
 {
-    public const array ACCESS_SCOPES = [
-        'https://www.googleapis.com/auth/calendar',
-        'https://www.googleapis.com/auth/calendar.events',
-        'openid',
-        'profile',
-        'email',
-    ];
-
-    public const array ACCESS_PARAMS = [
-        'access_type' => 'offline',
-        'prompt' => 'consent',
-    ];
-
     #[Override]
     public function register(): void
     {
