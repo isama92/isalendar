@@ -13,7 +13,4 @@ Add events to a shared calendar.
 ## TODO
 - add observer on event creation/edit, push the event immediately
 - add a scheduled command that checks if there are not synchronized events (lock when pushing in observer, check if it's locked in scheduled command, in case they run at the same time)
-- add timezone to events
-  - let the user select the timezone when creating event
-  - when fetching or pushing events, also save timezone
 - add OIDC for authentik

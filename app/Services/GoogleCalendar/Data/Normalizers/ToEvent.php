@@ -13,6 +13,7 @@ trait ToEvent
             externalId: $googleEventData->id,
             title: $googleEventData->summary,
             allDay: is_null($googleEventData->startDateTime),
+            timezone: $googleEventData->timezone,
             startsAt: Carbon::parse($googleEventData->startDateTime ?? $googleEventData->startDate),
             endsAt: Carbon::parse($googleEventData->endDateTime ?? $googleEventData->endDate),
             description: $googleEventData->description,

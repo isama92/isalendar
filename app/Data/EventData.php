@@ -18,6 +18,7 @@ class EventData extends Data
         public string|Optional|null $externalId,
         public string|Optional $title,
         public bool|Optional $allDay,
+        public string|Optional|null $timezone,
         public Carbon|Optional $startsAt,
         public Carbon|Optional $endsAt,
         public string|Optional|null $description,

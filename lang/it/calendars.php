@@ -6,7 +6,6 @@ return [
     'create_calendar' => 'Crea Calendario',
     'name' => 'Nome',
     'events_count' => 'Numero Eventi',
-    'provider_name' => 'Nome Provider',
     'delete_calendar' => 'Elimina Calendario',
     'delete_confirm' => 'Sei sicuro di voler eliminare questo calendario?',
     'delete_confirm_message' => 'Sei sicuro di voler eliminare questo calendario? Questa azione non può essere annullata.',

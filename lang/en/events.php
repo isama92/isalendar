@@ -9,6 +9,7 @@ return [
     'all_day' => 'All Day',
     'starts_at' => 'Starts At',
     'ends_at' => 'Ends At',
+    'timezone' => 'Timezone',
     'description' => 'Description',
     'calendar_name' => 'Calendar Name',
     'created_at' => 'Created At',

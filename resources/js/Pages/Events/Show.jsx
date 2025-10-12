@@ -69,6 +69,16 @@ const Show = ({ event }) => {
                             {format(event.ends_at)}
                         </dd>
                     </div>
+                    {!event.all_day && event.timezone && (
+                        <div className="border-t border-gray-100 px-4 py-6 sm:col-span-1 sm:px-6 dark:border-white/10">
+                            <dt className="text-sm/6 font-medium text-gray-900 dark:text-white">
+                                {__('events.timezone')}
+                            </dt>
+                            <dd className="mt-1 text-sm/6 text-gray-700 sm:mt-2 dark:text-gray-400">
+                                {event.timezone}
+                            </dd>
+                        </div>
+                    )}
                     {event.description && (
                         <div className="border-t border-gray-100 px-4 py-6 sm:col-span-2 sm:px-6 dark:border-white/10">
                             <dt className="text-sm/6 font-medium text-gray-900 dark:text-white">

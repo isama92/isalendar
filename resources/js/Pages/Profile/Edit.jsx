@@ -1,7 +1,7 @@
+import TimezoneSelect from '@/Components/TimezoneSelect';
 import UserPhoto from '@/Components/UserPhoto';
 import { useForm } from '@inertiajs/react';
 import { useRef, useState } from 'react';
-import Select from 'react-select';
 
 const Edit = ({ user, timezones }) => {
     const { data, setData, post, processing, reset, transform, errors } = useForm({
@@ -181,81 +181,14 @@ const Edit = ({ user, timezones }) => {
                                     {__('profile.default_timezone')}
                                 </label>
                                 <div className="mt-2">
-                                    <Select
+                                    <TimezoneSelect
                                         id="default_timezone"
                                         name="default_timezone"
-                                        value={
-                                            data.default_timezone
-                                                ? { value: data.default_timezone, label: data.default_timezone }
-                                                : null
-                                        }
+                                        value={data.default_timezone}
                                         onChange={option => setData('default_timezone', option?.value)}
                                         options={timezones}
-                                        isSearchable
-                                        classNames={{
-                                            control: () => 'rounded-md',
-                                            menu: () => 'rounded-md shadow-lg mt-1',
-                                            option: () => 'cursor-pointer px-3 py-2',
-                                            groupHeading: () => 'text-sm font-semibold px-3 py-2 uppercase',
-                                        }}
-                                        styles={{
-                                            control: (base, state) => ({
-                                                ...base,
-                                                backgroundColor: 'rgb(var(--color-bg-control))',
-                                                borderColor: state.isFocused
-                                                    ? 'rgb(99 102 241)'
-                                                    : 'rgb(var(--color-border-control))',
-                                                borderWidth: '1px',
-                                                boxShadow: state.isFocused ? '0 0 0 2px rgb(99 102 241 / 0.2)' : 'none',
-                                                '&:hover': {
-                                                    borderColor: state.isFocused
-                                                        ? 'rgb(99 102 241)'
-                                                        : 'rgb(var(--color-border-control))',
-                                                },
-                                            }),
-                                            menu: base => ({
-                                                ...base,
-                                                backgroundColor: 'rgb(var(--color-bg-menu) / 1)',
-                                                border: '1px solid rgb(var(--color-border-menu) / 1)',
-                                            }),
-                                            option: (base, state) => ({
-                                                ...base,
-                                                backgroundColor: state.isSelected
-                                                    ? 'rgb(99 102 241)'
-                                                    : state.isFocused
-                                                      ? 'rgb(var(--color-bg-option-hover) / 1)'
-                                                      : 'transparent',
-                                                color: state.isSelected ? 'white' : 'rgb(var(--color-text) / 1)',
-                                                '&:hover': {
-                                                    backgroundColor: state.isSelected
-                                                        ? 'rgb(99 102 241)'
-                                                        : 'rgb(var(--color-bg-option-hover) / 1)',
-                                                },
-                                            }),
-                                            input: base => ({
-                                                ...base,
-                                                color: 'rgb(var(--color-text) / 1)',
-                                            }),
-                                            singleValue: base => ({
-                                                ...base,
-                                                color: 'rgb(var(--color-text) / 1)',
-                                            }),
-                                            groupHeading: base => ({
-                                                ...base,
-                                                color: 'rgb(var(--color-text-muted) / 1)',
-                                            }),
-                                        }}
+                                        error={errors.default_timezone}
                                     />
-
-                                    {errors.default_timezone && (
-                                        <p
-                                            id="default_timezone-error"
-                                            role="alert"
-                                            className="mt-2 text-sm text-red-600 dark:text-red-400"
-                                        >
-                                            {errors.default_timezone}
-                                        </p>
-                                    )}
                                 </div>
                             </div>
                         </div>

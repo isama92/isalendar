@@ -2,21 +2,22 @@
 
 namespace App\Http\Controllers\Web;
 
+use App\Concerns\WithTimezoneHelpers;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreEventRequest;
 use App\Http\Requests\UpdateEventRequest;
 use App\Models\Calendar;
 use App\Models\Event;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
 use Inertia\Inertia;
 use Inertia\Response;
 
 class EventsController extends Controller
 {
+    use WithTimezoneHelpers;
+
     public function index(): Response
     {
         Gate::authorize('viewAny', Event::class);
@@ -24,10 +25,6 @@ class EventsController extends Controller
         // TODO: fix pagination
         $events = Event::with([
             'calendar:id,name',
-            'calendar.connectors' => fn (BelongsToMany $query) => $query
-                ->select('connectors.id', 'provider_id', 'user_id')
-                ->whereBelongsTo(Auth::user()),
-            'calendar.connectors.provider:id,name',
         ])
             ->forCurrentUser()
             ->paginate(10);
@@ -54,6 +51,7 @@ class EventsController extends Controller
 
         return Inertia::render('Events/Form', [
             'calendars' => $this->getCalendarsForSelect(),
+            'timezones' => $this->groupedTimezones(),
         ]);
     }
 
@@ -82,6 +80,7 @@ class EventsController extends Controller
         return Inertia::render('Events/Form', [
             'event' => $event,
             'calendars' => $this->getCalendarsForSelect(),
+            'timezones' => $this->groupedTimezones(),
         ]);
     }
 
@@ -116,13 +115,7 @@ class EventsController extends Controller
      */
     private function getCalendarsForSelect(): Collection
     {
-        return Calendar::with([
-            'connectors' => fn (BelongsToMany $query) => $query
-                ->select('connectors.id', 'provider_id', 'user_id')
-                ->whereBelongsTo(Auth::user()),
-            'connectors.provider:id,name',
-        ])
-            ->forCurrentUser(true)
+        return Calendar::forCurrentUser(true)
             ->select('id', 'name')
             ->get();
     }

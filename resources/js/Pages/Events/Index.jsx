@@ -79,6 +79,11 @@ const Index = ({ events }) => {
                 accessorFn: row => row.calendar.name,
             },
             {
+                header: __('providers.provider'),
+                id: 'provider_name',
+                accessorFn: row => row.calendar.provider.name,
+            },
+            {
                 id: 'actions',
                 header: __('common.actions'),
                 cell: info => (

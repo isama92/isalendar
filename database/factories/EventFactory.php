@@ -17,6 +17,7 @@ class EventFactory extends Factory
             'calendar_id' => Calendar::factory(),
             'external_id' => fake()->uuid(),
             'title' => fake()->sentence(3),
+            'timezone' => fn (array $attributes) => $attributes['all_day'] ? null : fake()->timezone(),
             'all_day' => fake()->boolean(20),
             'starts_at' => function (array $attributes) {
                 $date = new Carbon(fake()->dateTimeBetween('now', '+1 month'));

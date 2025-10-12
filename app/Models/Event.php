@@ -29,6 +29,7 @@ class Event extends Model
         'external_id',
         'title',
         'all_day',
+        'timezone',
         'starts_at',
         'ends_at',
         'description',

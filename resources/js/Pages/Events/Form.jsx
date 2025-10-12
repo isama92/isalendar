@@ -1,4 +1,5 @@
 import Checkbox from '@/Components/Checkbox';
+import TimezoneSelect from '@/Components/TimezoneSelect';
 import { formatWithFormat } from '@/utils/date';
 import {
     Listbox,
@@ -17,8 +18,7 @@ import clsx from 'clsx';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 
-const Form = ({ calendars, event = null }) => {
-    console.log(calendars);
+const Form = ({ user, calendars, timezones, event = null }) => {
     const isEditing = !!event;
 
     const { data, setData, post, put, processing, transform, errors, reset } = useForm({
@@ -27,6 +27,7 @@ const Form = ({ calendars, event = null }) => {
         all_day: event?.all_day || false,
         starts_at: event?.starts_at || '',
         ends_at: event?.ends_at || '',
+        timezone: event?.timezone || user.settings.default_timezone,
         description: event?.description || '',
     });
 
@@ -131,7 +132,7 @@ const Form = ({ calendars, event = null }) => {
                                                         {calendar.name}
                                                     </span>
                                                     <span className="ml-2 truncate text-gray-500 group-data-focus:text-indigo-200 dark:text-gray-400 dark:group-data-focus:text-indigo-100">
-                                                        {calendar.connector.provider.name}
+                                                        {calendar.provider.name}
                                                     </span>
                                                 </div>
 
@@ -299,6 +300,29 @@ const Form = ({ calendars, event = null }) => {
                         )}
                     </div>
                 </div>
+
+                {/* timezone */}
+                {!data.all_day && (
+                    <div className="sm:grid sm:grid-cols-3 sm:items-start sm:gap-4 sm:py-6">
+                        <label
+                            htmlFor="timezone"
+                            className="block text-sm/6 font-medium text-gray-900 sm:pt-1.5 dark:text-white"
+                        >
+                            {__('events.timezone')}
+                        </label>
+                        <div className="mt-2 sm:col-span-2 sm:mt-0">
+                            <TimezoneSelect
+                                id="timezone"
+                                name="timezone"
+                                value={data.timezone}
+                                onChange={option => setData('timezone', option?.value)}
+                                options={timezones}
+                                error={errors.timezone}
+                                className="sm:max-w-md"
+                            />
+                        </div>
+                    </div>
+                )}
 
                 {/* description */}
                 <div className="sm:grid sm:grid-cols-3 sm:items-start sm:gap-4 sm:py-6">

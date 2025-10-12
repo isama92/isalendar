@@ -6,7 +6,6 @@ return [
     'create_calendar' => 'Create Calendar',
     'name' => 'Name',
     'events_count' => 'Events Count',
-    'provider_name' => 'Provider name',
     'delete_calendar' => 'Delete Calendar',
     'delete_confirm' => 'Are you sure you want to delete this calendar?',
     'delete_confirm_message' => 'Are you sure you want to delete this calendar? This action cannot be undone.',

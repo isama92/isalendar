@@ -17,11 +17,11 @@ class UpdateEventRequest extends FormRequest
 
     protected function prepareForValidation(): void
     {
-        // TODO: get timezone from UI, let the user select it
-        $tz = 'Europe/Amsterdam';
         $allDay = $this->boolean('all_day');
+        $tz = $allDay ? null : $this->input('timezone');
 
         $this->merge([
+            'timezone' => $tz,
             'starts_at' => $this->normalizeEventTimestamp($this->input('starts_at'), $tz, $allDay),
             'ends_at' => $this->normalizeEventTimestamp($this->input('ends_at'), $tz, $allDay),
         ]);
@@ -38,6 +38,7 @@ class UpdateEventRequest extends FormRequest
             'all_day' => ['boolean'],
             'starts_at' => ['required', 'date'],
             'ends_at' => ['nullable', 'required', 'date', 'after_or_equal:starts_at'],
+            'timezone' => ['nullable', 'required_if:all_day,false', 'prohibited_if:all_day,true', 'string', 'timezone:all'],
             'description' => ['nullable', 'string'],
         ];
     }

@@ -3,7 +3,6 @@ import { router } from '@inertiajs/react';
 import { useState } from 'react';
 
 const Create = ({ connectorRouteKey, provider, calendars }) => {
-    console.log(calendars);
     const [processing, setProcessing] = useState(false);
 
     const handleChooseCalendar = externalId => {

@@ -9,6 +9,7 @@ return [
     'all_day' => 'Tutto il Giorno',
     'starts_at' => 'Inizio',
     'ends_at' => 'Fine',
+    'timezone' => 'Fuso Orario',
     'description' => 'Descrizione',
     'calendar_name' => 'Nome Calendario',
     'created_at' => 'Creato il',

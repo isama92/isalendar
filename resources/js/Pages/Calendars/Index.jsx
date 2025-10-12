@@ -54,7 +54,7 @@ const Index = ({ calendars, providers }) => {
                 accessorFn: row => row.events_count,
             },
             {
-                header: __('calendars.provider_name'),
+                header: __('providers.provider'),
                 id: 'provider_name',
                 accessorFn: row => row.provider.name,
                 filterFn: (row, id, value) => {
