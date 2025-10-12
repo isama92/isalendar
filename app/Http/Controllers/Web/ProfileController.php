@@ -42,12 +42,20 @@ class ProfileController extends Controller
             $saveUserPhoto->execute($user, $request->file('photo'));
         }
 
-        $user->update(Arr::except($validated, ['photo', 'default_timezone']));
+        $dataToUpdate = Arr::except($validated, [
+            'photo',
+            'default_timezone',
+            'current_password',
+            'password_confirmation',
+        ]);
 
-        $user->settings()->updateOrCreate(
-            ['user_id' => $user->id],
-            ['default_timezone' => $validated['default_timezone']]
-        );
+        if (empty($dataToUpdate['password'])) {
+            unset($dataToUpdate['password']);
+        }
+
+        $user->update($dataToUpdate);
+
+        $user->settings()->update(['default_timezone' => $validated['default_timezone']]);
 
         return redirect()->route('profile.edit')
             ->with('success', __('profile.profile_updated_successfully'));
