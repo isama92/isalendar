@@ -1,12 +1,14 @@
 <?php
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Log;
 use Tests\TestCase;
 use Torann\GeoIP\Facades\GeoIP;
 
 pest()->extend(TestCase::class)
     ->use(RefreshDatabase::class)
     ->beforeEach(function (): void {
+        Log::shouldReceive('error')->never();
         GeoIP::shouldReceive('getLocation')
             ->zeroOrMoreTimes()
             ->andReturn(['timezone' => 'Europe/Amsterdam']);
