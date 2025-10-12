@@ -2,11 +2,11 @@
 
 namespace App\Services\GoogleCalendar\Actions;
 
+use App\Jobs\ActionJob;
 use App\Models\Calendar;
 use App\Models\Connector;
 use App\Services\GoogleCalendar\Actions\Events\PullEvents;
 use Illuminate\Support\Facades\Bus;
-use Spatie\QueueableAction\ActionJob;
 use Spatie\QueueableAction\QueueableAction;
 
 class Synchronize
@@ -17,6 +17,10 @@ class Synchronize
     {
         $fetchWindowStart = now()->subWeek()->startOfDay()->toImmutable();
         $fetchWindowEnd = now()->addWeeks(2)->endOfDay()->toImmutable();
+
+        if ($connector->calendars()->enabled()->doesntExist()) {
+            return;
+        }
 
         Bus::batch(
             $connector->calendars()
