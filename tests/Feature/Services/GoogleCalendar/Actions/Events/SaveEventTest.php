@@ -12,6 +12,7 @@ it('creates an event', function (): void {
         'id' => 'ev',
         'summary' => 'Event',
         'status' => Status::CONFIRMED,
+        'timezone' => 'Europe/Amsterdam',
         'startDateTime' => now()->toDateTimeString(),
         'startDate' => null,
         'endDateTime' => now()->addMinute()->toDateTimeString(),
@@ -26,6 +27,7 @@ it('creates an event', function (): void {
         ->external_id->toBe($googleEventData->id)
         ->title->toBe($googleEventData->summary)
         ->all_day->toBe(false)
+        ->timezone->toBe('Europe/Amsterdam')
         ->starts_at->toBe($googleEventData->startDateTime)
         ->ends_at->toBe($googleEventData->endDateTime)
         ->description->toBe($googleEventData->description);
@@ -40,6 +42,7 @@ it('updates an event', function (): void {
             'external_id' => 'ev',
             'title' => 'Old Event',
             'all_day' => false,
+            'timezone' => 'Europe/Amsterdam',
             'starts_at' => '1946-01-01 12:34:56',
             'ends_at' => '1946-01-01 16:34:52',
             'description' => 'an old event',
@@ -49,6 +52,7 @@ it('updates an event', function (): void {
         'id' => 'ev',
         'summary' => 'Event',
         'status' => Status::CONFIRMED,
+        'timezone' => null,
         'startDateTime' => null,
         'startDate' => now()->toDateString(),
         'endDateTime' => null,
@@ -63,6 +67,7 @@ it('updates an event', function (): void {
         ->external_id->toBe($googleEventData->id)
         ->title->toBe($googleEventData->summary)
         ->all_day->toBe(true)
+        ->timezone->toBeNull()
         ->starts_at->toBe($googleEventData->startDate)
         ->ends_at->toBe($googleEventData->endDate)
         ->description->toBe($googleEventData->description);
@@ -74,6 +79,7 @@ it('does not save a cancelled event', function (): void {
         'id' => 'ev',
         'summary' => 'Event',
         'status' => Status::CANCELLED,
+        'timezone' => 'Europe/Amsterdam',
         'startDateTime' => now()->toDateTimeString(),
         'startDate' => null,
         'endDateTime' => now()->addMinute()->toDateTimeString(),
@@ -95,6 +101,7 @@ it('deletes an existing cancelled event', function (): void {
             'external_id' => 'ev',
             'title' => 'Old Event',
             'all_day' => false,
+            'timezone' => 'Europe/Amsterdam',
             'starts_at' => '1946-01-01 12:34:56',
             'ends_at' => '1946-01-01 16:34:52',
             'description' => 'an old event',
@@ -104,6 +111,7 @@ it('deletes an existing cancelled event', function (): void {
         'id' => 'ev',
         'summary' => 'Event',
         'status' => Status::CANCELLED,
+        'timezone' => null,
         'startDateTime' => null,
         'startDate' => now()->toDateString(),
         'endDateTime' => null,

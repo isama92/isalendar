@@ -23,8 +23,10 @@ it('fetches events from Google and returns GoogleEventData', function (): void {
     $ge1 = new GoogleEvent;
     $ge1Start = new EventDateTime;
     $ge1Start->setDateTime(now()->toRfc3339String());
+    $ge1Start->setTimeZone('Europe/Amsterdam');
     $ge1End = new EventDateTime;
     $ge1End->setDateTime(now()->addHour()->toRfc3339String());
+    $ge1End->setTimeZone('Europe/Amsterdam');
     $ge1->setId('ev_1');
     $ge1->setSummary('Event 1');
     $ge1->setStatus(Status::CONFIRMED->value);
@@ -34,9 +36,9 @@ it('fetches events from Google and returns GoogleEventData', function (): void {
 
     $ge2 = new GoogleEvent;
     $ge2Start = new EventDateTime;
-    $ge2Start->setDate(now()->format('Y-m-d'));
+    $ge2Start->setDate(now()->toDateString());
     $ge2End = new EventDateTime;
-    $ge2End->setDate(now()->addDay()->format('Y-m-d'));
+    $ge2End->setDate(now()->addDay()->toDateString());
     $ge2->setId('ev_2');
     $ge2->setSummary('Event 2');
     $ge2->setStatus(Status::TENTATIVE->value);
@@ -75,6 +77,7 @@ it('fetches events from Google and returns GoogleEventData', function (): void {
         ->id->toBe($ge1->getId())
         ->summary->toBe($ge1->getSummary())
         ->status->toBe(Status::CONFIRMED)
+        ->timezone->toBe('Europe/Amsterdam')
         ->startDateTime->toBe($ge1->getStart()->getDateTime())
         ->startDate->toBeNull()
         ->endDateTime->toBe($ge1->getEnd()->getDateTime())
@@ -85,6 +88,7 @@ it('fetches events from Google and returns GoogleEventData', function (): void {
         ->id->toBe($ge2->getId())
         ->summary->toBe($ge2->getSummary())
         ->status->toBe(Status::TENTATIVE)
+        ->timezone->toBeNull()
         ->startDateTime->toBeNull()
         ->startDate->toBe($ge2->getStart()->getDate())
         ->endDateTime->toBeNull()
