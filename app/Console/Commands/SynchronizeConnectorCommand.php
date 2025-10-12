@@ -39,7 +39,7 @@ class SynchronizeConnectorCommand extends Command implements PromptsForMissingIn
         $this->info(sprintf('Provider: %s', $connector->provider->name ?? 'None'));
         $this->info(sprintf('Number of calendars linked to this connector: %d', $connector->calendars()->count()));
 
-        if (! $this->confirmToProceed('Comfirmation is required', true)) {
+        if (! $this->confirmToProceed('Confirmation is required', true)) {
             return self::SUCCESS;
         }
 
