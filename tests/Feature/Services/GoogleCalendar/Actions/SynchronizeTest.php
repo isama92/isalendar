@@ -7,6 +7,8 @@ use Illuminate\Bus\PendingBatch;
 use Illuminate\Support\Facades\Bus;
 use Spatie\QueueableAction\ActionJob;
 
+uses()->group('gcalendar', 'gcalendar.sync');
+
 it('dispatches one job per enabled calendar in a single batch', function (): void {
     Bus::fake();
 
