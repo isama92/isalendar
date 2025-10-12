@@ -8,7 +8,8 @@ use Torann\GeoIP\Facades\GeoIP;
 pest()->extend(TestCase::class)
     ->use(RefreshDatabase::class)
     ->beforeEach(function (): void {
-        Log::shouldReceive('error')->never();
+        Log::shouldReceive('emergency', 'alert', 'critical', 'error', 'warning', 'notice', 'info', 'debug', 'log')
+            ->never();
         GeoIP::shouldReceive('getLocation')
             ->zeroOrMoreTimes()
             ->andReturn(['timezone' => 'Europe/Amsterdam']);
