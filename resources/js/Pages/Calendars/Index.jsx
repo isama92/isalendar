@@ -6,10 +6,10 @@ import {
     ChevronUpIcon,
     LockClosedIcon,
     LockOpenIcon,
+    PlusIcon,
     TrashIcon,
     XMarkIcon,
 } from '@heroicons/react/24/solid';
-import { PlusIcon } from '@heroicons/react/24/solid/index.js';
 import { Link, router } from '@inertiajs/react';
 import {
     flexRender,

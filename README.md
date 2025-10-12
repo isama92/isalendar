@@ -9,10 +9,6 @@ Add events to a shared calendar.
 
 ## TODO
 - BUG: fix pagination in events and calendars index table
-- if user doesn't have a calendar model
-  - show a permanent message somewhere to tell them to add it
-- if user have a calendar model but doesn't have the external_calendar_id
-  - show a permanent message somewhere to tell them to select it (show a button in the message "Select Now")
 
 - add observer on event creation/edit, push the event immediately
 - add a scheduled command that checks if there are not synchronized events (lock when pushing in observer, check if it's locked in scheduled command, in case they run at the same time)
@@ -20,3 +16,5 @@ Add events to a shared calendar.
 - add timezone to events
   - let the user select the timezone when creating event
   - when fetching or pushing events, also save timezone
+- add field to change password in profile (tailwind settings screen)
+- add OIDC for authentik

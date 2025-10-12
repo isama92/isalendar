@@ -25,4 +25,6 @@ return [
     'enabled' => 'Enabled',
     'enabled_only' => 'Enabled only',
     'disabled_only' => 'Disabled only',
+    'no_calendar_yet' => "You don't have a calendar yet.",
+    'create_calendar_connection' => 'Create a calendar to start using the app.',
 ];
