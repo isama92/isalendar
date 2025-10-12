@@ -59,7 +59,7 @@ const Index = ({ calendars, providers }) => {
                 accessorFn: row => row.provider.name,
                 filterFn: (row, id, value) => {
                     if (value === 'all') return true;
-                    return row.original.id.toString() === value;
+                    return row.original.provider.id.toString() === value;
                 },
             },
             {

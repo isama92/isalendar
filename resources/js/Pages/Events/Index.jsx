@@ -24,7 +24,7 @@ import { useMemo, useState } from 'react';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 
-const Index = ({ events }) => {
+const Index = ({ events, providers }) => {
     const [sorting, setSorting] = useState([]);
     const [columnFilters, setColumnFilters] = useState([]);
     const [deleteModalOpen, setDeleteModalOpen] = useState(false);
@@ -82,6 +82,10 @@ const Index = ({ events }) => {
                 header: __('providers.provider'),
                 id: 'provider_name',
                 accessorFn: row => row.calendar.provider.name,
+                filterFn: (row, id, value) => {
+                    if (value === 'all') return true;
+                    return row.original.calendar.provider.id.toString() === value;
+                },
             },
             {
                 id: 'actions',
@@ -149,7 +153,7 @@ const Index = ({ events }) => {
                 </Link>
             </div>
 
-            <div className="mb-4 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            <div className="mb-4 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-5">
                 <input
                     type="text"
                     placeholder={__('actions.named.filter_by', { name: __('events.title') })}
@@ -165,6 +169,18 @@ const Index = ({ events }) => {
                     <option value="all">{__('events.all_events')}</option>
                     <option value="true">{__('events.all_day_only')}</option>
                     <option value="false">{__('events.not_all_day')}</option>
+                </select>
+                <select
+                    value={table.getColumn('provider_name')?.getFilterValue() ?? 'all'}
+                    onChange={e => table.getColumn('provider_name')?.setFilterValue(e.target.value)}
+                    className="rounded-md border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100"
+                >
+                    <option value="all">{__('actions.named.all', { name: __('providers.provider') })}</option>
+                    {providers.map(provider => (
+                        <option key={provider.id} value={provider.id}>
+                            {provider.name}
+                        </option>
+                    ))}
                 </select>
                 <DatePicker
                     selected={

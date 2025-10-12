@@ -8,6 +8,7 @@ use App\Http\Requests\StoreEventRequest;
 use App\Http\Requests\UpdateEventRequest;
 use App\Models\Calendar;
 use App\Models\Event;
+use App\Models\Provider;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Gate;
@@ -23,14 +24,13 @@ class EventsController extends Controller
         Gate::authorize('viewAny', Event::class);
 
         // TODO: fix pagination
-        $events = Event::with([
-            'calendar:id,name',
-        ])
+        $events = Event::with(['calendar:id,name'])
             ->forCurrentUser()
             ->paginate(10);
 
         return Inertia::render('Events/Index', [
             'events' => $events,
+            'providers' => Provider::enabled()->get(['id', 'name']),
         ]);
     }
 
