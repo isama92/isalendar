@@ -151,3 +151,16 @@ it('can access provider through connectors', function (): void {
     expect($calendar->provider)->not->toBeNull()
         ->and($calendar->provider->id)->toBe($provider->id);
 });
+
+it('sets enabled to true when calendar is restored', function (): void {
+    $calendar = Calendar::factory()->create(['enabled' => false]);
+    $calendar->delete();
+
+    expect($calendar->trashed())->toBeTrue()
+        ->and($calendar->enabled)->toBeFalse();
+
+    $calendar->restore();
+
+    expect($calendar->trashed())->toBeFalse()
+        ->and($calendar->fresh()->enabled)->toBeTrue();
+});

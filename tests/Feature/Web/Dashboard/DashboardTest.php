@@ -5,14 +5,11 @@ use App\Models\Connector;
 use App\Models\Event;
 use App\Models\User;
 use Carbon\Carbon;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 
 use function Pest\Laravel\actingAs;
 use function Pest\Laravel\get;
 
-uses(RefreshDatabase::class);
-
-test('dashboard displays stats for authenticated user', function (): void {
+it('displays stats for authenticated user', function (): void {
     $user = User::factory()->create();
 
     actingAs($user);
@@ -32,12 +29,12 @@ test('dashboard displays stats for authenticated user', function (): void {
         );
 });
 
-test('dashboard redirects unauthenticated users to login', function (): void {
+it('redirects unauthenticated users to login', function (): void {
     get(route('dashboard'))
         ->assertRedirect(route('login'));
 });
 
-test('dashboard shows correct event counts', function (): void {
+it('shows correct event counts', function (): void {
     $user = User::factory()->create();
     $connector = Connector::factory()->for($user)->create();
     $calendar = Calendar::factory()->create();
@@ -69,7 +66,7 @@ test('dashboard shows correct event counts', function (): void {
         );
 });
 
-test('dashboard shows correct all-day event counts', function (): void {
+it('shows correct all-day event counts', function (): void {
     $user = User::factory()->create();
     $connector = Connector::factory()->for($user)->create();
     $calendar = Calendar::factory()->create();
@@ -102,7 +99,7 @@ test('dashboard shows correct all-day event counts', function (): void {
         );
 });
 
-test('dashboard only shows authenticated user events', function (): void {
+it('only shows authenticated user events', function (): void {
     $user = User::factory()->create();
     $connector = Connector::factory()->for($user)->create();
     $calendar = Calendar::factory()->create();
@@ -127,7 +124,7 @@ test('dashboard only shows authenticated user events', function (): void {
         );
 });
 
-test('dashboard shows calendars count for multiple calendars', function (): void {
+it('shows calendars count for multiple calendars', function (): void {
     $user = User::factory()->create();
     $connector = Connector::factory()->for($user)->create();
 
@@ -155,7 +152,7 @@ test('dashboard shows calendars count for multiple calendars', function (): void
         );
 });
 
-test('dashboard calculates average events per day of week correctly', function (): void {
+it('calculates average events per day of week correctly', function (): void {
     $user = User::factory()->create();
     $connector = Connector::factory()->for($user)->create();
     $calendar = Calendar::factory()->create();

@@ -12,10 +12,11 @@ class SynchronizeConnector
     {
         $synchronizeAction = match (Service::fromId($connector->provider_id)) {
             Service::GOOGLE_CALENDAR => GoogleCalendarSynchronize::class,
+            Service::MICROSOFT_OUTLOOK => null,
         };
 
         app($synchronizeAction)
-            ->onQueue()
-            ->execute($connector);
+            ?->onQueue()
+            ?->execute($connector);
     }
 }

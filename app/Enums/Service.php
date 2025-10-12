@@ -8,11 +8,13 @@ use App\Services\GoogleCalendar\Auth\AccessToken as GoogleCalendarAccessToken;
 enum Service: string
 {
     case GOOGLE_CALENDAR = 'Google Calendar';
+    case MICROSOFT_OUTLOOK = 'Microsoft Outlook';
 
     public function id(): int
     {
         return match ($this) {
             self::GOOGLE_CALENDAR => 1,
+            self::MICROSOFT_OUTLOOK => 2,
         };
     }
 
@@ -20,6 +22,7 @@ enum Service: string
     {
         return match ($this) {
             self::GOOGLE_CALENDAR => 'google.webp',
+            self::MICROSOFT_OUTLOOK => 'microsoft.webp',
         };
     }
 
@@ -27,6 +30,7 @@ enum Service: string
     {
         return match ($this) {
             self::GOOGLE_CALENDAR => true,
+            self::MICROSOFT_OUTLOOK => false,
         };
     }
 
@@ -37,6 +41,7 @@ enum Service: string
     {
         return match ($this) {
             self::GOOGLE_CALENDAR => GoogleCalendarAccessToken::class,
+            self::MICROSOFT_OUTLOOK => '',
         };
     }
 
@@ -44,6 +49,7 @@ enum Service: string
     {
         return match ($this) {
             self::GOOGLE_CALENDAR => 'services.google.auth.connect',
+            self::MICROSOFT_OUTLOOK => 'services.microsoft.auth.connect',
         };
     }
 
@@ -51,6 +57,7 @@ enum Service: string
     {
         return match ($id) {
             self::GOOGLE_CALENDAR->id() => self::GOOGLE_CALENDAR,
+            self::MICROSOFT_OUTLOOK->id() => self::MICROSOFT_OUTLOOK,
             default => throw new UnexpectedProvider($id),
         };
     }

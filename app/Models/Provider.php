@@ -10,6 +10,13 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Provider extends Model
 {
+    public $timestamps = false;
+
+    protected $hidden = [
+        'access_object',
+        'auth_route',
+    ];
+
     /**
      * @return array{
      *     enabled: 'boolean'
@@ -30,6 +37,11 @@ class Provider extends Model
     public static function googleCalendar(): self
     {
         return once(fn (): self => self::findOrFail(Service::GOOGLE_CALENDAR->id()));
+    }
+
+    public static function microsoftOutlook(): self
+    {
+        return once(fn (): self => self::findOrFail(Service::MICROSOFT_OUTLOOK->id()));
     }
 
     /**

@@ -56,7 +56,7 @@ const Index = ({ calendars, providers }) => {
             {
                 header: __('calendars.provider_name'),
                 id: 'provider_name',
-                accessorFn: row => row.connector.provider.name,
+                accessorFn: row => row.provider.name,
                 filterFn: (row, id, value) => {
                     if (value === 'all') return true;
                     return row.original.id.toString() === value;

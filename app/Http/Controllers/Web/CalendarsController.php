@@ -10,7 +10,6 @@ use App\Http\Requests\UpdateCalendarRequest;
 use App\Models\Calendar;
 use App\Models\Connector;
 use App\Models\Provider;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -27,13 +26,7 @@ class CalendarsController extends Controller
         Gate::authorize('viewAny', Calendar::class);
 
         // TODO: fix pagination
-        $calendars = Calendar::with([
-            'connectors' => fn (BelongsToMany $query) => $query
-                ->select('connectors.id', 'provider_id', 'user_id')
-                ->whereBelongsTo(Auth::user()),
-            'connectors.provider:id,name',
-        ])
-            ->forCurrentUser()
+        $calendars = Calendar::forCurrentUser()
             ->withCount('events')
             ->paginate(10);
 
@@ -111,7 +104,6 @@ class CalendarsController extends Controller
 
         $connector->calendars()->detach($calendar);
 
-        // TODO: needs testing
         if (! $calendar->connectors()->exists()) {
             $calendar->delete();
         }
