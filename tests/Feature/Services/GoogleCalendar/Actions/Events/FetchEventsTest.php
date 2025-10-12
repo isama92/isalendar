@@ -14,6 +14,8 @@ use Illuminate\Support\Collection;
 
 use function Pest\Laravel\partialMock;
 
+uses()->group('gcalendar', 'gcalendar.events');
+
 it('fetches events from Google and returns GoogleEventData', function (): void {
     $connector = Connector::factory()->create();
     $calendar = Calendar::factory()->create();

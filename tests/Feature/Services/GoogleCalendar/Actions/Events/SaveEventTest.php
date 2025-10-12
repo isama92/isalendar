@@ -6,6 +6,8 @@ use App\Services\GoogleCalendar\Actions\Events\SaveEvent;
 use App\Services\GoogleCalendar\Data\GoogleEventData;
 use App\Services\GoogleCalendar\Enums\Status;
 
+uses()->group('gcalendar', 'gcalendar.events');
+
 it('creates an event', function (): void {
     $calendar = Calendar::factory()->create();
     $googleEventData = GoogleEventData::from([

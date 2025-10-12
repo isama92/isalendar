@@ -6,11 +6,6 @@ use App\Models\Calendar;
 
 class CalendarObserver
 {
-    public function created(Calendar $calendar): void
-    {
-        // TODO: create command to only sync one calendar?
-    }
-
     public function deleted(Calendar $calendar): void
     {
         $calendar->events()

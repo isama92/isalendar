@@ -10,6 +10,8 @@ use App\Services\GoogleCalendar\Enums\Status;
 
 use function Pest\Laravel\partialMock;
 
+uses()->group('gcalendar', 'gcalendar.events');
+
 it('calls FetchEvents and then calls SaveEvent for each event', function (): void {
     $fetchWindowStart = now()->toImmutable();
     $fetchWindowEnd = now()->addHour()->toImmutable();

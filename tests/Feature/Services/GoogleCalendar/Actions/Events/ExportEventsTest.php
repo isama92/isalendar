@@ -8,6 +8,8 @@ use App\Services\GoogleCalendar\Actions\Events\PushEvent;
 
 use function Pest\Laravel\partialMock;
 
+uses()->group('gcalendar', 'gcalendar.events');
+
 it('calls PushEvent for each event in the time window', function (): void {
     $fetchWindowStart = now()->subWeek()->startOfDay()->toImmutable();
     $fetchWindowEnd = now()->addWeeks(2)->endOfDay()->toImmutable();

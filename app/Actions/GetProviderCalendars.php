@@ -16,8 +16,12 @@ class GetProviderCalendars
     {
         $fetchNormalizeCalendars = match (Service::fromId($connector->provider_id)) {
             Service::GOOGLE_CALENDAR => GoogleCalendarFetchNormalizedCalendars::class,
-            Service::MICROSOFT_OUTLOOK => collect(),
+            Service::MICROSOFT_OUTLOOK => null,
         };
+
+        if (is_null($fetchNormalizeCalendars)) {
+            return collect();
+        }
 
         return app($fetchNormalizeCalendars)->execute($connector);
     }

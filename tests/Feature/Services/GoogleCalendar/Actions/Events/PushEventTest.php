@@ -10,6 +10,8 @@ use Google\Service\Calendar\Event as GoogleEvent;
 
 use function Pest\Laravel\partialMock;
 
+uses()->group('gcalendar', 'gcalendar.events');
+
 it('creates a new event on Google Calendar when external_id is null', function (): void {
     $connector = Connector::factory()->create();
     $calendar = Calendar::factory()->create();
