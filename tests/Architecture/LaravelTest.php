@@ -10,6 +10,8 @@ use Illuminate\Mail\Mailable;
 use Illuminate\Notifications\Notification;
 use Illuminate\Support\ServiceProvider;
 
+uses()->group('arch', 'architecture');
+
 /**
  * Based on the Laravel preset defined in https://github.com/pestphp/pest/blob/3.x/src/ArchPresets/Laravel.php
  */

@@ -6,7 +6,7 @@ use Illuminate\Support\Facades\Storage;
 use function Pest\Laravel\actingAs;
 use function Pest\Laravel\get;
 
-uses()->group('web', 'profile', 'photo');
+uses()->group('web', 'profile');
 
 beforeEach(function (): void {
     Storage::fake('profile_photos');

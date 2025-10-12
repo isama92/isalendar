@@ -9,10 +9,12 @@ use Spatie\QueueableAction\Testing\QueueableActionFake;
 
 use function Pest\Laravel\artisan;
 
+uses()->group('commands');
+
 it('starts synchronization of enabled google calendar connectors', function (): void {
     Queue::fake();
 
-    $connectorGoogleEnabled = Connector::factory()
+    Connector::factory()
         ->for(Provider::googleCalendar())
         ->create();
     Connector::factory()

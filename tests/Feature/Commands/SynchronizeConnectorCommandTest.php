@@ -7,6 +7,8 @@ use App\Models\Connector;
 use function Pest\Laravel\artisan;
 use function Pest\Laravel\partialMock;
 
+uses()->group('commands');
+
 beforeEach(function (): void {
     test()->confirmationText = 'Are you sure you want to run this command?';
 });
