@@ -1,11 +1,11 @@
 import Modal from '@/Components/Modal';
-import { formatDate, formatDateTime } from '@/utils/date';
+import { formatDate, formatDateTimeWithTimezone } from '@/utils/date';
 import { PencilIcon, TrashIcon } from '@heroicons/react/20/solid';
 import { Link, router } from '@inertiajs/react';
 import { useState } from 'react';
 
 const Show = ({ event }) => {
-    const format = event.all_day ? formatDate : formatDateTime;
+    const format = event.all_day ? formatDate : date => formatDateTimeWithTimezone(date, event.timezone);
     const [deleteModalOpen, setDeleteModalOpen] = useState(false);
 
     const handleDelete = () => {

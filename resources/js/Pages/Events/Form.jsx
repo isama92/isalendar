@@ -1,6 +1,6 @@
 import Checkbox from '@/Components/Checkbox';
 import TimezoneSelect from '@/Components/TimezoneSelect';
-import { formatWithFormat } from '@/utils/date';
+import { formatWithFormat, formatWithFormatAndTimezone } from '@/utils/date';
 import {
     Listbox,
     ListboxButton,
@@ -21,12 +21,18 @@ import 'react-datepicker/dist/react-datepicker.css';
 const Form = ({ user, calendars, timezones, event = null }) => {
     const isEditing = !!event;
 
+    const convertUtcToEventTimezone = (utcDate, timezone, allDay) => {
+        if (!utcDate) return '';
+        if (allDay) return utcDate;
+        return formatWithFormatAndTimezone(utcDate, timezone, 'YYYY-MM-DD HH:mm:ss');
+    };
+
     const { data, setData, post, put, processing, transform, errors, reset } = useForm({
         calendar_id: event?.calendar?.id || '',
         title: event?.title || '',
         all_day: event?.all_day || false,
-        starts_at: event?.starts_at || '',
-        ends_at: event?.ends_at || '',
+        starts_at: event ? convertUtcToEventTimezone(event.starts_at, event.timezone, event.all_day) : '',
+        ends_at: event ? convertUtcToEventTimezone(event.ends_at, event.timezone, event.all_day) : '',
         timezone: event?.timezone || user.settings.default_timezone,
         description: event?.description || '',
     });

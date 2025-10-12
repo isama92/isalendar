@@ -1,6 +1,6 @@
 import Modal from '@/Components/Modal';
 import Pagination from '@/Components/Pagination';
-import { formatDate, formatDateTime, formatWithFormat } from '@/utils/date';
+import { formatDate, formatDateTimeWithTimezone, formatWithFormat, formatWithFormatAndTimezone } from '@/utils/date';
 import {
     CheckIcon,
     ChevronDownIcon,
@@ -51,13 +51,22 @@ const Index = ({ events, providers }) => {
                 },
             },
             {
+                header: __('events.timezone'),
+                accessorKey: 'timezone',
+            },
+            {
                 header: __('events.starts_at'),
                 accessorKey: 'starts_at',
                 cell: info =>
-                    info.row.original.all_day ? formatDate(info.getValue()) : formatDateTime(info.getValue()),
+                    info.row.original.all_day
+                        ? formatDate(info.getValue())
+                        : formatDateTimeWithTimezone(info.getValue(), info.row.original.timezone),
                 filterFn: (row, id, value) => {
                     if (!value) return true;
-                    return formatWithFormat(row.getValue(id), 'YYYY-MM-DD') === value;
+                    const timezone = row.original.timezone;
+                    return timezone
+                        ? formatWithFormatAndTimezone(row.getValue(id), 'YYYY-MM-DD', timezone) === value
+                        : formatWithFormat(row.getValue(id), 'YYYY-MM-DD') === value;
                 },
             },
             {
@@ -67,10 +76,13 @@ const Index = ({ events, providers }) => {
                     info.row.original.all_day
                         ? // TODO: sub a day if it's all day
                           formatDate(info.getValue())
-                        : formatDateTime(info.getValue()),
+                        : formatDateTimeWithTimezone(info.getValue(), info.row.original.timezone),
                 filterFn: (row, id, value) => {
                     if (!value) return true;
-                    return formatWithFormat(row.getValue(id), 'YYYY-MM-DD') === value;
+                    const timezone = row.original.timezone;
+                    return timezone
+                        ? formatWithFormatAndTimezone(row.getValue(id), 'YYYY-MM-DD', timezone) === value
+                        : formatWithFormat(row.getValue(id), 'YYYY-MM-DD') === value;
                 },
             },
             {
