@@ -27,19 +27,19 @@ it('redirects back to previous page', function (): void {
         ->assertRedirect(route('dashboard'));
 });
 
-it('defaults to english for invalid locale', function (string $locale): void {
+it('defaults to english for invalid locale', function ($locale): void {
     post(route('locale.update'), ['locale' => $locale])
         ->assertRedirect()
         ->assertSessionHas('locale', 'en');
 
     expect(session('locale'))->toBe('en');
 })->with([
-    ['locale', 'nl'],
-    ['locale', ''],
-    ['locale', null],
-    ['locale', 123],
-    ['locale', ['en', 'it']],
-    ['locale', 'IT'],
+    ['locale' => 'nl'],
+    ['locale' => ''],
+    ['locale' => null],
+    ['locale' => 123],
+    ['locale' => ['en', 'it']],
+    ['locale' => 'IT'],
 ]);
 
 it('defaults to english for missing locale parameter', function (): void {
