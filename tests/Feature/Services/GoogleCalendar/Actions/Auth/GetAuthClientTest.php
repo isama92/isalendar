@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Cache;
 use Mockery\MockInterface;
 use Tests\Helpers\ImmediateLock;
 
-uses()->group('gcalendar', 'gcalendar-auth');
+uses()->group('gcalendar', 'gcalendar.auth');
 
 it('returns the google client without refreshing when the token is not expired', function (): void {
     $token = new AccessToken(

@@ -7,7 +7,7 @@ use Laravel\Socialite\Facades\Socialite;
 use Laravel\Socialite\Two\GoogleProvider;
 use Mockery\MockInterface;
 
-uses()->group('gcalendar', 'gcalendar-auth');
+uses()->group('gcalendar', 'gcalendar.auth');
 
 it('builds the google oauth redirect with expected scopes, prompt and access_type', function (): void {
     // Capture what the action sends to the provider

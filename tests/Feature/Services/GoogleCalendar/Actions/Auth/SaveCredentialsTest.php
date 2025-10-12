@@ -7,7 +7,7 @@ use App\Services\GoogleCalendar\Auth\AccessToken;
 use Laravel\Socialite\Two\User as GoogleUser;
 use Mockery\MockInterface;
 
-uses()->group('gcalendar', 'gcalendar-auth');
+uses()->group('gcalendar', 'gcalendar.auth');
 
 it('saves credentials and creates a disabled Google Calendar connector with access token', function (): void {
     $user = User::factory()->create();
