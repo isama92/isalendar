@@ -15,8 +15,12 @@ class SynchronizeConnector
             Service::MICROSOFT_OUTLOOK => null,
         };
 
+        if (is_null($synchronizeAction)) {
+            return;
+        }
+
         app($synchronizeAction)
-            ?->onQueue()
-            ?->execute($connector);
+            ->onQueue()
+            ->execute($connector);
     }
 }

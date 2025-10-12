@@ -11,7 +11,7 @@ trait ToEvent
     {
         return new self(
             externalId: $googleEventData->id,
-            title: $googleEventData->summary,
+            title: $googleEventData->summary ?? '',
             allDay: is_null($googleEventData->startDateTime),
             timezone: $googleEventData->timezone,
             startsAt: Carbon::parse($googleEventData->startDateTime ?? $googleEventData->startDate),

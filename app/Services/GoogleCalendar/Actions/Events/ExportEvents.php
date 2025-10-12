@@ -4,17 +4,16 @@ namespace App\Services\GoogleCalendar\Actions\Events;
 
 use App\Models\Calendar;
 use App\Models\Connector;
-use App\Services\GoogleCalendar\Data\GoogleEventData;
+use App\Models\Event;
 use Carbon\CarbonImmutable;
 use Spatie\QueueableAction\QueueableAction;
 
-class PullEvents
+class ExportEvents
 {
     use QueueableAction;
 
     public function __construct(
-        private readonly FetchEvents $fetchEvents,
-        private readonly SaveEvent $saveEvent,
+        private readonly PushEvent $pushEvent,
     ) {}
 
     public function execute(
@@ -23,8 +22,11 @@ class PullEvents
         CarbonImmutable $fetchWindowStart,
         CarbonImmutable $fetchWindowEnd,
     ): void {
-        $this->fetchEvents->execute($connector, $calendar, $fetchWindowStart, $fetchWindowEnd)
-            ->each(fn (GoogleEventData $googleEventData) => $this->saveEvent
-                ->execute($googleEventData, $calendar));
+        $calendar->events()
+            ->whereBetween('starts_at', [$fetchWindowStart, $fetchWindowEnd])
+            ->lazyById()
+            ->each(function (Event $event) use ($connector): void {
+                $this->pushEvent->execute($connector, $event);
+            });
     }
 }

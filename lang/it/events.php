@@ -27,7 +27,6 @@ return [
     'delete_confirm' => 'Sei sicuro di voler eliminare questo evento?',
     'delete_confirm_message' => 'Sei sicuro di voler eliminare questo evento? Questa azione non può essere annullata.',
     'no_events_found' => 'Nessun evento trovato.',
-    'event_will_be_uploaded_after_save' => 'L\'evento sarà aggiornato immediatamente dopo il salvataggio.',
     'event_created' => 'Evento creato con successo!',
     'event_updated' => 'Evento aggiornato con successo!',
     'event_deleted' => 'Evento eliminato con successo!',

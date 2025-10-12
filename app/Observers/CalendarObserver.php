@@ -16,7 +16,7 @@ class CalendarObserver
         $calendar->events()
             ->lazyById()
             ->each
-            ->deleteQuietly();
+            ->delete();
     }
 
     public function restored(Calendar $calendar): void

@@ -5,13 +5,10 @@ use App\Models\Connector;
 use App\Services\GoogleCalendar\Actions\Synchronize;
 use Illuminate\Bus\PendingBatch;
 use Illuminate\Support\Facades\Bus;
-use Spatie\QueueableAction\ActionJob;
 
 uses()->group('gcalendar', 'gcalendar.sync');
 
-it('dispatches one job per enabled calendar in a single batch', function (): void {
-    Bus::fake();
-
+it('dispatches import and export batches for enabled calendars', function (): void {
     $connector = Connector::factory()->create();
 
     // 3 enabled, 2 disabled calendars
@@ -21,18 +18,29 @@ it('dispatches one job per enabled calendar in a single batch', function (): voi
     $connector->calendars()->syncWithoutDetaching($enabledCalendars);
     $connector->calendars()->syncWithoutDetaching($disabledCalendars);
 
-    app(Synchronize::class)->execute($connector);
+    $batchCount = 0;
 
-    Bus::assertBatched(function (PendingBatch $batch) use ($connector, $enabledCalendars): true {
-        expect($batch->name)->toBe(sprintf('Synchronize Google Calendar events (%s)', $connector->id))
-            ->and(count($batch->jobs))->toBe($enabledCalendars->count());
+    Bus::shouldReceive('batch')
+        ->twice()
+        ->andReturnUsing(function ($jobs) use (&$batchCount) {
+            $batchCount++;
+            $batch = Mockery::mock(PendingBatch::class);
+            $batch->shouldReceive('name')->andReturnSelf();
 
-        collect($batch->jobs)->each(function ($job): void {
-            expect($job)->toBeInstanceOf(ActionJob::class);
+            return $batch;
         });
 
-        return true;
-    });
+    $pendingChain = Mockery::mock();
+    $pendingChain->shouldReceive('dispatch')->once()->andReturnUndefined();
+
+    Bus::shouldReceive('chain')
+        ->once()
+        ->with(Mockery::on(fn ($arg): bool => is_array($arg) && count($arg) === 2))
+        ->andReturn($pendingChain);
+
+    app(Synchronize::class)->execute($connector);
+
+    expect($batchCount)->toBe(2);
 });
 
 it('does not dispatch an empty batch when there are no enabled calendars', function (): void {

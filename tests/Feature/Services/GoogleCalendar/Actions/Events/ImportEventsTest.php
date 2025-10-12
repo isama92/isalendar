@@ -3,7 +3,7 @@
 use App\Models\Calendar;
 use App\Models\Connector;
 use App\Services\GoogleCalendar\Actions\Events\FetchEvents;
-use App\Services\GoogleCalendar\Actions\Events\PullEvents;
+use App\Services\GoogleCalendar\Actions\Events\ImportEvents;
 use App\Services\GoogleCalendar\Actions\Events\SaveEvent;
 use App\Services\GoogleCalendar\Data\GoogleEventData;
 use App\Services\GoogleCalendar\Enums\Status;
@@ -61,7 +61,7 @@ it('calls FetchEvents and then calls SaveEvent for each event', function (): voi
         ->ordered('saveEventGroup')
         ->andReturnUndefined();
 
-    app(PullEvents::class)->execute($connector, $calendar, $fetchWindowStart, $fetchWindowEnd);
+    app(ImportEvents::class)->execute($connector, $calendar, $fetchWindowStart, $fetchWindowEnd);
 
     expect(true)->toBeTrue();
 });

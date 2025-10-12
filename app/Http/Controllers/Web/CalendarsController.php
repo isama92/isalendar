@@ -75,7 +75,7 @@ class CalendarsController extends Controller
                     ['external_id' => $calendarData->externalId],
                     $calendarData->all()
                 );
-            $calendar->restoreQuietly();
+            $calendar->restore();
             $connector->calendars()->attach($calendar);
             $connector->update(['enabled' => true]);
         });

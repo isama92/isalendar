@@ -109,7 +109,7 @@ it('deletes an existing cancelled event', function (): void {
 
     $googleEventData = GoogleEventData::from([
         'id' => 'ev',
-        'summary' => 'Event',
+        'summary' => null,
         'status' => Status::CANCELLED,
         'timezone' => null,
         'startDateTime' => null,

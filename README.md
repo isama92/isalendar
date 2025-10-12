@@ -9,6 +9,9 @@ Add events to a shared calendar.
 
 ## BUG
 - fix pagination in events and calendars index table
+- when selecting datetime from datetime picker in events form date changes immediately
+- when changing timezone, the date should also change in the events form
+- ... google calendar shows the date in user timezone when creating/updating event, independently from the event timezone
 
 ## TODO
 - add observer on event creation/edit, push the event immediately
@@ -16,3 +19,4 @@ Add events to a shared calendar.
 - add OIDC for authentik
 - add +/- offset to timezones in select (also order by offset)
 - strip html from event description when fetching from google calendar
+- add sync button close to calendar

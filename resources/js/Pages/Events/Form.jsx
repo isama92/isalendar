@@ -80,9 +80,6 @@ const Form = ({ user, calendars, timezones, event = null }) => {
                         <h2 className="text-base/7 font-semibold text-gray-900 dark:text-white">
                             {isEditing ? __('events.edit_event') : __('events.create_event')}
                         </h2>
-                        <p className="mt-1 max-w-2xl text-sm/6 text-gray-600 dark:text-gray-400">
-                            {__('events.event_will_be_uploaded_after_save')}
-                        </p>
                     </div>
 
                     {/* field */}

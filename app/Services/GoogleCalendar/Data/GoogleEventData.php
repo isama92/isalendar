@@ -10,8 +10,8 @@ class GoogleEventData extends Data
 {
     public function __construct(
         public string $id,
-        public string $summary,
         public Status $status,
+        public ?string $summary,
         public ?string $timezone,
         public ?string $startDateTime,
         public ?string $startDate,
@@ -27,8 +27,8 @@ class GoogleEventData extends Data
 
         return new self(
             id: $googleEvent->getId(),
-            summary: $googleEvent->getSummary(),
             status: Status::from($googleEvent->getStatus()),
+            summary: $googleEvent->getSummary(),
             timezone: $startObj->getTimezone(),
             startDateTime: $startObj->getDateTime(),
             startDate: $startObj->getDate(),

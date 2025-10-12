@@ -35,7 +35,7 @@ class HorizonTags
 
                 case $object instanceof Event:
                     $object->loadMissing(['calendar']);
-                    $tags[] = static::forEnum($object->calendar->connector->first()->provider->service());
+                    $tags[] = static::forEnum($object->calendar->connectors->first()->provider->service());
                     $tags[] = static::forModel($object);
                     break;
 

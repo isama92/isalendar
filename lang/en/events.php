@@ -27,7 +27,6 @@ return [
     'delete_confirm' => 'Are you sure you want to delete this event?',
     'delete_confirm_message' => 'Are you sure you want to delete this event? This action cannot be undone.',
     'no_events_found' => 'No events found.',
-    'event_will_be_uploaded_after_save' => 'The event will be updated immediately after saving.',
     'event_created' => 'Event created successfully!',
     'event_updated' => 'Event updated successfully!',
     'event_deleted' => 'Event deleted successfully!',
