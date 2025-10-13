@@ -78,7 +78,9 @@ const Form = ({ user, calendars, timezones, event = null }) => {
                     {/* header */}
                     <div>
                         <h2 className="text-base/7 font-semibold text-gray-900 dark:text-white">
-                            {isEditing ? __('events.edit_event') : __('events.create_event')}
+                            {isEditing
+                                ? __('actions.named.edit', { name: __('events.event') })
+                                : __('actions.named.create', { name: __('events.event') })}
                         </h2>
                     </div>
 
@@ -375,7 +377,7 @@ const Form = ({ user, calendars, timezones, event = null }) => {
                         onClick={() => window.history.back()}
                         className="cursor-pointer text-sm/6 font-semibold text-gray-900 dark:text-white"
                     >
-                        {__('common.back')}
+                        {__('actions.back')}
                     </button>
                     <div className="inline-flex rounded-md shadow-xs dark:shadow-none">
                         <button
@@ -386,8 +388,8 @@ const Form = ({ user, calendars, timezones, event = null }) => {
                         >
                             {processing
                                 ? isEditing
-                                    ? __('common.updating')
-                                    : __('common.creating')
+                                    ? __('actions.updating')
+                                    : __('actions.creating')
                                 : isEditing
                                   ? __('actions.update_and_view')
                                   : __('actions.create_and_new')}

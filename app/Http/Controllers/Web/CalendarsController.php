@@ -25,10 +25,9 @@ class CalendarsController extends Controller
     {
         Gate::authorize('viewAny', Calendar::class);
 
-        // TODO: fix pagination
         $calendars = Calendar::forCurrentUser()
             ->withCount('events')
-            ->paginate(10);
+            ->get();
 
         return Inertia::render('Calendars/Index', [
             'calendars' => $calendars,

@@ -51,9 +51,9 @@ describe('calendars index', function (): void {
             ->assertSuccessful()
             ->assertInertia(fn ($page) => $page
                 ->component('Calendars/Index')
-                ->has('calendars.data', 2)
-                ->where('calendars.data.0.events_count', 5)
-                ->where('calendars.data.1.events_count', 3)
+                ->has('calendars', 2)
+                ->where('calendars.0.events_count', 5)
+                ->where('calendars.1.events_count', 3)
             );
     });
 
@@ -75,8 +75,8 @@ describe('calendars index', function (): void {
             ->assertSuccessful()
             ->assertInertia(fn ($page) => $page
                 ->component('Calendars/Index')
-                ->has('calendars.data', 1)
-                ->where('calendars.data.0.id', $userCalendar->id)
+                ->has('calendars', 1)
+                ->where('calendars.0.id', $userCalendar->id)
             );
     });
 
@@ -110,15 +110,15 @@ describe('calendars index', function (): void {
             ->assertSuccessful()
             ->assertInertia(fn ($page) => $page
                 ->component('Calendars/Index')
-                ->has('calendars.data', 0)
+                ->has('calendars', 0)
             );
     });
 
-    it('paginates results', function (): void {
+    it('returns all calendars for frontend pagination', function (): void {
         $user = User::factory()->create();
         $connector = Connector::factory()->for($user)->create();
 
-        // Create 15 calendars (more than the 10 per page limit)
+        // Create 15 calendars - all should be returned for frontend pagination
         $calendars = Calendar::factory()->count(15)->create();
 
         foreach ($calendars as $calendar) {
@@ -131,10 +131,7 @@ describe('calendars index', function (): void {
             ->assertSuccessful()
             ->assertInertia(fn ($page) => $page
                 ->component('Calendars/Index')
-                ->has('calendars.data', 10)
-                ->has('calendars.links')
-                ->where('calendars.total', 15)
-                ->where('calendars.per_page', 10)
+                ->has('calendars', 15)
             );
     });
 
@@ -151,8 +148,8 @@ describe('calendars index', function (): void {
             ->assertSuccessful()
             ->assertInertia(fn ($page) => $page
                 ->component('Calendars/Index')
-                ->has('calendars.data', 1)
-                ->where('calendars.data.0.events_count', 0)
+                ->has('calendars', 1)
+                ->where('calendars.0.events_count', 0)
             );
     });
 
@@ -177,7 +174,7 @@ describe('calendars index', function (): void {
             ->assertSuccessful()
             ->assertInertia(fn ($page) => $page
                 ->component('Calendars/Index')
-                ->has('calendars.data', 2)
+                ->has('calendars', 2)
             );
     });
 });

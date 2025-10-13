@@ -3,13 +3,11 @@
 return [
     'calendars' => 'Calendari',
     'calendar' => 'Calendario',
-    'create_calendar' => 'Crea Calendario',
     'name' => 'Nome',
     'events_count' => 'Numero Eventi',
     'delete_calendar' => 'Elimina Calendario',
     'delete_confirm' => 'Sei sicuro di voler eliminare questo calendario?',
     'delete_confirm_message' => 'Sei sicuro di voler eliminare questo calendario? Questa azione non può essere annullata.',
-    'choose_calendar' => 'Scegli il Calendario',
     'calendar_created' => 'Calendario creato',
     'calendar_deleted' => 'Calendario eliminato',
     'no_calendars_found' => 'Nessun Calendario trovato.',

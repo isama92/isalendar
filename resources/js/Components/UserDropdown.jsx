@@ -26,7 +26,7 @@ const UserDropdown = () => {
                             onClick={() => setDropdownOpen(false)}
                         >
                             <UserCircleIcon className="h-5 w-5" />
-                            <span>{__('common.profile')}</span>
+                            <span>{__('profile.profile')}</span>
                         </Link>
                         <Link
                             href={route('logout')}

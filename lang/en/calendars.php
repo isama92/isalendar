@@ -3,13 +3,11 @@
 return [
     'calendars' => 'Calendars',
     'calendar' => 'Calendar',
-    'create_calendar' => 'Create Calendar',
     'name' => 'Name',
     'events_count' => 'Events Count',
     'delete_calendar' => 'Delete Calendar',
     'delete_confirm' => 'Are you sure you want to delete this calendar?',
     'delete_confirm_message' => 'Are you sure you want to delete this calendar? This action cannot be undone.',
-    'choose_calendar' => 'Choose the Calendar',
     'calendar_created' => 'Calendar created',
     'calendar_deleted' => 'Calendar has been deleted',
     'no_calendars_found' => 'No calendars found.',

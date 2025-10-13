@@ -53,7 +53,7 @@ const Create = ({ providers }) => {
                                 disabled={processing}
                                 className="cursor-pointer rounded-full bg-white px-2.5 py-1 text-xs font-semibold text-gray-900 shadow-xs inset-ring inset-ring-gray-300 hover:bg-gray-50 disabled:opacity-50 dark:bg-white/10 dark:text-white dark:shadow-none dark:inset-ring-white/5 dark:hover:bg-white/20"
                             >
-                                {__('common.choose')}
+                                {__('actions.choose')}
                             </button>
                         </li>
                     ))}

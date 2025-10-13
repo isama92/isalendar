@@ -3,8 +3,6 @@
 return [
     'events' => 'Events',
     'event' => 'Event',
-    'create_event' => 'Create Event',
-    'edit_event' => 'Edit Event',
     'title' => 'Title',
     'all_day' => 'All Day',
     'starts_at' => 'Starts At',

@@ -3,8 +3,6 @@
 return [
     'events' => 'Eventi',
     'event' => 'Evento',
-    'create_event' => 'Crea Evento',
-    'edit_event' => 'Modifica Evento',
     'title' => 'Titolo',
     'all_day' => 'Tutto il Giorno',
     'starts_at' => 'Inizio',

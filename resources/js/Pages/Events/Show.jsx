@@ -32,7 +32,7 @@ const Show = ({ event }) => {
                         className="inline-flex cursor-pointer items-center gap-x-2 rounded-md bg-indigo-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-xs hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 dark:bg-indigo-500 dark:shadow-none dark:hover:bg-indigo-400 dark:focus-visible:outline-indigo-500"
                     >
                         <PencilIcon aria-hidden="true" className="-ml-0.5 size-5" />
-                        {__('common.edit')}
+                        {__('actions.edit')}
                     </Link>
                     <button
                         onClick={handleDelete}
@@ -40,7 +40,7 @@ const Show = ({ event }) => {
                         className="inline-flex cursor-pointer items-center gap-x-2 rounded-md bg-red-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-xs hover:bg-red-700 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-600"
                     >
                         <TrashIcon aria-hidden="true" className="-ml-0.5 size-5" />
-                        {__('common.delete')}
+                        {__('actions.delete')}
                     </button>
                 </div>
             </div>
@@ -98,10 +98,10 @@ const Show = ({ event }) => {
             <Modal
                 open={deleteModalOpen}
                 onClose={() => setDeleteModalOpen(false)}
-                title={__('events.delete_event')}
+                title={__('actions.named.delete', { name: __('events.event') })}
                 message={__('events.delete_confirm_message')}
-                confirmText={__('common.delete')}
-                cancelText={__('common.cancel')}
+                confirmText={__('actions.delete')}
+                cancelText={__('actions.cancel')}
                 variant="danger"
                 onConfirm={() => {
                     router.delete(route('events.destroy', event.id));

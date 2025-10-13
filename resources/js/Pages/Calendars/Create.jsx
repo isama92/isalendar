@@ -13,7 +13,7 @@ const Create = ({ connectorRouteKey, provider, calendars }) => {
     return (
         <div className="mx-auto max-w-lg rounded-lg bg-white p-6 px-4 shadow sm:px-6 dark:bg-gray-800">
             <h2 className="mb-6 text-2xl font-semibold text-gray-900 dark:text-gray-100">
-                {__('calendars.choose_calendar')}
+                {__('actions.named.choose', { name: __('calendars.calendar') })}
             </h2>
 
             <div>
@@ -41,7 +41,7 @@ const Create = ({ connectorRouteKey, provider, calendars }) => {
                                 disabled={processing}
                                 className="cursor-pointer rounded-full bg-white px-2.5 py-1 text-xs font-semibold text-gray-900 shadow-xs inset-ring inset-ring-gray-300 hover:bg-gray-50 disabled:opacity-50 dark:bg-white/10 dark:text-white dark:shadow-none dark:inset-ring-white/5 dark:hover:bg-white/20"
                             >
-                                {__('common.choose')}
+                                {__('actions.choose')}
                             </button>
                         </li>
                     ))}
