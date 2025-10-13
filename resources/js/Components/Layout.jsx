@@ -57,7 +57,7 @@ const Layout = ({ children }) => {
                             </TransitionChild>
 
                             {/* Sidebar component for mobile */}
-                            <div className="relative flex grow flex-col gap-y-5 overflow-y-auto bg-white px-6 dark:bg-gray-800">
+                            <div className="relative flex grow flex-col gap-y-5 overflow-y-auto bg-gray-50 px-6 dark:bg-gray-900 dark:ring dark:ring-white/10 dark:before:pointer-events-none dark:before:absolute dark:before:inset-0 dark:before:bg-black/10">
                                 <div className="relative flex h-16 shrink-0 items-center">
                                     <Link href={route('dashboard')} onClick={() => setSidebarOpen(false)}>
                                         <img src={LogoLight} alt={appName} className="h-8 w-auto dark:hidden" />
@@ -82,8 +82,8 @@ const Layout = ({ children }) => {
                                                             className={clsx(
                                                                 'group flex gap-x-3 rounded-md p-2 text-sm/6 font-semibold',
                                                                 item.current
-                                                                    ? 'bg-gray-100 text-indigo-600 dark:bg-gray-700 dark:text-indigo-400'
-                                                                    : 'text-gray-700 hover:bg-gray-100 hover:text-indigo-600 dark:text-gray-300 dark:hover:bg-gray-700 dark:hover:text-indigo-400'
+                                                                    ? 'cursor-default bg-gray-100 text-indigo-600 dark:bg-white/5 dark:text-white'
+                                                                    : 'text-gray-700 hover:bg-gray-100 hover:text-indigo-600 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-white'
                                                             )}
                                                         >
                                                             {item.name}
@@ -101,9 +101,9 @@ const Layout = ({ children }) => {
 
                 {/* Static sidebar for desktop */}
                 {user && (
-                    <div className="hidden xl:fixed xl:inset-y-0 xl:z-50 xl:flex xl:w-72 xl:flex-col">
+                    <div className="hidden xl:fixed xl:inset-y-0 xl:z-50 xl:flex xl:w-72 xl:flex-col dark:bg-gray-900">
                         {/* Sidebar component for desktop */}
-                        <div className="flex grow flex-col gap-y-5 overflow-y-auto bg-white px-6 ring-1 ring-gray-200 dark:bg-gray-800 dark:ring-gray-700">
+                        <div className="flex grow flex-col gap-y-5 overflow-y-auto bg-gray-50 px-6 ring-1 ring-gray-200 dark:bg-black/10 dark:ring-white/5">
                             <div className="flex h-16 shrink-0 items-center">
                                 <Link href={route('dashboard')}>
                                     <img src={LogoLight} alt={appName} className="h-8 w-auto dark:hidden" />
@@ -127,8 +127,8 @@ const Layout = ({ children }) => {
                                                         className={clsx(
                                                             'group flex gap-x-3 rounded-md p-2 text-sm/6 font-semibold',
                                                             item.current
-                                                                ? 'bg-gray-100 text-indigo-600 dark:bg-gray-700 dark:text-indigo-400'
-                                                                : 'text-gray-700 hover:bg-gray-100 hover:text-indigo-600 dark:text-gray-300 dark:hover:bg-gray-700 dark:hover:text-indigo-400'
+                                                                ? 'cursor-default bg-gray-100 text-indigo-600 dark:bg-white/5 dark:text-white'
+                                                                : 'text-gray-700 hover:bg-gray-100 hover:text-indigo-600 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-white'
                                                         )}
                                                     >
                                                         {item.name}
@@ -146,11 +146,11 @@ const Layout = ({ children }) => {
                 <div className={clsx(user ? 'xl:pl-72' : '')}>
                     {/* Sticky header */}
                     {user && (
-                        <div className="sticky top-0 z-40 flex h-16 shrink-0 items-center gap-x-6 border-b border-gray-200 bg-white px-4 shadow-xs sm:px-6 lg:px-8 dark:border-gray-700 dark:bg-gray-800">
+                        <div className="sticky top-0 z-40 flex h-16 shrink-0 items-center gap-x-6 border-b border-gray-200 bg-white px-4 shadow-xs sm:px-6 lg:px-8 dark:border-white/5 dark:bg-gray-900 dark:shadow-none">
                             <button
                                 type="button"
                                 onClick={() => setSidebarOpen(true)}
-                                className="-m-2.5 p-2.5 text-gray-900 xl:hidden dark:text-gray-100"
+                                className="-m-2.5 p-2.5 text-gray-900 xl:hidden dark:text-white"
                             >
                                 <span className="sr-only">Open sidebar</span>
                                 <Bars3Icon aria-hidden="true" className="size-5" />
@@ -165,7 +165,9 @@ const Layout = ({ children }) => {
                     )}
 
                     {/* Page Content */}
-                    <main className="container mx-auto my-3 sm:px-6 lg:px-8">{children}</main>
+                    <main className="bg-white dark:bg-gray-900">
+                        <div className="container mx-auto py-3 sm:px-6 lg:px-8">{children}</div>
+                    </main>
                 </div>
             </div>
         </>

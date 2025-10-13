@@ -130,7 +130,7 @@ const Index = ({ events, providers }) => {
                                 setDeleteModalOpen(true);
                             }}
                             title={__('actions.delete')}
-                            className="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300"
+                            className="cursor-pointer text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300"
                         >
                             <TrashIcon className="h-5 w-5" />
                             <span className="sr-only">

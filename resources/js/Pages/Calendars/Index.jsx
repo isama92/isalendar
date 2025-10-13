@@ -10,6 +10,7 @@ import {
     getSortedRowModel,
     useReactTable,
 } from '@tanstack/react-table';
+import clsx from 'clsx';
 import { useMemo, useState } from 'react';
 
 const Index = ({ calendars, providers }) => {
@@ -72,11 +73,12 @@ const Index = ({ calendars, providers }) => {
                                     ? __('calendars.disable_calendar_sync')
                                     : __('calendars.enable_calendar_sync')
                             }
-                            className={
+                            className={clsx(
+                                'cursor-pointer',
                                 info.row.original.enabled
                                     ? 'text-yellow-600 hover:text-yellow-900 dark:text-yellow-400 dark:hover:text-yellow-300'
                                     : 'text-green-600 hover:text-green-900 dark:text-green-400 dark:hover:text-green-300'
-                            }
+                            )}
                         >
                             {info.row.original.enabled ? (
                                 <LockClosedIcon className="h-5 w-5" />
@@ -96,7 +98,7 @@ const Index = ({ calendars, providers }) => {
                                 setDeleteModalOpen(true);
                             }}
                             title={__('actions.delete')}
-                            className="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300"
+                            className="cursor-pointer text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300"
                         >
                             <TrashIcon className="h-5 w-5" />
                             <span className="sr-only">

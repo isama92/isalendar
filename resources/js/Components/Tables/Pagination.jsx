@@ -48,7 +48,7 @@ const Pagination = ({ table }) => {
                     <button
                         onClick={() => table.setPageIndex(0)}
                         disabled={!table.getCanPreviousPage()}
-                        className="relative inline-flex items-center rounded-md bg-white px-2.5 py-2 text-sm font-semibold text-gray-900 ring-1 ring-gray-300 ring-inset hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-gray-900 dark:text-white dark:ring-white/15 dark:hover:bg-gray-800"
+                        className="relative inline-flex cursor-pointer items-center rounded-md bg-white px-2.5 py-2 text-sm font-semibold text-gray-900 ring-1 ring-gray-300 ring-inset hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-gray-900 dark:text-white dark:ring-white/15 dark:hover:bg-gray-800"
                     >
                         <ChevronLeftIcon className="h-5 w-5" />
                         <ChevronLeftIcon className="-ml-3 h-5 w-5" />
@@ -56,7 +56,7 @@ const Pagination = ({ table }) => {
                     <button
                         onClick={() => table.previousPage()}
                         disabled={!table.getCanPreviousPage()}
-                        className="relative inline-flex items-center rounded-md bg-white px-2.5 py-2 text-sm font-semibold text-gray-900 ring-1 ring-gray-300 ring-inset hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-gray-900 dark:text-white dark:ring-white/15 dark:hover:bg-gray-800"
+                        className="relative inline-flex cursor-pointer items-center rounded-md bg-white px-2.5 py-2 text-sm font-semibold text-gray-900 ring-1 ring-gray-300 ring-inset hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-gray-900 dark:text-white dark:ring-white/15 dark:hover:bg-gray-800"
                     >
                         <ChevronLeftIcon className="h-5 w-5" />
                     </button>
@@ -66,14 +66,14 @@ const Pagination = ({ table }) => {
                     <button
                         onClick={() => table.nextPage()}
                         disabled={!table.getCanNextPage()}
-                        className="relative inline-flex items-center rounded-md bg-white px-2.5 py-2 text-sm font-semibold text-gray-900 ring-1 ring-gray-300 ring-inset hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-gray-900 dark:text-white dark:ring-white/15 dark:hover:bg-gray-800"
+                        className="relative inline-flex cursor-pointer items-center rounded-md bg-white px-2.5 py-2 text-sm font-semibold text-gray-900 ring-1 ring-gray-300 ring-inset hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-gray-900 dark:text-white dark:ring-white/15 dark:hover:bg-gray-800"
                     >
                         <ChevronRightIcon className="h-5 w-5" />
                     </button>
                     <button
                         onClick={() => table.setPageIndex(table.getPageCount() - 1)}
                         disabled={!table.getCanNextPage()}
-                        className="relative inline-flex items-center rounded-md bg-white px-2.5 py-2 text-sm font-semibold text-gray-900 ring-1 ring-gray-300 ring-inset hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-gray-900 dark:text-white dark:ring-white/15 dark:hover:bg-gray-800"
+                        className="relative inline-flex cursor-pointer items-center rounded-md bg-white px-2.5 py-2 text-sm font-semibold text-gray-900 ring-1 ring-gray-300 ring-inset hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-gray-900 dark:text-white dark:ring-white/15 dark:hover:bg-gray-800"
                     >
                         <ChevronRightIcon className="h-5 w-5" />
                         <ChevronRightIcon className="-ml-3 h-5 w-5" />
