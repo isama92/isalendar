@@ -23,15 +23,24 @@ class SaveEvent
             return;
         }
 
-        if ($event instanceof Event) {
-            $event->update(
+        $this->saveEvent($googleEventData, $calendar, $event);
+    }
+
+    private function saveEvent(GoogleEventData $googleEventData, Calendar $calendar, ?Event $event): void
+    {
+        if (! $event instanceof Event) {
+            $calendar->events()->create(
                 EventData::from($googleEventData)->all()
             );
 
             return;
         }
 
-        $calendar->events()->create(
+        if ($googleEventData->updatedAt->isBefore($event->updated_at)) {
+            return;
+        }
+
+        $event->update(
             EventData::from($googleEventData)->all()
         );
     }

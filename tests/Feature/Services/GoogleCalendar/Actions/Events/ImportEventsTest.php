@@ -23,8 +23,9 @@ it('calls FetchEvents and then calls SaveEvent for each event', function (): voi
     $eventsDataCollection = collect([
         GoogleEventData::from([
             'id' => 'ev 1',
-            'summary' => 'Event 1',
             'status' => Status::CONFIRMED,
+            'updatedAt' => now(),
+            'summary' => 'Event 1',
             'timezone' => 'Europe/Amsterdam',
             'startDateTime' => 'start datetime',
             'startDate' => null,
@@ -34,8 +35,9 @@ it('calls FetchEvents and then calls SaveEvent for each event', function (): voi
         ]),
         GoogleEventData::from([
             'id' => 'ev 2',
-            'summary' => 'Event 2',
             'status' => Status::CANCELLED,
+            'updatedAt' => now(),
+            'summary' => 'Event 2',
             'timezone' => null,
             'startDateTime' => null,
             'startDate' => 'start date',

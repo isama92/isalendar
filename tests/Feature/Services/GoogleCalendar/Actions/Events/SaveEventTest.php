@@ -12,8 +12,9 @@ it('creates an event', function (): void {
     $calendar = Calendar::factory()->create();
     $googleEventData = GoogleEventData::from([
         'id' => 'ev',
-        'summary' => 'Event',
         'status' => Status::CONFIRMED,
+        'updatedAt' => now(),
+        'summary' => 'Event',
         'timezone' => 'Europe/Amsterdam',
         'startDateTime' => now()->toDateTimeString(),
         'startDate' => null,
@@ -35,7 +36,7 @@ it('creates an event', function (): void {
         ->description->toBe($googleEventData->description);
 });
 
-it('updates an event', function (): void {
+it('updates an event when remote updatedAt is after local updated_at', function (): void {
     $calendar = Calendar::factory()->create();
 
     $oldEvent = Event::factory()
@@ -48,12 +49,14 @@ it('updates an event', function (): void {
             'starts_at' => '1946-01-01 12:34:56',
             'ends_at' => '1946-01-01 16:34:52',
             'description' => 'an old event',
+            'updated_at' => now()->subHour(),
         ]);
 
     $googleEventData = GoogleEventData::from([
         'id' => 'ev',
-        'summary' => 'Event',
         'status' => Status::CONFIRMED,
+        'updatedAt' => now(),
+        'summary' => 'Event',
         'timezone' => null,
         'startDateTime' => null,
         'startDate' => now()->toDateString(),
@@ -75,12 +78,55 @@ it('updates an event', function (): void {
         ->description->toBe($googleEventData->description);
 });
 
+it('does not update an event when remote updatedAt is before local updated_at', function (): void {
+    $calendar = Calendar::factory()->create();
+
+    $oldEvent = Event::factory()
+        ->for($calendar)
+        ->create([
+            'external_id' => 'ev',
+            'title' => 'Old Event',
+            'all_day' => false,
+            'timezone' => 'Europe/Amsterdam',
+            'starts_at' => '1946-01-01 12:34:56',
+            'ends_at' => '1946-01-01 16:34:52',
+            'description' => 'an old event',
+            'updated_at' => now(),
+        ]);
+
+    $googleEventData = GoogleEventData::from([
+        'id' => 'ev',
+        'status' => Status::CONFIRMED,
+        'updatedAt' => now()->subHour(),
+        'summary' => 'New Event Title',
+        'timezone' => 'America/New_York',
+        'startDateTime' => null,
+        'startDate' => now()->toDateString(),
+        'endDateTime' => null,
+        'endDate' => now()->addDays(2)->toDateString(),
+        'description' => 'a new event description',
+    ]);
+
+    app(SaveEvent::class)->execute($googleEventData, $calendar);
+
+    expect($oldEvent->refresh())
+        ->calendar_id->toBe($calendar->id)
+        ->external_id->toBe('ev')
+        ->title->toBe('Old Event')
+        ->all_day->toBe(false)
+        ->timezone->toBe('Europe/Amsterdam')
+        ->starts_at->toBe('1946-01-01 12:34:56')
+        ->ends_at->toBe('1946-01-01 16:34:52')
+        ->description->toBe('an old event');
+});
+
 it('does not save a cancelled event', function (): void {
     $calendar = Calendar::factory()->create();
     $googleEventData = GoogleEventData::from([
         'id' => 'ev',
-        'summary' => 'Event',
         'status' => Status::CANCELLED,
+        'updatedAt' => now(),
+        'summary' => 'Event',
         'timezone' => 'Europe/Amsterdam',
         'startDateTime' => now()->toDateTimeString(),
         'startDate' => null,
@@ -111,8 +157,9 @@ it('deletes an existing cancelled event', function (): void {
 
     $googleEventData = GoogleEventData::from([
         'id' => 'ev',
-        'summary' => null,
         'status' => Status::CANCELLED,
+        'updatedAt' => now(),
+        'summary' => null,
         'timezone' => null,
         'startDateTime' => null,
         'startDate' => now()->toDateString(),
