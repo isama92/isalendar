@@ -12,6 +12,8 @@ use Spatie\QueueableAction\Testing\QueueableActionFake;
 
 use function Pest\Laravel\actingAs;
 use function Pest\Laravel\put;
+use function Pest\Laravel\travel;
+use function Pest\Laravel\withoutMiddleware;
 
 uses()->group('web', 'connectors');
 
@@ -83,11 +85,11 @@ it('does not rate limit without the middleware', function (): void {
 
     actingAs($user);
 
-    $this->withoutMiddleware(ThrottleRequests::class)
+    withoutMiddleware(ThrottleRequests::class)
         ->put(route('connectors.synchronize', $connector))
         ->assertRedirect(route('calendars.index'));
 
-    $this->withoutMiddleware(ThrottleRequests::class)
+    withoutMiddleware(ThrottleRequests::class)
         ->put(route('connectors.synchronize', $connector))
         ->assertRedirect(route('calendars.index'));
 
@@ -139,7 +141,7 @@ it('allows synchronization after rate limit period', function (): void {
     put(route('connectors.synchronize', $connector))
         ->assertTooManyRequests();
 
-    $this->travel(61)->minutes();
+    travel(61)->minutes();
 
     put(route('connectors.synchronize', $connector))
         ->assertRedirect(route('calendars.index'));

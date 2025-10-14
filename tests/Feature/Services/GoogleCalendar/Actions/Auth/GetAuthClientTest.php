@@ -8,6 +8,8 @@ use Illuminate\Support\Facades\Cache;
 use Mockery\MockInterface;
 use Tests\Helpers\ImmediateLock;
 
+use function Pest\Laravel\mock;
+
 uses()->group('gcalendar', 'gcalendar.auth');
 
 it('returns the google client without refreshing when the token is not expired', function (): void {
@@ -26,7 +28,7 @@ it('returns the google client without refreshing when the token is not expired',
         ->shouldReceive('lock')
         ->never();
 
-    $this->mock(GoogleClient::class, function (MockInterface $mock) use ($token): void {
+    mock(GoogleClient::class, function (MockInterface $mock) use ($token): void {
         $mock->shouldReceive('setAccessToken')
             ->once()
             ->with($token->token);
@@ -69,7 +71,7 @@ it('refreshes the token via cache lock when the token is expired and persists th
         ->with(sprintf('connector-refresh-%s', $connector->id), 10)
         ->andReturn(new ImmediateLock);
 
-    $this->mock(GoogleClient::class, function (MockInterface $mock) use ($oldToken, $newTokenPayload): void {
+    mock(GoogleClient::class, function (MockInterface $mock) use ($oldToken, $newTokenPayload): void {
         $mock->shouldReceive('setAccessToken')
             ->once()
             ->with($oldToken->token);
@@ -122,7 +124,7 @@ it('calls refresh exactly once even if executed concurrently thanks to the cache
         ->with(sprintf('connector-refresh-%s', $connector->id), 10)
         ->andReturn(new ImmediateLock);
 
-    $this->mock(GoogleClient::class, function (MockInterface $mock) use ($newGooglePayload): void {
+    mock(GoogleClient::class, function (MockInterface $mock) use ($newGooglePayload): void {
         // 1st execute(): old token, expired -> refresh
         $mock->shouldReceive('setAccessToken')->once()->with('access_old')->ordered();
         $mock->shouldReceive('isAccessTokenExpired')->once()->andReturnTrue()->ordered();

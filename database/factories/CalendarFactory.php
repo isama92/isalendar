@@ -15,6 +15,7 @@ class CalendarFactory extends Factory
             'external_id' => fake()->uuid(),
             'name' => fake()->sentence(3),
             'description' => fake()->paragraph(),
+            'enabled' => true,
         ];
     }
 

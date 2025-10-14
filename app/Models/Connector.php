@@ -28,6 +28,7 @@ class Connector extends Model
         'external_id',
         'access_details',
         'enabled',
+        'synchronized_at',
     ];
 
     protected $hidden = [
@@ -36,7 +37,9 @@ class Connector extends Model
 
     /**
      * @return array{
-     *     enabled: 'boolean'
+     *     access_details: 'App\\Casts\\ProviderAccessDetailsCast',
+     *     enabled: 'boolean',
+     *     synchronized_at: 'datetime'
      * }
      */
     protected function casts(): array
@@ -44,6 +47,7 @@ class Connector extends Model
         return [
             'access_details' => ProviderAccessDetailsCast::class,
             'enabled' => 'boolean',
+            'synchronized_at' => 'datetime',
         ];
     }
 

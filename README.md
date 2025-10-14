@@ -19,7 +19,5 @@ Add events to a shared calendar.
 ## TODO
 - add OIDC for authentik
 - add +/- offset to timezones in select (also order by offset)
-- add sync button in calendars index and events index/show, max 1 per h
 - metrics
-- add synchronized_at to calendars
 - use rate limit to prevent sync actions overlapping https://laravel.com/docs/12.x/queues#rate-limiting

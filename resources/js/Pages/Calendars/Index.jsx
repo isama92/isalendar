@@ -57,6 +57,22 @@ const Index = ({ calendars, providers }) => {
                 accessorFn: row => row.events_count,
             },
             {
+                header: __('calendars.synchronized_at'),
+                id: 'synchronized_at',
+                accessorFn: row => row.connector.synchronized_at,
+                cell: info => {
+                    const value = info.getValue();
+                    return value ? new Date(value).toLocaleString() : __('calendars.never_synchronized');
+                },
+                filterFn: (row, id, value) => {
+                    if (value === 'all') return true;
+                    const syncedAt = row.getValue(id);
+                    if (value === 'synchronized') return syncedAt !== null;
+                    if (value === 'never') return syncedAt === null;
+                    return true;
+                },
+            },
+            {
                 header: __('providers.provider'),
                 id: 'provider_name',
                 enableSorting: false,
@@ -179,7 +195,7 @@ const Index = ({ calendars, providers }) => {
                 </div>
             </div>
 
-            <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
                 <input
                     type="text"
                     placeholder={__('actions.named.filter_by', { name: __('calendars.name') })}
@@ -192,9 +208,18 @@ const Index = ({ calendars, providers }) => {
                     onChange={e => table.getColumn('enabled')?.setFilterValue(e.target.value)}
                     className="rounded-md border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 focus:outline-none dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100"
                 >
-                    <option value="all">{__('actions.named.all', { name: __('calendars.calendars') })}</option>
+                    <option value="all">{__('calendars.status_filter_all')}</option>
                     <option value="true">{__('calendars.enabled_only')}</option>
                     <option value="false">{__('calendars.disabled_only')}</option>
+                </select>
+                <select
+                    value={table.getColumn('synchronized_at')?.getFilterValue() ?? 'all'}
+                    onChange={e => table.getColumn('synchronized_at')?.setFilterValue(e.target.value)}
+                    className="rounded-md border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 focus:outline-none dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100"
+                >
+                    <option value="all">{__('calendars.sync_status_all')}</option>
+                    <option value="synchronized">{__('calendars.sync_filter_synchronized')}</option>
+                    <option value="never">{__('calendars.sync_filter_never')}</option>
                 </select>
                 <select
                     value={table.getColumn('provider_name')?.getFilterValue() ?? 'all'}

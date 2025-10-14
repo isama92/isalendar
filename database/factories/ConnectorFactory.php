@@ -28,6 +28,8 @@ class ConnectorFactory extends Factory
                     (int) now()->diffInSeconds(now()->addHour()),
                 ),
             },
+            'enabled' => true,
+            'synchronized_at' => null,
         ];
     }
 

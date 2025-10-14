@@ -1,5 +1,6 @@
 <?php
 
+use function Pest\Laravel\from;
 use function Pest\Laravel\post;
 
 uses()->group('web', 'locale');
@@ -21,7 +22,7 @@ it('updates locale to italian', function (): void {
 });
 
 it('redirects back to previous page', function (): void {
-    $this->from(route('dashboard'));
+    from(route('dashboard'));
 
     post(route('locale.update'), ['locale' => 'en'])
         ->assertRedirect(route('dashboard'));

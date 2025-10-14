@@ -15,10 +15,12 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
+        $env = $_ENV['APP_ENV'] ?? 'production';
+
         $middleware->trustHosts();
         $middleware->trustProxies();
 
-        if (! app()->environment('testing')) {
+        if ($env !== 'testing') {
             $middleware->throttleWithRedis();
         }
 

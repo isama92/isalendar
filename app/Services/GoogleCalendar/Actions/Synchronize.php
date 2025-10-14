@@ -45,7 +45,10 @@ class Synchronize
                         $fetchWindowStart,
                         $fetchWindowEnd,
                     ]))
-            )->name(sprintf('Export Google Calendar events (%s)', $connector->id)),
+            )->name(sprintf('Export Google Calendar events (%s)', $connector->id))
+                ->finally(function () use ($connector): void {
+                    $connector->update(['synchronized_at' => now()]);
+                }),
         ])->dispatch();
     }
 }

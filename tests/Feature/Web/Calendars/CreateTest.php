@@ -8,6 +8,7 @@ use App\Models\Provider;
 use App\Models\User;
 
 use function Pest\Laravel\actingAs;
+use function Pest\Laravel\assertDatabaseHas;
 use function Pest\Laravel\get;
 use function Pest\Laravel\mock;
 use function Pest\Laravel\post;
@@ -262,7 +263,7 @@ describe('calendars store', function (): void {
             'external_id' => 'ext-1',
         ]);
 
-        $this->assertDatabaseHas('calendars', [
+        assertDatabaseHas('calendars', [
             'external_id' => 'ext-1',
             'name' => 'New Calendar',
             'description' => 'Calendar description',

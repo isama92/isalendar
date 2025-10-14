@@ -7,7 +7,7 @@ uses(WithTimezoneHelpers::class)
     ->group('concerns');
 
 it('returns a collection of timezones', function (): void {
-    $result = $this->timezones();
+    $result = test()->timezones();
 
     expect($result)
         ->toBeInstanceOf(Collection::class)
@@ -19,7 +19,7 @@ it('returns a collection of timezones', function (): void {
 });
 
 it('returns grouped timezones', function (): void {
-    $result = $this->groupedTimezones();
+    $result = test()->groupedTimezones();
     $europeGroup = $result->firstWhere('label', 'Europe');
     $amsterdamOption = collect($europeGroup['options'])
         ->firstWhere('value', 'Europe/Amsterdam');
@@ -40,7 +40,7 @@ it('returns grouped timezones', function (): void {
 });
 
 it('sorts groups and timezones alphabetically by label', function (): void {
-    $result = $this->groupedTimezones();
+    $result = test()->groupedTimezones();
     $europeGroup = $result->firstWhere('label', 'Europe');
     $timezones = collect($europeGroup['options'])->pluck('value');
 

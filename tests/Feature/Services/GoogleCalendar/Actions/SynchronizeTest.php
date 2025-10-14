@@ -8,8 +8,8 @@ use Illuminate\Support\Facades\Bus;
 
 uses()->group('gcalendar', 'gcalendar.sync');
 
-it('dispatches import and export batches for enabled calendars', function (): void {
-    $connector = Connector::factory()->create();
+it('dispatches import and export batches for enabled calendars and sets synchronized_at', function (): void {
+    $connector = Connector::factory()->create(['synchronized_at' => null]);
 
     // 3 enabled, 2 disabled calendars
     $enabledCalendars = Calendar::factory()->count(3)->create();
@@ -19,13 +19,25 @@ it('dispatches import and export batches for enabled calendars', function (): vo
     $connector->calendars()->syncWithoutDetaching($disabledCalendars);
 
     $batchCount = 0;
+    $finallyCallback = null;
 
     Bus::shouldReceive('batch')
         ->twice()
-        ->andReturnUsing(function ($jobs) use (&$batchCount) {
+        ->andReturnUsing(function ($jobs) use (&$batchCount, &$finallyCallback) {
             $batchCount++;
             $batch = Mockery::mock(PendingBatch::class);
             $batch->shouldReceive('name')->andReturnSelf();
+
+            // Only the second batch (export) should have finally
+            if ($batchCount === 2) {
+                $batch->shouldReceive('finally')
+                    ->once()
+                    ->andReturnUsing(function ($callback) use ($batch, &$finallyCallback) {
+                        $finallyCallback = $callback;
+
+                        return $batch;
+                    });
+            }
 
             return $batch;
         });
@@ -41,6 +53,12 @@ it('dispatches import and export batches for enabled calendars', function (): vo
     app(Synchronize::class)->execute($connector);
 
     expect($batchCount)->toBe(2);
+
+    // Execute the finally callback to simulate batch completion
+    expect($finallyCallback)->toBeCallable();
+    $finallyCallback();
+
+    expect($connector->refresh()->synchronized_at)->not->toBeNull();
 });
 
 it('does not dispatch an empty batch when there are no enabled calendars', function (): void {
