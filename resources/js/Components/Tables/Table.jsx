@@ -1,5 +1,6 @@
 import { ChevronDownIcon } from '@heroicons/react/24/solid';
 import { flexRender } from '@tanstack/react-table';
+import clsx from 'clsx';
 
 const Table = ({ table, emptyMessage, emptyIcon: EmptyIcon }) => {
     return (
@@ -23,9 +24,7 @@ const Table = ({ table, emptyMessage, emptyIcon: EmptyIcon }) => {
                                             <th
                                                 key={header.id}
                                                 scope="col"
-                                                className={`py-3.5 text-left text-sm font-semibold text-gray-900 dark:text-white ${
-                                                    index === 0 ? 'pr-3 pl-4 sm:pl-0' : 'px-3'
-                                                } ${index === headerGroup.headers.length - 1 ? 'pr-4 pl-3 sm:pr-0' : ''}`}
+                                                className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900 dark:text-white"
                                             >
                                                 {header.isPlaceholder ? null : header.column.getCanSort() ? (
                                                     <button
@@ -76,15 +75,12 @@ const Table = ({ table, emptyMessage, emptyIcon: EmptyIcon }) => {
                                         {row.getVisibleCells().map((cell, index) => (
                                             <td
                                                 key={cell.id}
-                                                className={`py-4 text-sm whitespace-nowrap ${
+                                                className={clsx(
+                                                    'px-3 py-4 text-sm whitespace-nowrap',
                                                     index === 0
-                                                        ? 'pr-3 pl-4 font-medium text-gray-900 sm:pl-0 dark:text-white'
+                                                        ? 'pr-3 pl-4 font-medium text-gray-900 sm:pl-3 dark:text-white'
                                                         : 'text-gray-500 dark:text-gray-400'
-                                                } ${index === 0 || index === row.getVisibleCells().length - 1 ? '' : 'px-3'} ${
-                                                    index === row.getVisibleCells().length - 1
-                                                        ? 'pr-4 pl-3 text-right sm:pr-0'
-                                                        : ''
-                                                }`}
+                                                )}
                                             >
                                                 {flexRender(cell.column.columnDef.cell, cell.getContext())}
                                             </td>
