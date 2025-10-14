@@ -174,7 +174,7 @@ const Layout = ({ children }) => {
                     </div>
                 )}
 
-                <div className={clsx(user ? 'xl:pl-72' : '')}>
+                <div className={clsx('flex min-h-screen flex-col', user ? 'xl:pl-72' : '')}>
                     {/* Sticky header */}
                     {user && (
                         <div className="sticky top-0 z-40 flex h-16 shrink-0 items-center gap-x-6 border-b border-gray-200 bg-white px-4 shadow-xs sm:px-6 lg:px-8 dark:border-white/5 dark:bg-gray-900 dark:shadow-none">
@@ -196,7 +196,7 @@ const Layout = ({ children }) => {
                     )}
 
                     {/* Page Content */}
-                    <main className="bg-white dark:bg-gray-900">
+                    <main className="flex-1 bg-white dark:bg-gray-900">
                         <div className="container mx-auto py-3 sm:px-6 lg:px-8">{children}</div>
                     </main>
                 </div>
