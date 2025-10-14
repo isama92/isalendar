@@ -20,3 +20,7 @@ Add events to a shared calendar.
 - add +/- offset to timezones in select (also order by offset)
 - strip html from event description when fetching from google calendar
 - add sync button in calendars index and events index/show
+- metrics
+- use empty states tailwind component for empty tables
+- check if i want to change pagination ui component with tailwind one
+- use progress bar to mark stages of calendar creation
