@@ -1,7 +1,15 @@
 import Modal from '@/Components/Modal';
 import Paginator from '@/Components/Tables/Paginator';
 import Table from '@/Components/Tables/Table';
-import { CalendarIcon, CheckIcon, LockClosedIcon, LockOpenIcon, TrashIcon, XMarkIcon } from '@heroicons/react/24/solid';
+import {
+    ArrowPathIcon,
+    CalendarIcon,
+    CheckIcon,
+    LockClosedIcon,
+    LockOpenIcon,
+    TrashIcon,
+    XMarkIcon,
+} from '@heroicons/react/24/solid';
 import { Link, router } from '@inertiajs/react';
 import {
     getCoreRowModel,
@@ -63,6 +71,29 @@ const Index = ({ calendars, providers }) => {
                 header: __('actions.actions'),
                 cell: info => (
                     <div className="flex items-center justify-end gap-3">
+                        <button
+                            onClick={() => {
+                                router.put(route('connectors.synchronize', info.row.original.connector.id));
+                            }}
+                            disabled={!info.row.original.can_sync || !info.row.original.enabled}
+                            title={
+                                !info.row.original.can_sync
+                                    ? __('calendars.rate_limited')
+                                    : __('actions.named.synchronize', { name: __('calendars.calendar') })
+                            }
+                            className={clsx(
+                                'cursor-pointer',
+                                info.row.original.can_sync && info.row.original.enabled
+                                    ? 'text-indigo-600 hover:text-indigo-900 dark:text-indigo-400 dark:hover:text-indigo-300'
+                                    : 'cursor-not-allowed text-gray-400 dark:text-gray-600'
+                            )}
+                        >
+                            <ArrowPathIcon className="h-5 w-5" />
+                            <span className="sr-only">
+                                {__('actions.named.synchronize', { name: __('calendars.calendar') })},{' '}
+                                {info.row.original.name}
+                            </span>
+                        </button>
                         <button
                             onClick={() => {
                                 setCalendarToToggle(info.row.original);

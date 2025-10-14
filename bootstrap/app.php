@@ -17,7 +17,10 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->trustHosts();
         $middleware->trustProxies();
-        $middleware->throttleWithRedis();
+
+        if (! app()->environment('testing')) {
+            $middleware->throttleWithRedis();
+        }
 
         $middleware->web(
             append: [

@@ -66,7 +66,7 @@ it('refreshes the token via cache lock when the token is expired and persists th
     Cache::partialMock()
         ->shouldReceive('lock')
         ->once()
-        ->with(sprintf('connector-%s', $connector->id), 10)
+        ->with(sprintf('connector-refresh-%s', $connector->id), 10)
         ->andReturn(new ImmediateLock);
 
     $this->mock(GoogleClient::class, function (MockInterface $mock) use ($oldToken, $newTokenPayload): void {
@@ -119,7 +119,7 @@ it('calls refresh exactly once even if executed concurrently thanks to the cache
     Cache::partialMock()
         ->shouldReceive('lock')
         ->once()
-        ->with(sprintf('connector-%s', $connector->id), 10)
+        ->with(sprintf('connector-refresh-%s', $connector->id), 10)
         ->andReturn(new ImmediateLock);
 
     $this->mock(GoogleClient::class, function (MockInterface $mock) use ($newGooglePayload): void {

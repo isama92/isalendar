@@ -76,6 +76,7 @@ return [
         'search' => 'Search :name',
         'select' => 'Select :name',
         'show' => 'Show :name',
+        'synchronize' => 'Synchronize :name',
         'update' => 'Update :name',
         'view' => 'View :name',
     ],

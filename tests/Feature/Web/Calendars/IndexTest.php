@@ -6,6 +6,7 @@ use App\Models\Connector;
 use App\Models\Event;
 use App\Models\Provider;
 use App\Models\User;
+use Illuminate\Support\Facades\RateLimiter;
 
 use function Pest\Laravel\actingAs;
 use function Pest\Laravel\get;
@@ -174,5 +175,45 @@ it('shows multiple calendars for user with multiple connectors', function (): vo
         ->assertInertia(fn ($page) => $page
             ->component('Calendars/Index')
             ->has('calendars', 2)
+        );
+});
+
+it('includes can_sync status for each calendar', function (): void {
+    $user = User::factory()->create();
+    $connector = Connector::factory()->for($user)->create();
+
+    $calendar = Calendar::factory()->create();
+    $calendar->connectors()->attach($connector);
+
+    actingAs($user);
+
+    get(route('calendars.index'))
+        ->assertSuccessful()
+        ->assertInertia(fn ($page) => $page
+            ->component('Calendars/Index')
+            ->has('calendars', 1)
+            ->where('calendars.0.can_sync', true)
+        );
+});
+
+it('shows can_sync as false when connector is rate limited', function (): void {
+    $user = User::factory()->create();
+    $connector = Connector::factory()->for($user)->create();
+
+    $calendar = Calendar::factory()->create();
+    $calendar->connectors()->attach($connector);
+
+    // Hit the rate limiter
+    $key = sprintf('connector-sync:%s:%s', $user->id, $connector->id);
+    RateLimiter::hit($key, 3600);
+
+    actingAs($user);
+
+    get(route('calendars.index'))
+        ->assertSuccessful()
+        ->assertInertia(fn ($page) => $page
+            ->component('Calendars/Index')
+            ->has('calendars', 1)
+            ->where('calendars.0.can_sync', false)
         );
 });

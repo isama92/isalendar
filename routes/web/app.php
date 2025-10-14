@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Web\CalendarsController;
+use App\Http\Controllers\Web\ConnectorsController;
 use App\Http\Controllers\Web\DashboardController;
 use App\Http\Controllers\Web\EventsController;
 use App\Http\Controllers\Web\ProfileController;
@@ -26,6 +27,14 @@ Route::middleware('auth')->group(function (): void {
                 ->name('create');
             Route::post('/choose', [ProvidersController::class, 'store'])
                 ->name('store');
+        });
+
+    Route::prefix('/connectors')
+        ->name('connectors.')
+        ->group(function (): void {
+            Route::put('/{connector}/synchronize', [ConnectorsController::class, 'update'])
+                ->middleware('throttle:connector-sync')
+                ->name('synchronize');
         });
 
     Route::prefix('/calendars')

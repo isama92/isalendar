@@ -15,6 +15,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\RateLimiter;
 use Inertia\Inertia;
 use Inertia\Response;
 use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
@@ -27,7 +28,14 @@ class CalendarsController extends Controller
 
         $calendars = Calendar::forCurrentUser()
             ->withCount('events')
-            ->get();
+            ->get()
+            ->map(function (Calendar $calendar): array {
+                $connector = $calendar->connector;
+
+                return array_merge($calendar->toArray(), [
+                    'can_sync' => ! RateLimiter::tooManyAttempts(sprintf('connector-sync:%s:%s', Auth::id(), $connector->id), 1),
+                ]);
+            });
 
         return Inertia::render('Calendars/Index', [
             'calendars' => $calendars,

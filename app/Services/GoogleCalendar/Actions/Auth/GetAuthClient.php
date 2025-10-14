@@ -21,7 +21,7 @@ class GetAuthClient
         }
 
         // Refresh access token
-        return Cache::lock(sprintf('connector-%s', $connector->id), 10)
+        return Cache::lock(sprintf('connector-refresh-%d', $connector->id), 10)
             ->block(5, function () use ($connector, $accessToken): GoogleClient {
                 $this->googleClient->fetchAccessTokenWithRefreshToken($accessToken->refreshToken);
                 $newToken = $this->googleClient->getAccessToken();
