@@ -147,9 +147,11 @@ describe('validation', function (): void {
         actingAs($user);
 
         put(route('profile.update'), [])
-            ->assertSessionHasErrors('first_name')
-            ->assertSessionHasErrors('last_name')
-            ->assertSessionHasErrors('default_timezone');
+            ->assertSessionHasErrors([
+                'first_name',
+                'last_name',
+                'default_timezone',
+            ]);
     });
 
     it('validates first_name is string', function (): void {

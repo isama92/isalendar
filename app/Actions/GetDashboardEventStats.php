@@ -23,7 +23,7 @@ class GetDashboardEventStats
      */
     public function execute(): array
     {
-        $today = CarbonImmutable::now()->startOfDay();
+        $today = now()->startOfDay()->toImmutable();
 
         return [
             'totalEvents' => $this->getTotalEvents(),

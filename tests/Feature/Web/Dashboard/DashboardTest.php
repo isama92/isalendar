@@ -37,21 +37,23 @@ it('redirects unauthenticated users to login', function (): void {
 });
 
 it('shows correct event counts', function (): void {
+    Carbon::setTestNow('2025-01-06 00:00:00');
+
     $user = User::factory()->create();
     $connector = Connector::factory()->for($user)->create();
     $calendar = Calendar::factory()->create();
     $calendar->connectors()->attach($connector);
 
-    $today = Carbon::now()->startOfDay();
-    $tomorrow = Carbon::now()->addDay()->startOfDay();
-    $thisWeekStart = Carbon::now()->startOfWeek();
-    $nextWeekStart = Carbon::now()->addWeek()->startOfWeek();
+    $today = now()->startOfDay()->toImmutable();
+    $tomorrow = $today->addDay();
+    $thisWeekStart = $today->startOfWeek();
+    $nextWeekStart = $thisWeekStart->addWeek();
 
     // Create events for different time periods
-    Event::factory()->for($calendar)->create(['starts_at' => $today->copy()->addHours(10)]); // Today
-    Event::factory()->for($calendar)->create(['starts_at' => $tomorrow->copy()->addHours(10)]); // Tomorrow
-    Event::factory()->for($calendar)->create(['starts_at' => $thisWeekStart->copy()->addDays(2)]); // This week
-    Event::factory()->for($calendar)->create(['starts_at' => $nextWeekStart->copy()->addDays(2)]); // Next week
+    Event::factory()->for($calendar)->create(['starts_at' => $today->addHours(10)]);
+    Event::factory()->for($calendar)->create(['starts_at' => $tomorrow->addHours(10)]);
+    Event::factory()->for($calendar)->create(['starts_at' => $thisWeekStart->addDays(3)]);
+    Event::factory()->for($calendar)->create(['starts_at' => $nextWeekStart->addDays(2)]);
 
     actingAs($user);
 
