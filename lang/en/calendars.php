@@ -11,8 +11,6 @@ return [
     'calendar_created' => 'Calendar created',
     'calendar_deleted' => 'Calendar has been deleted',
     'no_calendars_found' => 'No calendars found.',
-    'connected' => 'Connected',
-    'disconnected' => 'Disconnected',
     'disable_calendar_sync' => 'Disable Synchronization',
     'enable_calendar_sync' => 'Enable Synchronization',
     'disable_confirm_message' => 'Are you sure you want to disable this calendar? Events will no longer sync.',
@@ -24,4 +22,5 @@ return [
     'disabled_only' => 'Disabled only',
     'no_calendar_yet' => "You don't have a calendar yet.",
     'create_calendar_connection' => 'Create a calendar to start using the app.',
+    'select_calendar_description' => 'Select which calendars to sync',
 ];

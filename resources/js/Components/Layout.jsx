@@ -4,9 +4,10 @@ import LanguageSwitcher from '@/Components/LanguageSwitcher';
 import Notification from '@/Components/Notification';
 import ThemeSwitcher from '@/Components/ThemeSwitcher';
 import UserDropdown from '@/Components/UserDropdown';
+import { getNavigationItems } from '@/utils/navigation';
 import { Dialog, DialogBackdrop, DialogPanel, TransitionChild } from '@headlessui/react';
 import { Bars3Icon } from '@heroicons/react/20/solid';
-import { CalendarIcon, ChartPieIcon, DocumentIcon, XMarkIcon } from '@heroicons/react/24/outline';
+import { XMarkIcon } from '@heroicons/react/24/outline';
 import { Link, usePage } from '@inertiajs/react';
 import clsx from 'clsx';
 import { useState } from 'react';
@@ -16,30 +17,7 @@ const Layout = ({ children }) => {
     const [sidebarOpen, setSidebarOpen] = useState(false);
     const currentRoute = route().current();
 
-    const navigation = [
-        {
-            name: __('dashboard.dashboard'),
-            href: route('dashboard'),
-            current: currentRoute === 'dashboard',
-            icon: ChartPieIcon,
-        },
-        {
-            name: __('calendars.calendars'),
-            href: route('calendars.index'),
-            current: currentRoute === 'calendars.index',
-            icon: CalendarIcon,
-        },
-        ...(connectorEnabled
-            ? [
-                  {
-                      name: __('events.events'),
-                      href: route('events.index'),
-                      current: currentRoute === 'events.index',
-                      icon: DocumentIcon,
-                  },
-              ]
-            : []),
-    ];
+    const navigation = getNavigationItems(currentRoute, connectorEnabled);
 
     return (
         <>

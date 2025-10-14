@@ -3,6 +3,5 @@
 return [
     'provider' => 'Provider',
     'providers' => 'Providers',
-    'pick_provider' => 'Pick Provider',
-    'authenticate' => 'Authenticate',
+    'select_provider_description' => 'Select the calendar service you want to connect',
 ];
