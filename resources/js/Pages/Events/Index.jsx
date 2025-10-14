@@ -1,5 +1,5 @@
 import Modal from '@/Components/Modal';
-import Pagination from '@/Components/Tables/Pagination';
+import Paginator from '@/Components/Tables/Paginator';
 import Table from '@/Components/Tables/Table';
 import {
     formatDate,
@@ -243,7 +243,7 @@ const Index = ({ events, providers }) => {
 
             <Table table={table} emptyMessage={__('events.no_events_found')} />
 
-            <Pagination table={table} />
+            <Paginator table={table} />
 
             <Modal
                 open={deleteModalOpen}

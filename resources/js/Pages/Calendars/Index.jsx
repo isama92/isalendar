@@ -1,5 +1,5 @@
 import Modal from '@/Components/Modal';
-import Pagination from '@/Components/Tables/Pagination';
+import Paginator from '@/Components/Tables/Paginator';
 import Table from '@/Components/Tables/Table';
 import { CheckIcon, LockClosedIcon, LockOpenIcon, TrashIcon, XMarkIcon } from '@heroicons/react/24/solid';
 import { Link, router } from '@inertiajs/react';
@@ -181,7 +181,7 @@ const Index = ({ calendars, providers }) => {
 
             <Table table={table} emptyMessage={__('calendars.no_calendars_found')} />
 
-            <Pagination table={table} />
+            <Paginator table={table} />
 
             <Modal
                 open={toggleModalOpen}
