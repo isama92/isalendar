@@ -75,6 +75,8 @@ const Edit = ({ user, timezones }) => {
                                         autoComplete="given-name"
                                         value={data.first_name}
                                         onChange={e => setData('first_name', e.target.value)}
+                                        aria-invalid={!!errors.first_name}
+                                        aria-describedby={errors.first_name ? 'first_name-error' : ''}
                                         className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6 dark:bg-white/5 dark:text-white dark:outline-white/10 dark:placeholder:text-gray-500 dark:focus:outline-indigo-500"
                                     />
                                     {errors.first_name && (
@@ -104,6 +106,8 @@ const Edit = ({ user, timezones }) => {
                                         autoComplete="family-name"
                                         value={data.last_name}
                                         onChange={e => setData('last_name', e.target.value)}
+                                        aria-invalid={!!errors.last_name}
+                                        aria-describedby={errors.last_name ? 'last_name-error' : ''}
                                         className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6 dark:bg-white/5 dark:text-white dark:outline-white/10 dark:placeholder:text-gray-500 dark:focus:outline-indigo-500"
                                     />
                                     {errors.last_name && (
@@ -142,6 +146,8 @@ const Edit = ({ user, timezones }) => {
                                         name="photo"
                                         accept="image/*"
                                         onChange={handlePhotoChange}
+                                        aria-invalid={!!errors.photo}
+                                        aria-describedby={errors.photo ? 'photo-error' : ''}
                                         className="hidden"
                                     />
                                     <button
@@ -220,6 +226,8 @@ const Edit = ({ user, timezones }) => {
                                         autoComplete="current-password"
                                         value={data.current_password}
                                         onChange={e => setData('current_password', e.target.value)}
+                                        aria-invalid={!!errors.current_password}
+                                        aria-describedby={errors.current_password ? 'current_password-error' : ''}
                                         className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6 dark:bg-white/5 dark:text-white dark:outline-white/10 dark:placeholder:text-gray-500 dark:focus:outline-indigo-500"
                                     />
                                     {errors.current_password && (
@@ -249,6 +257,8 @@ const Edit = ({ user, timezones }) => {
                                         autoComplete="new-password"
                                         value={data.password}
                                         onChange={e => setData('password', e.target.value)}
+                                        aria-invalid={!!errors.password}
+                                        aria-describedby={errors.password ? 'password-error' : ''}
                                         className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6 dark:bg-white/5 dark:text-white dark:outline-white/10 dark:placeholder:text-gray-500 dark:focus:outline-indigo-500"
                                     />
                                     {errors.password && (
@@ -278,6 +288,10 @@ const Edit = ({ user, timezones }) => {
                                         autoComplete="new-password"
                                         value={data.password_confirmation}
                                         onChange={e => setData('password_confirmation', e.target.value)}
+                                        aria-invalid={!!errors.password_confirmation}
+                                        aria-describedby={
+                                            errors.password_confirmation ? 'password_confirmation-error' : ''
+                                        }
                                         className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6 dark:bg-white/5 dark:text-white dark:outline-white/10 dark:placeholder:text-gray-500 dark:focus:outline-indigo-500"
                                     />
                                     {errors.password_confirmation && (

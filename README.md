@@ -21,4 +21,3 @@ Add events to a shared calendar.
 - add +/- offset to timezones in select (also order by offset)
 - add sync button in calendars index and events index/show, max 1 per h
 - metrics
-- double check all fields have errors, aria-invalid, etc

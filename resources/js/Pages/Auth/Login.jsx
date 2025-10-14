@@ -48,9 +48,15 @@ const Login = () => {
                                 onChange={e => setData('email', e.target.value)}
                                 required
                                 autoComplete="email"
+                                aria-invalid={!!errors.email}
+                                aria-describedby={errors.email ? 'email-error' : ''}
                                 className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6 dark:bg-white/5 dark:text-white dark:outline-white/10 dark:placeholder:text-gray-500 dark:focus:outline-indigo-500"
                             />
-                            {errors.email && <p className="mt-1 text-sm text-red-600">{errors.email}</p>}
+                            {errors.email && (
+                                <p id="email-error" role="alert" className="mt-1 text-sm text-red-600">
+                                    {errors.email}
+                                </p>
+                            )}
                         </div>
                     </div>
 
@@ -72,9 +78,15 @@ const Login = () => {
                                 onChange={e => setData('password', e.target.value)}
                                 required
                                 autoComplete="current-password"
+                                aria-invalid={!!errors.password}
+                                aria-describedby={errors.password ? 'password-error' : ''}
                                 className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6 dark:bg-white/5 dark:text-white dark:outline-white/10 dark:placeholder:text-gray-500 dark:focus:outline-indigo-500"
                             />
-                            {errors.password && <p className="mt-1 text-sm text-red-600">{errors.password}</p>}
+                            {errors.password && (
+                                <p id="password-error" role="alert" className="mt-1 text-sm text-red-600">
+                                    {errors.password}
+                                </p>
+                            )}
                         </div>
                     </div>
 

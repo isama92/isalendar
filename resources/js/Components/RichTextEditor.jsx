@@ -50,6 +50,8 @@ const RichTextEditor = ({ value, onChange, error, id, name, placeholder }) => {
                         ? 'outline-red-300 focus-within:outline-red-600 dark:outline-red-500/50 dark:focus-within:outline-red-400'
                         : 'outline-gray-300 focus-within:outline-indigo-600 dark:outline-white/10 dark:focus-within:outline-indigo-500'
                 )}
+                aria-invalid={!!error}
+                aria-describedby={error ? `${id}-error` : ''}
             >
                 <div className="flex flex-wrap gap-1 border-b border-gray-200 p-2 dark:border-white/10">
                     <button

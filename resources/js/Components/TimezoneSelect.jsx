@@ -10,6 +10,8 @@ const TimezoneSelect = ({ id, name, value, onChange, options, error, className =
                 onChange={onChange}
                 options={options}
                 isSearchable
+                aria-invalid={!!error}
+                aria-describedby={error ? `${id}-error` : ''}
                 classNames={{
                     control: () => 'rounded-md',
                     menu: () => 'rounded-md shadow-lg mt-1',
