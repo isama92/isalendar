@@ -366,4 +366,30 @@ describe('Validation', function (): void {
 
         expect($event->fresh()->description)->toBeNull();
     });
+
+    it('strips disallowed HTML tags from description', function (): void {
+        $user = User::factory()->create();
+        $connector = Connector::factory()->for($user)->create();
+
+        $calendar = Calendar::factory()->create();
+        $calendar->connectors()->attach($connector);
+
+        $event = Event::factory()->for($calendar)->create();
+
+        actingAs($user);
+
+        put(route('events.update', $event), [
+            'calendar_id' => $calendar->id,
+            'title' => 'Updated Event',
+            'all_day' => false,
+            'starts_at' => '2025-01-15 10:00:00',
+            'ends_at' => '2025-01-15 11:00:00',
+            'timezone' => 'UTC',
+            'description' => '<p>Hello</p><script>alert("xss")</script><strong>World</strong><div>Test</div>',
+        ])
+            ->assertRedirect()
+            ->assertSessionHasNoErrors();
+
+        expect($event->fresh()->description)->toBe('<p>Hello</p>alert("xss")<strong>World</strong>Test');
+    });
 });

@@ -40,7 +40,7 @@ class GoogleEventData extends Data
             startDate: $startObj->getDate(),
             endDateTime: $endObj->getDateTime(),
             endDate: $endObj->getDate(),
-            description: $googleEvent->getDescription(),
+            description: strip_tags($googleEvent->getDescription(), '<p><br><a><strong><em><ul><ol><li><b><i><u>'),
         );
     }
 }

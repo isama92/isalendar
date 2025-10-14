@@ -87,9 +87,10 @@ const Show = ({ event }) => {
                             <dt className="text-sm/6 font-medium text-gray-900 dark:text-white">
                                 {__('events.description')}
                             </dt>
-                            <dd className="mt-1 text-sm/6 whitespace-pre-wrap text-gray-700 sm:mt-2 dark:text-gray-400">
-                                {event.description}
-                            </dd>
+                            <dd
+                                className="prose prose-sm dark:prose-invert mt-1 max-w-none text-gray-700 sm:mt-2 dark:text-gray-400"
+                                dangerouslySetInnerHTML={{ __html: event.description }}
+                            />
                         </div>
                     )}
                 </dl>

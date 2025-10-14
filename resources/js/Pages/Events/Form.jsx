@@ -1,4 +1,5 @@
 import Checkbox from '@/Components/Checkbox';
+import RichTextEditor from '@/Components/RichTextEditor';
 import TimezoneSelect from '@/Components/TimezoneSelect';
 import { addDays, formatWithFormat, formatWithFormatAndTimezone, subtractDays } from '@/utils/date';
 import {
@@ -343,20 +344,13 @@ const Form = ({ user, calendars, timezones, event = null }) => {
                         {__('events.description')}
                     </label>
                     <div className="mt-2 sm:col-span-2 sm:mt-0">
-                        <textarea
+                        <RichTextEditor
                             id="description"
                             name="description"
                             value={data.description}
-                            onChange={e => setData('description', e.target.value)}
-                            rows={3}
-                            aria-invalid={!!errors.description}
-                            aria-describedby={errors.description ? 'description-error' : ''}
-                            className={clsx(
-                                'block w-full rounded-md bg-white px-3 py-1.5 text-base outline-1 -outline-offset-1 focus:outline-2 focus:-outline-offset-2 sm:max-w-2xl sm:text-sm/6 dark:bg-white/5',
-                                errors.description
-                                    ? 'text-red-900 outline-red-300 placeholder:text-red-300 focus:outline-red-600 dark:text-red-400 dark:outline-red-500/50 dark:placeholder:text-red-400/70 dark:focus:outline-red-400'
-                                    : 'text-gray-900 outline-gray-300 placeholder:text-gray-400 focus:outline-indigo-600 dark:text-white dark:outline-white/10 dark:placeholder:text-gray-500 dark:focus:outline-indigo-500'
-                            )}
+                            onChange={value => setData('description', value)}
+                            error={errors.description}
+                            placeholder={__('events.description')}
                         />
                         {errors.description && (
                             <p

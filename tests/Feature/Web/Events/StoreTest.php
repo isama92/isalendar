@@ -269,4 +269,30 @@ describe('Validation', function (): void {
             ->assertRedirect()
             ->assertSessionHasNoErrors();
     });
+
+    it('strips disallowed HTML tags from description', function (): void {
+        $user = User::factory()->create();
+        $connector = Connector::factory()->for($user)->create();
+
+        $calendar = Calendar::factory()->create();
+        $calendar->connectors()->attach($connector);
+
+        actingAs($user);
+
+        post(route('events.store'), [
+            'calendar_id' => $calendar->id,
+            'title' => 'Test Event',
+            'all_day' => false,
+            'starts_at' => '2025-01-15 10:00:00',
+            'ends_at' => '2025-01-15 11:00:00',
+            'timezone' => 'UTC',
+            'description' => '<p>Hello</p><script>alert("xss")</script><strong>World</strong><div>Test</div>',
+        ])
+            ->assertRedirect()
+            ->assertSessionHasNoErrors();
+
+        $event = Event::where('title', 'Test Event')->sole();
+
+        expect($event->description)->toBe('<p>Hello</p>alert("xss")<strong>World</strong>Test');
+    });
 });

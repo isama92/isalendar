@@ -19,6 +19,6 @@ Add events to a shared calendar.
 ## TODO
 - add OIDC for authentik
 - add +/- offset to timezones in select (also order by offset)
-- strip html from event description when fetching from google calendar
 - add sync button in calendars index and events index/show, max 1 per h
 - metrics
+- double check all fields have errors, aria-invalid, etc
