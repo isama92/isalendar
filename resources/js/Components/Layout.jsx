@@ -6,7 +6,7 @@ import ThemeSwitcher from '@/Components/ThemeSwitcher';
 import UserDropdown from '@/Components/UserDropdown';
 import { Dialog, DialogBackdrop, DialogPanel, TransitionChild } from '@headlessui/react';
 import { Bars3Icon } from '@heroicons/react/20/solid';
-import { XMarkIcon } from '@heroicons/react/24/outline';
+import { CalendarIcon, ChartPieIcon, DocumentIcon, XMarkIcon } from '@heroicons/react/24/outline';
 import { Link, usePage } from '@inertiajs/react';
 import clsx from 'clsx';
 import { useState } from 'react';
@@ -17,14 +17,27 @@ const Layout = ({ children }) => {
     const currentRoute = route().current();
 
     const navigation = [
-        { name: __('dashboard.dashboard'), href: route('dashboard'), current: currentRoute === 'dashboard' },
+        {
+            name: __('dashboard.dashboard'),
+            href: route('dashboard'),
+            current: currentRoute === 'dashboard',
+            icon: ChartPieIcon,
+        },
         {
             name: __('calendars.calendars'),
             href: route('calendars.index'),
             current: currentRoute === 'calendars.index',
+            icon: CalendarIcon,
         },
         ...(connectorEnabled
-            ? [{ name: __('events.events'), href: route('events.index'), current: currentRoute === 'events.index' }]
+            ? [
+                  {
+                      name: __('events.events'),
+                      href: route('events.index'),
+                      current: currentRoute === 'events.index',
+                      icon: DocumentIcon,
+                  },
+              ]
             : []),
     ];
 
@@ -86,6 +99,15 @@ const Layout = ({ children }) => {
                                                                     : 'text-gray-700 hover:bg-gray-100 hover:text-indigo-600 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-white'
                                                             )}
                                                         >
+                                                            <item.icon
+                                                                aria-hidden="true"
+                                                                className={clsx(
+                                                                    item.current
+                                                                        ? 'text-indigo-600 dark:text-white'
+                                                                        : 'text-gray-400 group-hover:text-indigo-600 dark:group-hover:text-white',
+                                                                    'size-6 shrink-0'
+                                                                )}
+                                                            />
                                                             {item.name}
                                                         </Link>
                                                     </li>
@@ -131,6 +153,15 @@ const Layout = ({ children }) => {
                                                                 : 'text-gray-700 hover:bg-gray-100 hover:text-indigo-600 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-white'
                                                         )}
                                                     >
+                                                        <item.icon
+                                                            aria-hidden="true"
+                                                            className={clsx(
+                                                                item.current
+                                                                    ? 'text-indigo-600 dark:text-white'
+                                                                    : 'text-gray-400 group-hover:text-indigo-600 dark:group-hover:text-white',
+                                                                'size-6 shrink-0'
+                                                            )}
+                                                        />
                                                         {item.name}
                                                     </Link>
                                                 </li>

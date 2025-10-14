@@ -1,7 +1,7 @@
 import Modal from '@/Components/Modal';
 import Paginator from '@/Components/Tables/Paginator';
 import Table from '@/Components/Tables/Table';
-import { CheckIcon, LockClosedIcon, LockOpenIcon, TrashIcon, XMarkIcon } from '@heroicons/react/24/solid';
+import { CalendarIcon, CheckIcon, LockClosedIcon, LockOpenIcon, TrashIcon, XMarkIcon } from '@heroicons/react/24/solid';
 import { Link, router } from '@inertiajs/react';
 import {
     getCoreRowModel,
@@ -179,7 +179,7 @@ const Index = ({ calendars, providers }) => {
                 </select>
             </div>
 
-            <Table table={table} emptyMessage={__('calendars.no_calendars_found')} />
+            <Table table={table} emptyIcon={CalendarIcon} emptyMessage={__('calendars.no_calendars_found')} />
 
             <Paginator table={table} />
 

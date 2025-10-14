@@ -8,7 +8,7 @@ import {
     formatWithFormatAndTimezone,
     subtractDays,
 } from '@/utils/date';
-import { CheckIcon, EyeIcon, PencilIcon, TrashIcon, XMarkIcon } from '@heroicons/react/24/solid';
+import { CheckIcon, DocumentIcon, EyeIcon, PencilIcon, TrashIcon, XMarkIcon } from '@heroicons/react/24/solid';
 import { Link, router } from '@inertiajs/react';
 import {
     getCoreRowModel,
@@ -241,7 +241,7 @@ const Index = ({ events, providers }) => {
                 />
             </div>
 
-            <Table table={table} emptyMessage={__('events.no_events_found')} />
+            <Table table={table} emptyIcon={DocumentIcon} emptyMessage={__('events.no_events_found')} />
 
             <Paginator table={table} />
 

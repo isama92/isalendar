@@ -1,13 +1,19 @@
 import { ChevronDownIcon } from '@heroicons/react/24/solid';
 import { flexRender } from '@tanstack/react-table';
 
-const Table = ({ table, emptyMessage }) => {
+const Table = ({ table, emptyMessage, emptyIcon: EmptyIcon }) => {
     return (
         <div className="mt-8 flow-root">
             <div className="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
                 <div className="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
                     {table.getRowModel().rows.length === 0 ? (
-                        <p className="text-sm text-gray-500 dark:text-gray-400">{emptyMessage}</p>
+                        <div className="text-center">
+                            <EmptyIcon
+                                aria-hidden="true"
+                                className="mx-auto size-12 text-gray-400 dark:text-gray-500"
+                            />
+                            <p className="mt-4 text-sm text-gray-500 dark:text-gray-400">{emptyMessage}</p>
+                        </div>
                     ) : (
                         <table className="relative min-w-full divide-y divide-gray-300 dark:divide-white/15">
                             <thead>
