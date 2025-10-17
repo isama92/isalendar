@@ -2,7 +2,6 @@
 
 use App\Models\User;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Str;
 
 use function Pest\Laravel\actingAs;
 use function Pest\Laravel\get;
@@ -14,21 +13,16 @@ it('displays profile edit page', function (): void {
 
     actingAs($user);
 
-    $timezoneGroupsCount = collect(timezone_identifiers_list())
-        ->map(fn (string $tz) => Str::before($tz, '/'))
-        ->unique()
-        ->count();
-
     get(route('profile.edit'))
         ->assertSuccessful()
         ->assertInertia(fn ($page) => $page
             ->component('Profile/Edit')
             ->has('timezones')
-            ->where('timezones', fn (Collection $timezones): bool => $timezones->count() === $timezoneGroupsCount)
+            ->where('timezones', fn (Collection $timezones): bool => $timezones
+                ->count() === count(timezone_identifiers_list()))
+            ->has('timezones.0.value')
             ->has('timezones.0.label')
-            ->has('timezones.0.options')
-            ->has('timezones.0.options.0.value')
-            ->has('timezones.0.options.0.label')
+            ->where('timezones.0.label', '(UTC-11:00) Pacific/Midway')
         );
 });
 

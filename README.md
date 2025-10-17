@@ -12,12 +12,6 @@ Add events to a shared calendar.
 - when selecting datetime from datetime picker in events form date changes immediately
 - when changing timezone, the date should also change in the events form
 - ... google calendar shows the date in user timezone when creating/updating event, independently from the event timezone
-- since we pull before pushing, we reset the changes done to events
-  - push before pulling
-  - check local updated_at and remote updated_at (since they have it)
   
 ## TODO
 - add OIDC for authentik
-- add +/- offset to timezones in select (also order by offset)
-- metrics
-- use rate limit to prevent sync actions overlapping https://laravel.com/docs/12.x/queues#rate-limiting

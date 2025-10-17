@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Web;
 
-use App\Concerns\WithTimezoneHelpers;
+use App\Actions\GetOrderedTimezones;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreEventRequest;
 use App\Http\Requests\UpdateEventRequest;
@@ -19,8 +19,6 @@ use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
 
 class EventsController extends Controller
 {
-    use WithTimezoneHelpers;
-
     public function index(): Response
     {
         Gate::authorize('viewAny', Event::class);
@@ -46,14 +44,14 @@ class EventsController extends Controller
         ]);
     }
 
-    public function create(): Response
+    public function create(GetOrderedTimezones $getOrderedTimezones): Response
     {
         Gate::authorize('create', Event::class);
         abort_if(Auth::user()->connectors()->doesntExist(), SymfonyResponse::HTTP_FORBIDDEN);
 
         return Inertia::render('Events/Form', [
             'calendars' => $this->getCalendarsForSelect(),
-            'timezones' => $this->groupedTimezones(),
+            'timezones' => $getOrderedTimezones->execute(),
         ]);
     }
 
@@ -73,7 +71,7 @@ class EventsController extends Controller
             ->with('success', __('events.event_created'));
     }
 
-    public function edit(Event $event): Response
+    public function edit(GetOrderedTimezones $getOrderedTimezones, Event $event): Response
     {
         Gate::authorize('update', $event);
 
@@ -82,7 +80,7 @@ class EventsController extends Controller
         return Inertia::render('Events/Form', [
             'event' => $event,
             'calendars' => $this->getCalendarsForSelect(),
-            'timezones' => $this->groupedTimezones(),
+            'timezones' => $getOrderedTimezones->execute(),
         ]);
     }
 

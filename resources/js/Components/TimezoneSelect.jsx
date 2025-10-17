@@ -6,7 +6,7 @@ const TimezoneSelect = ({ id, name, value, onChange, options, error, className =
             <Select
                 id={id}
                 name={name}
-                value={value ? { value: value, label: value } : null}
+                value={value ? options.find(opt => opt.value === value) || null : null}
                 onChange={onChange}
                 options={options}
                 isSearchable
@@ -16,7 +16,6 @@ const TimezoneSelect = ({ id, name, value, onChange, options, error, className =
                     control: () => 'rounded-md',
                     menu: () => 'rounded-md shadow-lg mt-1',
                     option: () => 'cursor-pointer px-3 py-2',
-                    groupHeading: () => 'text-sm font-semibold px-3 py-2 uppercase',
                 }}
                 styles={{
                     control: (base, state) => ({
@@ -55,10 +54,6 @@ const TimezoneSelect = ({ id, name, value, onChange, options, error, className =
                     singleValue: base => ({
                         ...base,
                         color: 'rgb(var(--color-text) / 1)',
-                    }),
-                    groupHeading: base => ({
-                        ...base,
-                        color: 'rgb(var(--color-text-muted) / 1)',
                     }),
                 }}
             />

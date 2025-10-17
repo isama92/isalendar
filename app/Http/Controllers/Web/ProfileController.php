@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers\Web;
 
+use App\Actions\GetOrderedTimezones;
 use App\Actions\SaveUserPhoto;
-use App\Concerns\WithTimezoneHelpers;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\UpdateProfileRequest;
 use Illuminate\Http\RedirectResponse;
@@ -14,12 +14,10 @@ use Inertia\Response;
 
 class ProfileController extends Controller
 {
-    use WithTimezoneHelpers;
-
-    public function edit(): Response
+    public function edit(GetOrderedTimezones $getOrderedTimezones): Response
     {
         return Inertia::render('Profile/Edit', [
-            'timezones' => $this->groupedTimezones(),
+            'timezones' => $getOrderedTimezones->execute(),
         ]);
     }
 
