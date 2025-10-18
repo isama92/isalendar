@@ -65,5 +65,5 @@ OIDC_BUTTON_LABEL="Login with Authelia"
   - implement rate limits retries
   - implement pagination
 
-- add reset link in login form
 - improves events and calendar translations by moving things in common and using actions named translations
+- there's no error message if password in wrong when changing password in profile

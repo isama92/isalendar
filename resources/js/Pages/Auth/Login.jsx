@@ -103,6 +103,15 @@ const Login = () => {
                                 {__('auth.remember_me')}
                             </label>
                         </div>
+
+                        <div className="text-sm/6">
+                            <Link
+                                href={route('password.request')}
+                                className="font-semibold text-indigo-600 hover:text-indigo-500 dark:text-indigo-400 dark:hover:text-indigo-300"
+                            >
+                                {__('auth.forgot_password')}
+                            </Link>
+                        </div>
                     </div>
 
                     <div>
