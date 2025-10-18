@@ -4,7 +4,7 @@ use App\Actions\GetProviderCalendars;
 use App\Data\CalendarData;
 use App\Enums\Service;
 use App\Models\Connector;
-use App\Services\GoogleCalendar\Actions\Calendars\FetchNormalizedCalendars;
+use App\Services\Calendar\GoogleCalendar\Actions\Calendars\FetchNormalizedCalendars;
 use Illuminate\Support\Collection;
 use Spatie\LaravelData\Optional;
 

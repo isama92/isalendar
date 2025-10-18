@@ -2,7 +2,7 @@
 
 use App\Models\Calendar;
 use App\Models\Connector;
-use App\Services\GoogleCalendar\Actions\Synchronize;
+use App\Services\Calendar\GoogleCalendar\Actions\Synchronize;
 use Illuminate\Bus\PendingBatch;
 use Illuminate\Support\Facades\Bus;
 

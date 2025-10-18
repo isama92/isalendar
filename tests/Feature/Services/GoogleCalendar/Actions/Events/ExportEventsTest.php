@@ -3,8 +3,8 @@
 use App\Models\Calendar;
 use App\Models\Connector;
 use App\Models\Event;
-use App\Services\GoogleCalendar\Actions\Events\ExportEvents;
-use App\Services\GoogleCalendar\Actions\Events\PushEvent;
+use App\Services\Calendar\GoogleCalendar\Actions\Events\ExportEvents;
+use App\Services\Calendar\GoogleCalendar\Actions\Events\PushEvent;
 
 use function Pest\Laravel\partialMock;
 

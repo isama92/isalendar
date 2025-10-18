@@ -4,7 +4,7 @@ namespace App\Actions;
 
 use App\Enums\Service;
 use App\Models\Connector;
-use App\Services\GoogleCalendar\Actions\Calendars\FetchNormalizedCalendars as GoogleCalendarFetchNormalizedCalendars;
+use App\Services\Calendar\GoogleCalendar\Actions\Calendars\FetchNormalizedCalendars as GoogleCalendarFetchNormalizedCalendars;
 use Illuminate\Support\Collection;
 
 class GetProviderCalendars

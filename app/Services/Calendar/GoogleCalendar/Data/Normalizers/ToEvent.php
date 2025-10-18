@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Services\GoogleCalendar\Data\Normalizers;
+namespace App\Services\Calendar\GoogleCalendar\Data\Normalizers;
 
-use App\Services\GoogleCalendar\Data\GoogleEventData;
+use App\Services\Calendar\GoogleCalendar\Data\GoogleEventData;
 use Carbon\Carbon;
 
 trait ToEvent

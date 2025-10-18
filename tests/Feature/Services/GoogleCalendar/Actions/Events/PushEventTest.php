@@ -3,8 +3,8 @@
 use App\Models\Calendar;
 use App\Models\Connector;
 use App\Models\Event;
-use App\Services\GoogleCalendar\Actions\Auth\GetAuthClient;
-use App\Services\GoogleCalendar\Actions\Events\PushEvent;
+use App\Services\Calendar\GoogleCalendar\Actions\Auth\GetAuthClient;
+use App\Services\Calendar\GoogleCalendar\Actions\Events\PushEvent;
 use Google\Client as GoogleClient;
 use Google\Service\Calendar\Event as GoogleEvent;
 

@@ -3,7 +3,7 @@
 use App\Actions\SynchronizeConnector;
 use App\Enums\Service;
 use App\Models\Connector;
-use App\Services\GoogleCalendar\Actions\Synchronize as GoogleCalendarSynchronize;
+use App\Services\Calendar\GoogleCalendar\Actions\Synchronize as GoogleCalendarSynchronize;
 use Illuminate\Support\Facades\Queue;
 use Spatie\QueueableAction\Testing\QueueableActionFake;
 

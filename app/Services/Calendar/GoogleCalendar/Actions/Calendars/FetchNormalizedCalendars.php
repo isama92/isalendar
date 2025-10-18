@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Services\GoogleCalendar\Actions\Calendars;
+namespace App\Services\Calendar\GoogleCalendar\Actions\Calendars;
 
 use App\Data\CalendarData;
 use App\Models\Connector;
-use App\Services\GoogleCalendar\Actions\Auth\GetAuthClient;
-use App\Services\GoogleCalendar\Data\GoogleCalendarData;
+use App\Services\Calendar\GoogleCalendar\Actions\Auth\GetAuthClient;
+use App\Services\Calendar\GoogleCalendar\Data\GoogleCalendarData;
 use Google\Service\Calendar as CalendarService;
 use Google\Service\Calendar\CalendarListEntry as GoogleCalendar;
 use Illuminate\Support\Collection;

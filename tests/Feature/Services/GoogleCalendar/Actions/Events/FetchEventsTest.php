@@ -2,10 +2,10 @@
 
 use App\Models\Calendar;
 use App\Models\Connector;
-use App\Services\GoogleCalendar\Actions\Auth\GetAuthClient;
-use App\Services\GoogleCalendar\Actions\Events\FetchEvents;
-use App\Services\GoogleCalendar\Data\GoogleEventData;
-use App\Services\GoogleCalendar\Enums\Status;
+use App\Services\Calendar\GoogleCalendar\Actions\Auth\GetAuthClient;
+use App\Services\Calendar\GoogleCalendar\Actions\Events\FetchEvents;
+use App\Services\Calendar\GoogleCalendar\Data\GoogleEventData;
+use App\Services\Calendar\GoogleCalendar\Enums\Status;
 use Google\Client as GoogleClient;
 use Google\Service\Calendar\Event as GoogleEvent;
 use Google\Service\Calendar\EventDateTime;

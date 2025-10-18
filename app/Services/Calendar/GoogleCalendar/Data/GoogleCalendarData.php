@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Services\GoogleCalendar\Data;
+namespace App\Services\Calendar\GoogleCalendar\Data;
 
 use Google\Service\Calendar\CalendarListEntry as GoogleCalendar;
 use Spatie\LaravelData\Data;

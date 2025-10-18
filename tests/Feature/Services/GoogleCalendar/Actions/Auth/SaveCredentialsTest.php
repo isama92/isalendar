@@ -2,8 +2,8 @@
 
 use App\Enums\Service;
 use App\Models\User;
-use App\Services\GoogleCalendar\Actions\Auth\SaveCredentials;
-use App\Services\GoogleCalendar\Auth\AccessToken;
+use App\Services\Calendar\GoogleCalendar\Actions\Auth\SaveCredentials;
+use App\Services\Calendar\GoogleCalendar\Auth\AccessToken;
 use Laravel\Socialite\Two\User as GoogleUser;
 use Mockery\MockInterface;
 

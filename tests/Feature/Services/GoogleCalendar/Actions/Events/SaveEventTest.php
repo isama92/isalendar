@@ -2,9 +2,9 @@
 
 use App\Models\Calendar;
 use App\Models\Event;
-use App\Services\GoogleCalendar\Actions\Events\SaveEvent;
-use App\Services\GoogleCalendar\Data\GoogleEventData;
-use App\Services\GoogleCalendar\Enums\Status;
+use App\Services\Calendar\GoogleCalendar\Actions\Events\SaveEvent;
+use App\Services\Calendar\GoogleCalendar\Data\GoogleEventData;
+use App\Services\Calendar\GoogleCalendar\Enums\Status;
 
 uses()->group('gcalendar', 'gcalendar.events');
 

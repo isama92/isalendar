@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Services\GoogleCalendar\Actions\Events;
+namespace App\Services\Calendar\GoogleCalendar\Actions\Events;
 
 use App\Models\Calendar;
 use App\Models\Connector;
-use App\Services\GoogleCalendar\Actions\Auth\GetAuthClient;
-use App\Services\GoogleCalendar\Data\GoogleEventData;
+use App\Services\Calendar\GoogleCalendar\Actions\Auth\GetAuthClient;
+use App\Services\Calendar\GoogleCalendar\Data\GoogleEventData;
 use Carbon\CarbonImmutable;
 use Google\Service\Calendar as CalendarService;
 use Google\Service\Calendar\Event as GoogleEvent;
@@ -16,7 +16,7 @@ class FetchEvents
     public function __construct(private readonly GetAuthClient $getAuthClient) {}
 
     /**
-     * @return \Illuminate\Support\Collection<int, \App\Services\GoogleCalendar\Data\GoogleEventData>
+     * @return \Illuminate\Support\Collection<int, \App\Services\Calendar\GoogleCalendar\Data\GoogleEventData>
      */
     public function execute(
         Connector $connector,

@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Services\GoogleCalendar\Data;
+namespace App\Services\Calendar\GoogleCalendar\Data;
 
-use App\Services\GoogleCalendar\Enums\Status;
+use App\Services\Calendar\GoogleCalendar\Enums\Status;
 use Carbon\Carbon;
 use Google\Service\Calendar\Event as GoogleEvent;
 use Spatie\LaravelData\Data;

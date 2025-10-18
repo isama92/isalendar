@@ -3,7 +3,7 @@
 use App\Console\Commands\SynchronizeGoogleCalendarCommand;
 use App\Models\Connector;
 use App\Models\Provider;
-use App\Services\GoogleCalendar\Actions\Synchronize;
+use App\Services\Calendar\GoogleCalendar\Actions\Synchronize;
 use Illuminate\Support\Facades\Queue;
 use Spatie\QueueableAction\Testing\QueueableActionFake;
 

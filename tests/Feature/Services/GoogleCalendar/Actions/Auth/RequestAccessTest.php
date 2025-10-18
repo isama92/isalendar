@@ -1,7 +1,7 @@
 <?php
 
 use App\Enums\Service;
-use App\Services\GoogleCalendar\Actions\Auth\RequestAccess;
+use App\Services\Calendar\GoogleCalendar\Actions\Auth\RequestAccess;
 use Illuminate\Http\RedirectResponse;
 use Laravel\Socialite\Facades\Socialite;
 use Laravel\Socialite\Two\GoogleProvider;

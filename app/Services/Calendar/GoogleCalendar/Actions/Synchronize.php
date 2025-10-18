@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Services\GoogleCalendar\Actions;
+namespace App\Services\Calendar\GoogleCalendar\Actions;
 
 use App\Jobs\ActionJob;
 use App\Models\Calendar;
 use App\Models\Connector;
-use App\Services\GoogleCalendar\Actions\Events\ExportEvents;
-use App\Services\GoogleCalendar\Actions\Events\ImportEvents;
+use App\Services\Calendar\GoogleCalendar\Actions\Events\ExportEvents;
+use App\Services\Calendar\GoogleCalendar\Actions\Events\ImportEvents;
 use Illuminate\Support\Facades\Bus;
 use Spatie\QueueableAction\QueueableAction;
 

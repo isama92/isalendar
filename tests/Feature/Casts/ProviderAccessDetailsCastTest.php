@@ -1,7 +1,7 @@
 <?php
 
 use App\Models\Connector;
-use App\Services\GoogleCalendar\Auth\AccessToken;
+use App\Services\Calendar\GoogleCalendar\Auth\AccessToken;
 use Illuminate\Support\Facades\Crypt;
 
 uses()->group('casts');

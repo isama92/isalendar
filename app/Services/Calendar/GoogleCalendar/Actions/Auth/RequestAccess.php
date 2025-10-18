@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Services\GoogleCalendar\Actions\Auth;
+namespace App\Services\Calendar\GoogleCalendar\Actions\Auth;
 
 use App\Enums\Service;
 use Illuminate\Http\RedirectResponse;

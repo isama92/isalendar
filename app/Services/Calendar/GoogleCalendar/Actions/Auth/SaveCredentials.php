@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Services\GoogleCalendar\Actions\Auth;
+namespace App\Services\Calendar\GoogleCalendar\Actions\Auth;
 
 use App\Enums\Service;
 use App\Models\Connector;
 use App\Models\User;
-use App\Services\GoogleCalendar\Auth\AccessToken;
+use App\Services\Calendar\GoogleCalendar\Auth\AccessToken;
 use Laravel\Socialite\Contracts\User as ProviderUser;
 use Laravel\Socialite\Two\User as GoogleUser;
 

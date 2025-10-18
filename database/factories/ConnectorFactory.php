@@ -5,7 +5,7 @@ namespace Database\Factories;
 use App\Contracts\AccessToken;
 use App\Enums\Service;
 use App\Models\User;
-use App\Services\GoogleCalendar\Auth\AccessToken as GoogleCalendarAccessToken;
+use App\Services\Calendar\GoogleCalendar\Auth\AccessToken as GoogleCalendarAccessToken;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**

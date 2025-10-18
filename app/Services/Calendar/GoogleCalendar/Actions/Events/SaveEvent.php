@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Services\GoogleCalendar\Actions\Events;
+namespace App\Services\Calendar\GoogleCalendar\Actions\Events;
 
 use App\Data\EventData;
 use App\Models\Calendar;
 use App\Models\Event;
-use App\Services\GoogleCalendar\Data\GoogleEventData;
-use App\Services\GoogleCalendar\Enums\Status;
+use App\Services\Calendar\GoogleCalendar\Data\GoogleEventData;
+use App\Services\Calendar\GoogleCalendar\Enums\Status;
 
 class SaveEvent
 {

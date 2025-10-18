@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Services\GoogleCalendar\Data\Normalizers;
+namespace App\Services\Calendar\GoogleCalendar\Data\Normalizers;
 
-use App\Services\GoogleCalendar\Data\GoogleCalendarData;
+use App\Services\Calendar\GoogleCalendar\Data\GoogleCalendarData;
 
 trait ToCalendar
 {

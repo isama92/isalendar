@@ -4,7 +4,7 @@ use App\Enums\Service;
 use App\Models\Connector;
 use App\Models\Provider;
 use App\Models\User;
-use App\Services\GoogleCalendar\Actions\Synchronize as GoogleCalendarSynchronize;
+use App\Services\Calendar\GoogleCalendar\Actions\Synchronize as GoogleCalendarSynchronize;
 use Illuminate\Routing\Middleware\ThrottleRequests;
 use Illuminate\Support\Facades\Queue;
 use Illuminate\Support\Facades\RateLimiter;

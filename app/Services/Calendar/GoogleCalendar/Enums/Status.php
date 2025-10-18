@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Services\GoogleCalendar\Enums;
+namespace App\Services\Calendar\GoogleCalendar\Enums;
 
 enum Status: string
 {

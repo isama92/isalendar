@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Services\GoogleCalendar\Auth;
+namespace App\Services\Calendar\GoogleCalendar\Auth;
 
 use App\Contracts\AccessToken as AccessTokenContract;
 

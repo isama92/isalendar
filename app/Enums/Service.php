@@ -3,7 +3,7 @@
 namespace App\Enums;
 
 use App\Exceptions\UnexpectedProvider;
-use App\Services\GoogleCalendar\Auth\AccessToken as GoogleCalendarAccessToken;
+use App\Services\Calendar\GoogleCalendar\Auth\AccessToken as GoogleCalendarAccessToken;
 
 enum Service: string
 {

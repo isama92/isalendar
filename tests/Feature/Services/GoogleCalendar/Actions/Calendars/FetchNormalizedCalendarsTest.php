@@ -2,8 +2,8 @@
 
 use App\Data\CalendarData;
 use App\Models\Connector;
-use App\Services\GoogleCalendar\Actions\Auth\GetAuthClient;
-use App\Services\GoogleCalendar\Actions\Calendars\FetchNormalizedCalendars;
+use App\Services\Calendar\GoogleCalendar\Actions\Auth\GetAuthClient;
+use App\Services\Calendar\GoogleCalendar\Actions\Calendars\FetchNormalizedCalendars;
 use Google\Client as GoogleClient;
 use Google\Service\Calendar\CalendarList;
 use Google\Service\Calendar\CalendarListEntry as GoogleCalendar;

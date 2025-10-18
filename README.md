@@ -61,4 +61,3 @@ OIDC_BUTTON_LABEL="Login with Authelia"
 
 ## TODO
 - add users page for admins so they can add new users and associate a role
-- move services/googlecalendar to services/calendar/googlecalendar

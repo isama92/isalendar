@@ -4,7 +4,7 @@ namespace App\Actions;
 
 use App\Enums\Service;
 use App\Models\Connector;
-use App\Services\GoogleCalendar\Actions\Synchronize as GoogleCalendarSynchronize;
+use App\Services\Calendar\GoogleCalendar\Actions\Synchronize as GoogleCalendarSynchronize;
 
 class SynchronizeConnector
 {

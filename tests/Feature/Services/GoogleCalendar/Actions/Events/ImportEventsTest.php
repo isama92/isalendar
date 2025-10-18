@@ -2,11 +2,11 @@
 
 use App\Models\Calendar;
 use App\Models\Connector;
-use App\Services\GoogleCalendar\Actions\Events\FetchEvents;
-use App\Services\GoogleCalendar\Actions\Events\ImportEvents;
-use App\Services\GoogleCalendar\Actions\Events\SaveEvent;
-use App\Services\GoogleCalendar\Data\GoogleEventData;
-use App\Services\GoogleCalendar\Enums\Status;
+use App\Services\Calendar\GoogleCalendar\Actions\Events\FetchEvents;
+use App\Services\Calendar\GoogleCalendar\Actions\Events\ImportEvents;
+use App\Services\Calendar\GoogleCalendar\Actions\Events\SaveEvent;
+use App\Services\Calendar\GoogleCalendar\Data\GoogleEventData;
+use App\Services\Calendar\GoogleCalendar\Enums\Status;
 
 use function Pest\Laravel\partialMock;
 

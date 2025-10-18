@@ -28,7 +28,7 @@ arch()
     ->not->toBeEnums()
     ->ignoring([
         'App\Enums',
-        'App\Services\GoogleCalendar\Enums',
+        'App\Services\Calendar\GoogleCalendar\Enums',
     ]);
 
 arch()

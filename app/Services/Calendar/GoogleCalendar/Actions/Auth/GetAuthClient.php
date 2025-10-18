@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Services\GoogleCalendar\Actions\Auth;
+namespace App\Services\Calendar\GoogleCalendar\Actions\Auth;
 
 use App\Models\Connector;
-use App\Services\GoogleCalendar\Auth\AccessToken;
+use App\Services\Calendar\GoogleCalendar\Auth\AccessToken;
 use Google\Client as GoogleClient;
 use Illuminate\Support\Facades\Cache;
 

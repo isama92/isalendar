@@ -2,7 +2,7 @@
 
 namespace App\Data;
 
-use App\Services\GoogleCalendar\Data\Normalizers\ToEvent as FromGoogleCalendar;
+use App\Services\Calendar\GoogleCalendar\Data\Normalizers\ToEvent as FromGoogleCalendar;
 use Carbon\Carbon;
 use Spatie\LaravelData\Attributes\MapName;
 use Spatie\LaravelData\Data;

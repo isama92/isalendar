@@ -2,8 +2,8 @@
 
 use App\Models\Connector;
 use App\Models\User;
-use App\Services\GoogleCalendar\Actions\Auth\RequestAccess;
-use App\Services\GoogleCalendar\Actions\Auth\SaveCredentials;
+use App\Services\Calendar\GoogleCalendar\Actions\Auth\RequestAccess;
+use App\Services\Calendar\GoogleCalendar\Actions\Auth\SaveCredentials;
 use Illuminate\Http\RedirectResponse;
 use Laravel\Socialite\Facades\Socialite;
 use Laravel\Socialite\Two\InvalidStateException;

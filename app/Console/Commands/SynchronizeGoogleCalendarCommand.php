@@ -4,7 +4,7 @@ namespace App\Console\Commands;
 
 use App\Models\Connector;
 use App\Models\Provider;
-use App\Services\GoogleCalendar\Actions\Synchronize;
+use App\Services\Calendar\GoogleCalendar\Actions\Synchronize;
 use Illuminate\Console\Command;
 
 class SynchronizeGoogleCalendarCommand extends Command

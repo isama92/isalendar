@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Services\GoogleCalendar\Actions\Events;
+namespace App\Services\Calendar\GoogleCalendar\Actions\Events;
 
 use App\Models\Connector;
 use App\Models\Event;
-use App\Services\GoogleCalendar\Actions\Auth\GetAuthClient;
-use App\Services\GoogleCalendar\Enums\Status;
+use App\Services\Calendar\GoogleCalendar\Actions\Auth\GetAuthClient;
+use App\Services\Calendar\GoogleCalendar\Enums\Status;
 use Carbon\Carbon;
 use Google\Service\Calendar as CalendarService;
 use Google\Service\Calendar\Event as GoogleEvent;

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Services\GoogleCalendar\Actions\Events;
+namespace App\Services\Calendar\GoogleCalendar\Actions\Events;
 
 use App\Models\Calendar;
 use App\Models\Connector;
