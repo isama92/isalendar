@@ -4,7 +4,7 @@ import clsx from 'clsx';
 import { useEffect, useState } from 'react';
 
 const UserPhoto = ({ className, iconClassName }) => {
-    const { user } = usePage().props;
+    const { currentUser } = usePage().props;
     const [hasPhoto, setHasPhoto] = useState(false);
 
     useEffect(() => {
@@ -23,7 +23,7 @@ const UserPhoto = ({ className, iconClassName }) => {
         return (
             <img
                 src={route('profile.photo')}
-                alt={user.full_name}
+                alt={currentUser.full_name}
                 className={clsx('rounded-full object-cover', className)}
             />
         );

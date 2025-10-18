@@ -44,8 +44,8 @@ createInertiaApp({
         dayjs.updateLocale('en', { weekStart: 1 });
         dayjs.updateLocale('it', { weekStart: 1 });
 
-        if (props.initialPage.props.user?.settings?.default_timezone) {
-            dayjs.tz.setDefault(props.initialPage.props.user.settings.default_timezone);
+        if (props.initialPage.props.currentUser?.settings?.default_timezone) {
+            dayjs.tz.setDefault(props.initialPage.props.currentUser.settings.default_timezone);
         }
 
         createRoot(el).render(

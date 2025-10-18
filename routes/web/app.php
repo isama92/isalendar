@@ -7,6 +7,8 @@ use App\Http\Controllers\Web\EventsController;
 use App\Http\Controllers\Web\ProfileController;
 use App\Http\Controllers\Web\ProfilePhotoController;
 use App\Http\Controllers\Web\ProvidersController;
+use App\Http\Controllers\Web\SendUserPasswordResetController;
+use App\Http\Controllers\Web\UsersController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware('auth')->group(function (): void {
@@ -69,5 +71,28 @@ Route::middleware('auth')->group(function (): void {
                 ->name('update');
             Route::delete('/{event}', [EventsController::class, 'destroy'])
                 ->name('destroy');
+        });
+
+    Route::prefix('/users')
+        ->name('users.')
+        ->group(function (): void {
+            Route::get('/', [UsersController::class, 'index'])
+                ->name('index');
+            Route::get('/create', [UsersController::class, 'create'])
+                ->name('create');
+            Route::post('/', [UsersController::class, 'store'])
+                ->name('store');
+            Route::get('/{user}', [UsersController::class, 'show'])
+                ->withTrashed()
+                ->name('show');
+            Route::get('/{user}/edit', [UsersController::class, 'edit'])
+                ->name('edit');
+            Route::put('/{user}', [UsersController::class, 'update'])
+                ->name('update');
+            Route::delete('/{user}', [UsersController::class, 'destroy'])
+                ->withTrashed()
+                ->name('destroy');
+            Route::post('/{user}/send-password-reset', SendUserPasswordResetController::class)
+                ->name('send-password-reset');
         });
 });

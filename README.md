@@ -60,8 +60,10 @@ OIDC_BUTTON_LABEL="Login with Authelia"
 - ... google calendar shows the date in user timezone when creating/updating event, independently of the event timezone
 
 ## TODO
-- add users page for admins so they can add new users and associate a role
 - stop using google/apiclient library
   - use saloon to make requests
   - implement rate limits retries
   - implement pagination
+
+- add reset link in login form
+- improves events and calendar translations by moving things in common and using actions named translations

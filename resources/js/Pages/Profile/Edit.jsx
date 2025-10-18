@@ -3,7 +3,7 @@ import UserPhoto from '@/Components/UserPhoto';
 import { useForm } from '@inertiajs/react';
 import { useRef, useState } from 'react';
 
-const Edit = ({ user, timezones }) => {
+const Edit = ({ currentUser: user, timezones }) => {
     const { data, setData, post, processing, reset, transform, errors } = useForm({
         first_name: user.first_name || '',
         last_name: user.last_name || '',

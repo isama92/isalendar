@@ -19,7 +19,7 @@ import clsx from 'clsx';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 
-const Form = ({ user, calendars, timezones, event = null }) => {
+const Form = ({ currentUser, calendars, timezones, event = null }) => {
     const isEditing = !!event;
 
     const convertUtcToEventTimezone = (utcDate, timezone, allDay) => {
@@ -38,7 +38,7 @@ const Form = ({ user, calendars, timezones, event = null }) => {
                 ? subtractDays(event.ends_at, 1, 'YYYY-MM-DD')
                 : convertUtcToEventTimezone(event.ends_at, event.timezone, event.all_day)
             : '',
-        timezone: event?.timezone || user.settings.default_timezone,
+        timezone: event?.timezone || currentUser.settings.default_timezone,
         description: event?.description || '',
     });
 

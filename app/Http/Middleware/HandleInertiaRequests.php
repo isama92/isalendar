@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Enums\Role;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
@@ -27,12 +28,9 @@ class HandleInertiaRequests extends Middleware
                 ...(new Ziggy)->toArray(),
                 'location' => $request->url(),
             ],
-            'user' => $loggedIn
-                ? $user
-                : null,
-            'connectorEnabled' => $loggedIn
-                ? $user->connectors()->enabled()->exists()
-                : false,
+            'currentUser' => $loggedIn ? $user : null,
+            'isSuperAdmin' => $loggedIn ? $user->hasRole(Role::SUPER_ADMIN) : false,
+            'connectorEnabled' => $loggedIn ? $user->connectors()->enabled()->exists() : false,
             'locale' => app()->getLocale(),
             'translations' => $this->getTranslations(),
             'flash' => [
