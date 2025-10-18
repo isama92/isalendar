@@ -66,4 +66,3 @@ OIDC_BUTTON_LABEL="Login with Authelia"
   - implement pagination
 
 - improves events and calendar translations by moving things in common and using actions named translations
-- there's no error message if password in wrong when changing password in profile

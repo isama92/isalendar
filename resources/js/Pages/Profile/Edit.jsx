@@ -49,7 +49,7 @@ const Edit = ({ currentUser: user, timezones }) => {
 
     return (
         <div className="rounded-lg bg-white p-6 shadow dark:bg-gray-800">
-            <form>
+            <form onSubmit={handleSubmit}>
                 <div className="space-y-12">
                     <div className="grid grid-cols-1 gap-x-8 gap-y-10 border-b border-gray-900/10 pb-12 md:grid-cols-3 dark:border-white/10">
                         <div>
@@ -311,10 +311,9 @@ const Edit = ({ currentUser: user, timezones }) => {
 
                 <div className="mt-6 flex items-center justify-end gap-x-6">
                     <button
-                        type="button"
-                        onClick={handleSubmit}
+                        type="submit"
                         disabled={processing}
-                        className="cursor-pointer rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-xs hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 dark:bg-indigo-500 dark:shadow-none dark:focus-visible:outline-indigo-500"
+                        className="cursor-pointer rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-xs hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-indigo-500 dark:shadow-none dark:focus-visible:outline-indigo-500"
                     >
                         {processing ? __('actions.updating') : __('actions.update')}
                     </button>
