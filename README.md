@@ -66,3 +66,4 @@ OIDC_BUTTON_LABEL="Login with Authelia"
   - implement pagination
 
 - improves events and calendar translations by moving things in common and using actions named translations
+- if event is removed locally, remove it remotely too

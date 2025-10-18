@@ -378,7 +378,7 @@ const Form = ({ currentUser, calendars, timezones, event = null }) => {
                             type="button"
                             onClick={e => handleSubmit(e)}
                             disabled={processing}
-                            className="relative inline-flex items-center rounded-l-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white inset-ring-1 inset-ring-indigo-600 hover:bg-indigo-500 focus:z-10 dark:bg-indigo-500 dark:inset-ring-indigo-500 dark:hover:bg-indigo-400"
+                            className="relative inline-flex cursor-pointer items-center rounded-l-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white inset-ring-1 inset-ring-indigo-600 hover:bg-indigo-500 focus:z-10 dark:bg-indigo-500 dark:inset-ring-indigo-500 dark:hover:bg-indigo-400"
                         >
                             {processing
                                 ? isEditing
@@ -391,7 +391,7 @@ const Form = ({ currentUser, calendars, timezones, event = null }) => {
                         <Menu as="div" className="relative -ml-px block">
                             <MenuButton
                                 disabled={processing}
-                                className="relative inline-flex items-center rounded-r-md bg-indigo-600 px-2 py-2 text-white inset-ring-1 inset-ring-indigo-600 hover:bg-indigo-500 focus:z-10 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-indigo-500 dark:inset-ring-indigo-500 dark:hover:bg-indigo-400"
+                                className="relative inline-flex cursor-pointer items-center rounded-r-md bg-indigo-600 px-2 py-2 text-white inset-ring-1 inset-ring-indigo-600 hover:bg-indigo-500 focus:z-10 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-indigo-500 dark:inset-ring-indigo-500 dark:hover:bg-indigo-400"
                             >
                                 <span className="sr-only">Open options</span>
                                 <ChevronDownIcon aria-hidden="true" className="size-5" />
@@ -409,7 +409,7 @@ const Form = ({ currentUser, calendars, timezones, event = null }) => {
                                                     type="button"
                                                     onClick={e => handleSubmit(e, 'edit')}
                                                     disabled={processing}
-                                                    className="block w-full px-4 py-2 text-left text-sm text-gray-700 disabled:cursor-not-allowed disabled:opacity-50 data-focus:bg-gray-100 data-focus:text-gray-900 data-focus:outline-hidden dark:text-gray-300 dark:data-focus:bg-white/5 dark:data-focus:text-white"
+                                                    className="block w-full cursor-pointer px-4 py-2 text-left text-sm text-gray-700 disabled:cursor-not-allowed disabled:opacity-50 data-focus:bg-gray-100 data-focus:text-gray-900 data-focus:outline-hidden dark:text-gray-300 dark:data-focus:bg-white/5 dark:data-focus:text-white"
                                                 >
                                                     {__('actions.update_and_stay')}
                                                 </button>
@@ -419,7 +419,7 @@ const Form = ({ currentUser, calendars, timezones, event = null }) => {
                                                     type="button"
                                                     onClick={e => handleSubmit(e, 'index')}
                                                     disabled={processing}
-                                                    className="block w-full px-4 py-2 text-left text-sm text-gray-700 disabled:cursor-not-allowed disabled:opacity-50 data-focus:bg-gray-100 data-focus:text-gray-900 data-focus:outline-hidden dark:text-gray-300 dark:data-focus:bg-white/5 dark:data-focus:text-white"
+                                                    className="block w-full cursor-pointer px-4 py-2 text-left text-sm text-gray-700 disabled:cursor-not-allowed disabled:opacity-50 data-focus:bg-gray-100 data-focus:text-gray-900 data-focus:outline-hidden dark:text-gray-300 dark:data-focus:bg-white/5 dark:data-focus:text-white"
                                                 >
                                                     {__('actions.update_and_list')}
                                                 </button>
@@ -432,7 +432,7 @@ const Form = ({ currentUser, calendars, timezones, event = null }) => {
                                                     type="button"
                                                     onClick={e => handleSubmit(e, 'show')}
                                                     disabled={processing}
-                                                    className="block w-full px-4 py-2 text-left text-sm text-gray-700 disabled:cursor-not-allowed disabled:opacity-50 data-focus:bg-gray-100 data-focus:text-gray-900 data-focus:outline-hidden dark:text-gray-300 dark:data-focus:bg-white/5 dark:data-focus:text-white"
+                                                    className="block w-full cursor-pointer px-4 py-2 text-left text-sm text-gray-700 disabled:cursor-not-allowed disabled:opacity-50 data-focus:bg-gray-100 data-focus:text-gray-900 data-focus:outline-hidden dark:text-gray-300 dark:data-focus:bg-white/5 dark:data-focus:text-white"
                                                 >
                                                     {__('actions.create_and_view')}
                                                 </button>
@@ -442,7 +442,7 @@ const Form = ({ currentUser, calendars, timezones, event = null }) => {
                                                     type="button"
                                                     onClick={e => handleSubmit(e, 'index')}
                                                     disabled={processing}
-                                                    className="block w-full px-4 py-2 text-left text-sm text-gray-700 disabled:cursor-not-allowed disabled:opacity-50 data-focus:bg-gray-100 data-focus:text-gray-900 data-focus:outline-hidden dark:text-gray-300 dark:data-focus:bg-white/5 dark:data-focus:text-white"
+                                                    className="block w-full cursor-pointer px-4 py-2 text-left text-sm text-gray-700 disabled:cursor-not-allowed disabled:opacity-50 data-focus:bg-gray-100 data-focus:text-gray-900 data-focus:outline-hidden dark:text-gray-300 dark:data-focus:bg-white/5 dark:data-focus:text-white"
                                                 >
                                                     {__('actions.create_and_list')}
                                                 </button>

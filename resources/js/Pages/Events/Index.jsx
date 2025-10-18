@@ -1,13 +1,8 @@
+import EventDateTime from '@/Components/EventDateTime';
 import Modal from '@/Components/Modal';
 import Paginator from '@/Components/Tables/Paginator';
 import Table from '@/Components/Tables/Table';
-import {
-    formatDate,
-    formatDateTimeWithTimezone,
-    formatWithFormat,
-    formatWithFormatAndTimezone,
-    subtractDays,
-} from '@/utils/date';
+import { formatWithFormat, formatWithFormatAndTimezone } from '@/utils/date';
 import { CheckIcon, DocumentIcon, EyeIcon, PencilIcon, TrashIcon, XMarkIcon } from '@heroicons/react/24/solid';
 import { Link, router } from '@inertiajs/react';
 import {
@@ -57,10 +52,13 @@ const Index = ({ events, providers }) => {
             {
                 header: __('events.starts_at'),
                 accessorKey: 'starts_at',
-                cell: info =>
-                    info.row.original.all_day
-                        ? formatDate(info.getValue())
-                        : formatDateTimeWithTimezone(info.getValue(), info.row.original.timezone),
+                cell: info => (
+                    <EventDateTime
+                        date={info.getValue()}
+                        timezone={info.row.original.timezone}
+                        allDay={info.row.original.all_day}
+                    />
+                ),
                 filterFn: (row, id, value) => {
                     if (!value) return true;
                     const timezone = row.original.timezone;
@@ -72,10 +70,14 @@ const Index = ({ events, providers }) => {
             {
                 header: __('events.ends_at'),
                 accessorKey: 'ends_at',
-                cell: info =>
-                    info.row.original.all_day
-                        ? formatDate(subtractDays(info.getValue(), 1, 'YYYY-MM-DD'))
-                        : formatDateTimeWithTimezone(info.getValue(), info.row.original.timezone),
+                cell: info => (
+                    <EventDateTime
+                        date={info.getValue()}
+                        timezone={info.row.original.timezone}
+                        allDay={info.row.original.all_day}
+                        isEndDate
+                    />
+                ),
                 filterFn: (row, id, value) => {
                     if (!value) return true;
                     const timezone = row.original.timezone;

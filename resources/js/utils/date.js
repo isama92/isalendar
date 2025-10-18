@@ -70,3 +70,15 @@ export const formatDateTime = date => {
 export const formatDateTimeWithTimezone = (date, timezone) => {
     return dayjs.utc(date).tz(timezone).format('DD/MM/YYYY HH:mm:ss');
 };
+
+/**
+ * Get the user's default timezone
+ * @returns {string} The user's timezone (from dayjs default or guessed)
+ */
+export const getUserTimezone = () => {
+    // When using tz() without arguments, it uses the default timezone
+    // We can get the timezone name by formatting with 'z' or by using the internal _d property
+    const tzDate = dayjs().tz();
+    // Try to get the timezone name - dayjs stores it internally
+    return tzDate.$x?.$timezone || dayjs.tz.guess();
+};
