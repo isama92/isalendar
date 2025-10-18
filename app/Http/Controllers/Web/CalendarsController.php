@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Web;
 
 use App\Actions\GetProviderCalendars;
+use App\Actions\GetThrottleLimitKey;
 use App\Data\CalendarData;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreCalendarRequest;
@@ -22,18 +23,20 @@ use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
 
 class CalendarsController extends Controller
 {
-    public function index(): Response
+    public function index(GetThrottleLimitKey $getThrottleLimitKey): Response
     {
         Gate::authorize('viewAny', Calendar::class);
 
         $calendars = Calendar::forCurrentUser()
             ->withCount('events')
             ->get()
-            ->map(function (Calendar $calendar): array {
+            ->map(function (Calendar $calendar) use ($getThrottleLimitKey): array {
                 $connector = $calendar->connector;
 
+                $key = $getThrottleLimitKey->execute('connector-sync', [Auth::id(), $connector->id]);
+
                 return array_merge($calendar->toArray(), [
-                    'can_sync' => ! RateLimiter::tooManyAttempts(sprintf('connector-sync:%s:%s', Auth::id(), $connector->id), 1),
+                    'can_sync' => ! RateLimiter::tooManyAttempts($key, 1),
                 ]);
             });
 

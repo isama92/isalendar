@@ -61,3 +61,7 @@ OIDC_BUTTON_LABEL="Login with Authelia"
 
 ## TODO
 - add users page for admins so they can add new users and associate a role
+- stop using google/apiclient library
+  - use saloon to make requests
+  - implement rate limits retries
+  - implement pagination

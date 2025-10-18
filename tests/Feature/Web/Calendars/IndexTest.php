@@ -1,5 +1,6 @@
 <?php
 
+use App\Actions\GetThrottleLimitKey;
 use App\Enums\Service;
 use App\Models\Calendar;
 use App\Models\Connector;
@@ -204,7 +205,7 @@ it('shows can_sync as false when connector is rate limited', function (): void {
     $calendar->connectors()->attach($connector);
 
     // Hit the rate limiter
-    $key = sprintf('connector-sync:%s:%s', $user->id, $connector->id);
+    $key = app(GetThrottleLimitKey::class)->execute('connector-sync', [$user->id, $connector->id]);
     RateLimiter::hit($key, 3600);
 
     actingAs($user);

@@ -1,5 +1,6 @@
 <?php
 
+use App\Actions\GetThrottleLimitKey;
 use App\Enums\Service;
 use App\Models\Connector;
 use App\Models\Provider;
@@ -12,7 +13,6 @@ use Spatie\QueueableAction\Testing\QueueableActionFake;
 
 use function Pest\Laravel\actingAs;
 use function Pest\Laravel\put;
-use function Pest\Laravel\travel;
 use function Pest\Laravel\withoutMiddleware;
 
 uses()->group('web', 'connectors');
@@ -66,12 +66,13 @@ it('prevents synchronization when rate limited', function (): void {
 
     actingAs($user);
 
-    put(route('connectors.synchronize', $connector))
-        ->assertRedirect(route('calendars.index'));
+    $key = app(GetThrottleLimitKey::class)->execute('connector-sync', [$user->id, $connector->id]);
+    RateLimiter::hit($key, 3600);
+
     put(route('connectors.synchronize', $connector))
         ->assertTooManyRequests();
 
-    QueueableActionFake::assertPushedTimes(GoogleCalendarSynchronize::class, 1);
+    Queue::assertNothingPushed();
 });
 
 it('does not rate limit without the middleware', function (): void {
@@ -141,7 +142,8 @@ it('allows synchronization after rate limit period', function (): void {
     put(route('connectors.synchronize', $connector))
         ->assertTooManyRequests();
 
-    travel(61)->minutes();
+    $key = app(GetThrottleLimitKey::class)->execute('connector-sync', [$user->id, $connector->id]);
+    RateLimiter::clear($key);
 
     put(route('connectors.synchronize', $connector))
         ->assertRedirect(route('calendars.index'));

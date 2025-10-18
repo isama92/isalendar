@@ -20,10 +20,6 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->trustHosts();
         $middleware->trustProxies();
 
-        if ($env !== 'testing') {
-            $middleware->throttleWithRedis();
-        }
-
         $middleware->web(
             append: [
                 SetLocale::class,
