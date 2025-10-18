@@ -91,7 +91,7 @@ class CalendarsController extends Controller
         });
 
         return redirect()->route('calendars.index')
-            ->with('success', __('calendars.calendar_created'));
+            ->with('success', __('actions.named.created', ['name' => __('calendars.calendar')]));
     }
 
     public function update(UpdateCalendarRequest $request, Calendar $calendar): RedirectResponse
@@ -100,8 +100,8 @@ class CalendarsController extends Controller
 
         return redirect()->route('calendars.index')
             ->with('success', $calendar->enabled
-                ? __('calendars.calendar_enabled')
-                : __('calendars.calendar_disabled'));
+                ? __('actions.named.enabled', ['name' => __('calendars.calendar')])
+                : __('actions.named.disabled', ['name' => __('calendars.calendar')]));
     }
 
     public function destroy(Calendar $calendar): RedirectResponse
@@ -123,6 +123,6 @@ class CalendarsController extends Controller
         }
 
         return redirect()->route('calendars.index')
-            ->with('success', __('calendars.calendar_deleted'));
+            ->with('success', __('actions.named.deleted', ['name' => __('calendars.calendar')]));
     }
 }

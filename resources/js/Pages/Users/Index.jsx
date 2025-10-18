@@ -7,6 +7,7 @@ import {
     EyeIcon,
     PaperAirplaneIcon,
     PencilIcon,
+    PlusIcon,
     TrashIcon,
     UserGroupIcon,
 } from '@heroicons/react/24/solid';
@@ -180,8 +181,9 @@ const Index = ({ users, roles, currentUser }) => {
                 <div className="mt-4 sm:mt-0 sm:ml-16 sm:flex-none">
                     <Link
                         href={route('users.create')}
-                        className="block rounded-md bg-indigo-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-xs hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 dark:bg-indigo-500 dark:hover:bg-indigo-400 dark:focus-visible:outline-indigo-500"
+                        className="inline-flex items-center gap-x-1.5 rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-xs hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 dark:bg-indigo-500 dark:hover:bg-indigo-400 dark:focus-visible:outline-indigo-500"
                     >
+                        <PlusIcon aria-hidden="true" className="-ml-0.5 size-5" />
                         {__('actions.named.create', { name: __('users.user') })}
                     </Link>
                 </div>
@@ -207,7 +209,7 @@ const Index = ({ users, roles, currentUser }) => {
                     onChange={e => table.getColumn('deleted_at')?.setFilterValue(e.target.value)}
                     className="rounded-md border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 focus:outline-none dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100"
                 >
-                    <option value="all">{__('actions.named.all', { name: __('users.users') })}</option>
+                    <option value="all">{__('users.all_users')}</option>
                     <option value="active">{__('common.active_only')}</option>
                     <option value="deleted">{__('common.deleted_only')}</option>
                 </select>

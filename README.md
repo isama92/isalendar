@@ -59,5 +59,3 @@ OIDC_BUTTON_LABEL="Login with Authelia"
   - use saloon to make requests
   - implement rate limits retries
   - implement pagination
-
-- improves events and calendar translations by moving things in common and using actions named translations

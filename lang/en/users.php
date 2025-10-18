@@ -19,4 +19,5 @@ return [
     'send_password_reset' => 'Send Password Reset',
     'send_password_reset_confirm_message' => 'Are you sure you want to send a password reset link to this user?',
     'password_reset_sent' => 'Password reset link sent successfully!',
+    'all_users' => 'All users',
 ];

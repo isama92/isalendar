@@ -7,6 +7,7 @@ import {
     CheckIcon,
     LockClosedIcon,
     LockOpenIcon,
+    PlusIcon,
     TrashIcon,
     XMarkIcon,
 } from '@heroicons/react/24/solid';
@@ -188,8 +189,9 @@ const Index = ({ calendars, providers }) => {
                 <div className="mt-4 sm:mt-0 sm:ml-16 sm:flex-none">
                     <Link
                         href={route('providers.create')}
-                        className="block rounded-md bg-indigo-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-xs hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 dark:bg-indigo-500 dark:hover:bg-indigo-400 dark:focus-visible:outline-indigo-500"
+                        className="inline-flex items-center gap-x-1.5 rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-xs hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 dark:bg-indigo-500 dark:hover:bg-indigo-400 dark:focus-visible:outline-indigo-500"
                     >
+                        <PlusIcon aria-hidden="true" className="-ml-0.5 size-5" />
                         {__('actions.named.add', { name: __('calendars.calendar') })}
                     </Link>
                 </div>

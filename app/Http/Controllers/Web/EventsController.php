@@ -68,7 +68,7 @@ class EventsController extends Controller
         };
 
         return redirect($route)
-            ->with('success', __('events.event_created'));
+            ->with('success', __('actions.named.created', ['name' => __('events.event')]));
     }
 
     public function edit(GetOrderedTimezones $getOrderedTimezones, Event $event): Response
@@ -97,7 +97,7 @@ class EventsController extends Controller
         };
 
         return redirect($route)
-            ->with('success', __('events.event_updated'));
+            ->with('success', __('actions.named.updated', ['name' => __('events.event')]));
     }
 
     public function destroy(Event $event): RedirectResponse
@@ -107,7 +107,7 @@ class EventsController extends Controller
         $this->deleteEvent($event);
 
         return redirect()->route('events.index')
-            ->with('success', __('events.event_deleted'));
+            ->with('success', __('actions.named.deleted', ['name' => __('events.event')]));
     }
 
     private function deleteEvent(Event $event): void
