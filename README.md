@@ -54,11 +54,6 @@ OIDC_BUTTON_LABEL="Login with Authelia"
 - Calendars enabled fields is used by the user to disable the sync of a calendar.
 - Pagination is handled in the frontend, with a high number of events (higher than 100k), it might have performance issues
 
-## BUG
-- when selecting datetime from datetime picker in events form date changes immediately
-- when changing timezone, the date should also change in the events form
-- ... google calendar shows the date in user timezone when creating/updating event, independently of the event timezone
-
 ## TODO
 - stop using google/apiclient library
   - use saloon to make requests
@@ -66,4 +61,3 @@ OIDC_BUTTON_LABEL="Login with Authelia"
   - implement pagination
 
 - improves events and calendar translations by moving things in common and using actions named translations
-- if event is removed locally, remove it remotely too

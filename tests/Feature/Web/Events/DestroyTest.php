@@ -12,14 +12,37 @@ use function Pest\Laravel\delete;
 
 uses()->group('web', 'events');
 
-it('allows user to delete their event', function (): void {
+it('allows user to delete their event with external_id', function (): void {
     $user = User::factory()->create();
     $connector = Connector::factory()->for($user)->create();
 
     $calendar = Calendar::factory()->create();
     $calendar->connectors()->attach($connector);
 
-    $event = Event::factory()->for($calendar)->create();
+    $event = Event::factory()->for($calendar)->create([
+        'external_id' => 'google-event-123',
+    ]);
+
+    actingAs($user);
+
+    delete(route('events.destroy', $event))
+        ->assertRedirect(route('events.index'))
+        ->assertSessionHas('success');
+
+    expect(Event::withMarkedForDeletion()->find($event->id))
+        ->marked_for_deletion_at->not->toBeNull();
+});
+
+it('allows user to delete their event without external_id', function (): void {
+    $user = User::factory()->create();
+    $connector = Connector::factory()->for($user)->create();
+
+    $calendar = Calendar::factory()->create();
+    $calendar->connectors()->attach($connector);
+
+    $event = Event::factory()->for($calendar)->create([
+        'external_id' => null,
+    ]);
 
     actingAs($user);
 

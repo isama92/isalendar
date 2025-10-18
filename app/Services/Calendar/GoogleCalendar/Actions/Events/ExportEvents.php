@@ -14,6 +14,7 @@ class ExportEvents
 
     public function __construct(
         private readonly PushEvent $pushEvent,
+        private readonly DeleteEvent $deleteEvent,
     ) {}
 
     public function execute(
@@ -22,10 +23,18 @@ class ExportEvents
         CarbonImmutable $fetchWindowStart,
         CarbonImmutable $fetchWindowEnd,
     ): void {
+        /** @phpstan-ignore method.notFound */
         $calendar->events()
+            ->withMarkedForDeletion()
             ->whereBetween('starts_at', [$fetchWindowStart, $fetchWindowEnd])
             ->lazyById()
             ->each(function (Event $event) use ($connector): void {
+                if (! is_null($event->marked_for_deletion_at)) {
+                    $this->deleteEvent->execute($connector, $event);
+
+                    return;
+                }
+
                 $this->pushEvent->execute($connector, $event);
             });
     }

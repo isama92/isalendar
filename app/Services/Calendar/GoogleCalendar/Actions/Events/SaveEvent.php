@@ -12,7 +12,9 @@ class SaveEvent
 {
     public function execute(GoogleEventData $googleEventData, Calendar $calendar): void
     {
+        /** @phpstan-ignore method.notFound */
         $event = $calendar->events()
+            ->withMarkedForDeletion()
             ->where('calendar_id', $calendar->id)
             ->where('external_id', $googleEventData->id)
             ->first();

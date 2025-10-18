@@ -27,7 +27,6 @@ return [
     'enabled_only' => 'Enabled only',
     'disabled_only' => 'Disabled only',
     'no_calendar_yet' => "You don't have a calendar yet.",
-    'create_calendar_connection' => 'Create a calendar to start using the app.',
     'select_calendar_description' => 'Select which calendars to sync',
     'rate_limited' => 'You can synchronize this connector once per hour',
     'synchronization_started' => 'Calendar synchronization started successfully',

@@ -104,10 +104,21 @@ class EventsController extends Controller
     {
         Gate::authorize('delete', $event);
 
-        $event->delete();
+        $this->deleteEvent($event);
 
         return redirect()->route('events.index')
             ->with('success', __('events.event_deleted'));
+    }
+
+    private function deleteEvent(Event $event): void
+    {
+        if (is_null($event->external_id)) {
+            $event->delete();
+
+            return;
+        }
+
+        $event->update(['marked_for_deletion_at' => now()]);
     }
 
     /**

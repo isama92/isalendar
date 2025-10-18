@@ -10,7 +10,6 @@ use Carbon\Carbon;
 use Google\Service\Calendar as CalendarService;
 use Google\Service\Calendar\Event as GoogleEvent;
 use Google\Service\Calendar\EventDateTime;
-use Illuminate\Support\Facades\DB;
 use Spatie\QueueableAction\QueueableAction;
 
 class PushEvent
@@ -23,15 +22,13 @@ class PushEvent
     {
         $googleClient = $this->getAuthClient->execute($connector);
 
-        DB::transaction(function () use ($googleClient, $event): void {
-            $savedEvent = $this->pushEvent(
-                new CalendarService($googleClient),
-                $event,
-                $this->getGoogleEvent($event),
-            );
+        $savedEvent = $this->pushEvent(
+            new CalendarService($googleClient),
+            $event,
+            $this->getGoogleEvent($event),
+        );
 
-            $event->update(['external_id' => $savedEvent->getId()]);
-        });
+        $event->update(['external_id' => $savedEvent->getId()]);
     }
 
     private function getGoogleEvent(Event $event): GoogleEvent

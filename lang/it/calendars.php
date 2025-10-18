@@ -27,7 +27,6 @@ return [
     'enabled_only' => 'Solo abilitati',
     'disabled_only' => 'Solo disabilitati',
     'no_calendar_yet' => 'Non hai ancora un calendario.',
-    'create_calendar_connection' => "Crea un calendario per iniziare ad usare l'app.",
     'select_calendar_description' => 'Seleziona quali calendari sincronizzare',
     'rate_limited' => 'Puoi sincronizzare questo connettore una volta all\'ora',
     'synchronization_started' => 'Sincronizzazione del calendario avviata con successo',

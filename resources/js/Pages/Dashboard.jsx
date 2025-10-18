@@ -34,7 +34,7 @@ const Dashboard = ({
                                         href={route('providers.create')}
                                         className="font-medium text-yellow-700 underline hover:text-yellow-600 dark:text-yellow-300 dark:hover:text-yellow-200"
                                     >
-                                        {__('calendars.create_calendar_connection')}
+                                        {__('actions.named.add', { name: __('calendars.calendar') })}
                                     </Link>
                                 </p>
                             </div>

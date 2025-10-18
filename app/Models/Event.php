@@ -3,12 +3,15 @@
 namespace App\Models;
 
 use App\Builders\EventBuilder;
+use App\Models\Scopes\ExcludeMarkedForDeletionScope;
+use Illuminate\Database\Eloquent\Attributes\ScopedBy;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\HasBuilder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
+#[ScopedBy(ExcludeMarkedForDeletionScope::class)]
 class Event extends Model
 {
     /** @use HasFactory<\Database\Factories\EventFactory> */
@@ -30,13 +33,15 @@ class Event extends Model
         'starts_at',
         'ends_at',
         'description',
+        'marked_for_deletion_at',
     ];
 
     /**
      * @return array{
      *     all_day: 'boolean',
      *     starts_at: 'datetime',
-     *     ends_at: 'datetime'
+     *     ends_at: 'datetime',
+     *     marked_for_deletion_at: 'datetime'
      * }
      */
     protected function casts(): array
@@ -45,6 +50,7 @@ class Event extends Model
             'all_day' => 'boolean',
             'starts_at' => 'datetime',
             'ends_at' => 'datetime',
+            'marked_for_deletion_at' => 'datetime',
         ];
     }
 
