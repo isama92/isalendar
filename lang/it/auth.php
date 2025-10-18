@@ -11,4 +11,6 @@ return [
     'logout' => 'Esci',
     'remember_me' => 'Ricordami',
     'invalid_credentials' => 'Le credenziali fornite non sono corrette.',
+    'or_continue_with' => 'Oppure continua con',
+    'account_deactivated' => 'Questo account è stato disattivato.',
 ];

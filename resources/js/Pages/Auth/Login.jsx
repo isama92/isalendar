@@ -3,10 +3,11 @@ import LogoLight from '@/../images/logo-light.png';
 import Checkbox from '@/Components/Checkbox';
 import LanguageSwitcher from '@/Components/LanguageSwitcher';
 import ThemeSwitcher from '@/Components/ThemeSwitcher';
-import { useForm, usePage } from '@inertiajs/react';
+import { LockClosedIcon } from '@heroicons/react/24/solid';
+import { Link, useForm, usePage } from '@inertiajs/react';
 
 const Login = () => {
-    const { appName, locale } = usePage().props;
+    const { appName, locale, oidcEnabled, oidcButtonLabel } = usePage().props;
 
     const { data, setData, post, processing, errors } = useForm({
         email: '',
@@ -114,6 +115,31 @@ const Login = () => {
                         </button>
                     </div>
                 </form>
+
+                {oidcEnabled && (
+                    <div className="mt-6">
+                        <div className="relative">
+                            <div className="absolute inset-0 flex items-center">
+                                <div className="w-full border-t border-gray-300 dark:border-gray-700" />
+                            </div>
+                            <div className="relative flex justify-center text-sm/6">
+                                <span className="bg-white px-2 text-gray-500 dark:bg-gray-900 dark:text-gray-400">
+                                    {__('auth.or_continue_with')}
+                                </span>
+                            </div>
+                        </div>
+
+                        <div className="mt-6">
+                            <Link
+                                href={route('auth.oidc.connect')}
+                                className="flex w-full items-center justify-center gap-3 rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-xs ring-1 ring-gray-300 ring-inset hover:bg-gray-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white dark:bg-white/10 dark:text-white dark:ring-white/20 dark:hover:bg-white/20 dark:focus-visible:outline-white/20"
+                            >
+                                <LockClosedIcon className="h-5 w-5" />
+                                {oidcButtonLabel}
+                            </Link>
+                        </div>
+                    </div>
+                )}
             </div>
         </div>
     );

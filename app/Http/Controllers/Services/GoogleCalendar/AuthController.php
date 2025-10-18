@@ -8,7 +8,6 @@ use App\Services\GoogleCalendar\Actions\Auth\RequestAccess;
 use App\Services\GoogleCalendar\Actions\Auth\SaveCredentials;
 use App\Services\GoogleCalendar\Actions\Calendars\FetchNormalizedCalendars;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
 use Inertia\Inertia;
@@ -27,7 +26,7 @@ class AuthController extends Controller
         );
     }
 
-    public function store(Request $request, SaveCredentials $saveGoogleUser, FetchNormalizedCalendars $getCalendars): RedirectResponse
+    public function store(SaveCredentials $saveGoogleUser, FetchNormalizedCalendars $getCalendars): RedirectResponse
     {
         Gate::authorize('create', Calendar::class);
 

@@ -15,7 +15,10 @@ class AuthController extends Controller
 {
     public function create(): Response
     {
-        return Inertia::render('Auth/Login');
+        return Inertia::render('Auth/Login', [
+            'oidcEnabled' => config('services.oidc.enabled', false),
+            'oidcButtonLabel' => config('services.oidc.button_label'),
+        ]);
     }
 
     public function store(LoginRequest $request): RedirectResponse

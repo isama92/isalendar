@@ -11,4 +11,6 @@ return [
     'logout' => 'Sign out',
     'remember_me' => 'Remember me',
     'invalid_credentials' => 'The provided credentials are incorrect.',
+    'or_continue_with' => 'Or continue with',
+    'account_deactivated' => 'This account has been deactivated.',
 ];
