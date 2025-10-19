@@ -16,6 +16,7 @@ class AuthController extends Controller
     public function create(): Response
     {
         return Inertia::render('Auth/Login', [
+            'title' => __('auth.sign_in_to_your_account'),
             'oidcEnabled' => config('services.oidc.enabled', false),
             'oidcButtonLabel' => config('services.oidc.button_label'),
         ]);
