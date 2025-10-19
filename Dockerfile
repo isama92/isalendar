@@ -9,29 +9,11 @@ RUN npm ci
 
 # Copy source files needed for build
 COPY vite.config.js ./
-COPY postcss.config.js ./
-COPY tailwind.config.js ./
 COPY resources ./resources
 COPY public ./public
 
 # Build frontend assets
 RUN npm run build
-
-# Install PHP dependencies with Composer
-FROM composer:2 AS composer
-
-WORKDIR /app
-
-# Copy composer files
-COPY composer.json composer.lock ./
-
-# Install production dependencies
-RUN composer install \
-    --no-dev \
-    --no-interaction \
-    --no-progress \
-    --no-scripts \
-    --optimize-autoloader
 
 # Production runtime stage
 FROM php:8.4-fpm-alpine
@@ -63,6 +45,9 @@ RUN apk add --no-cache --virtual .build-deps $PHPIZE_DEPS \
     && docker-php-ext-enable redis \
     && apk del .build-deps
 
+# Install Composer
+COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
+
 # Set working directory
 WORKDIR /var/www/html
 
@@ -72,8 +57,14 @@ COPY . .
 # Copy built frontend assets from builder
 COPY --from=builder /app/public/build ./public/build
 
-# Copy vendor from composer stage
-COPY --from=composer /app/vendor ./vendor
+# Install PHP dependencies with Composer (now that pcntl is available)
+RUN composer install \
+    --no-dev \
+    --no-interaction \
+    --no-progress \
+    --no-scripts \
+    --optimize-autoloader \
+    && rm /usr/bin/composer
 
 # Copy configuration files
 COPY docker/nginx/default.conf /etc/nginx/http.d/default.conf
