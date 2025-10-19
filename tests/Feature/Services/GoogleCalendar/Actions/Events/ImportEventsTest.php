@@ -1,7 +1,5 @@
 <?php
 
-use App\Models\Calendar;
-use App\Models\Connector;
 use App\Services\Calendar\GoogleCalendar\Actions\Events\FetchEvents;
 use App\Services\Calendar\GoogleCalendar\Actions\Events\ImportEvents;
 use App\Services\Calendar\GoogleCalendar\Actions\Events\SaveEvent;
@@ -9,16 +7,16 @@ use App\Services\Calendar\GoogleCalendar\Data\GoogleEventData;
 use App\Services\Calendar\GoogleCalendar\Enums\Status;
 
 use function Pest\Laravel\partialMock;
+use function Tests\Helpers\calendarFactory;
 
 uses()->group('gcalendar', 'gcalendar.events');
 
 it('calls FetchEvents and then calls SaveEvent for each event', function (): void {
     $fetchWindowStart = now()->toImmutable();
     $fetchWindowEnd = now()->addHour()->toImmutable();
-    $connector = Connector::factory()->create();
-    $calendar = Calendar::factory()->create();
 
-    $connector->calendars()->attach($calendar);
+    $calendar = calendarFactory()->create();
+    $connector = $calendar->connectors->sole();
 
     $eventsDataCollection = collect([
         GoogleEventData::from([

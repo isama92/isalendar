@@ -1,22 +1,17 @@
 <?php
 
-use App\Models\Calendar;
-use App\Models\Connector;
 use App\Models\User;
 use App\Rules\CalendarBelongsToUser;
 use Illuminate\Support\Facades\Validator;
 
-use function Pest\Laravel\actingAs;
+use function Tests\Helpers\calendarFactory;
+use function Tests\Helpers\connectorFactory;
 
 uses()->group('rules');
 
 it('passes when calendar belongs to authenticated user', function (): void {
-    $user = User::factory()->create();
-    $connector = Connector::factory()->for($user)->create();
-    $calendar = Calendar::factory()->create();
-    $calendar->connectors()->attach($connector);
-
-    actingAs($user);
+    actingAsUser();
+    $calendar = calendarFactory()->create();
 
     $validator = Validator::make(
         ['calendar_id' => $calendar->id],
@@ -27,15 +22,12 @@ it('passes when calendar belongs to authenticated user', function (): void {
 });
 
 it('fails when calendar does not belong to authenticated user', function (): void {
-    $user = User::factory()->create();
-    $otherConnector = Connector::factory()->for(User::factory()->create())->create();
-    $calendar = Calendar::factory()->create();
-    $calendar->connectors()->attach($otherConnector);
-
-    actingAs($user);
+    actingAsUser();
+    $otherConnector = connectorFactory()->for(User::factory())->create();
+    $otherCalendar = calendarFactory(connector: $otherConnector)->create();
 
     $validator = Validator::make(
-        ['calendar_id' => $calendar->id],
+        ['calendar_id' => $otherCalendar->id],
         ['calendar_id' => new CalendarBelongsToUser]
     );
 
@@ -45,9 +37,7 @@ it('fails when calendar does not belong to authenticated user', function (): voi
 });
 
 it('fails when calendar does not exist', function ($calendarId): void {
-    $user = User::factory()->create();
-
-    actingAs($user);
+    actingAsUser();
 
     $validator = Validator::make(
         ['calendar_id' => $calendarId],
@@ -66,9 +56,7 @@ it('fails when calendar does not exist', function ($calendarId): void {
 ]);
 
 it('passes with empty string as validation is not triggered', function (): void {
-    $user = User::factory()->create();
-
-    actingAs($user);
+    actingAsUser();
 
     $validator = Validator::make(
         ['calendar_id' => ''],
@@ -78,30 +66,10 @@ it('passes with empty string as validation is not triggered', function (): void 
     expect($validator->passes())->toBeTrue();
 });
 
-it('fails when calendar belongs to different user', function (): void {
-    $user = User::factory()->create();
-    $connector2 = Connector::factory()->for(User::factory()->create())->create();
-    $calendar = Calendar::factory()->create();
-    $calendar->connectors()->attach($connector2);
-
-    actingAs($user);
-
-    $validator = Validator::make(
-        ['calendar_id' => $calendar->id],
-        ['calendar_id' => new CalendarBelongsToUser]
-    );
-
-    expect($validator->fails())->toBeTrue();
-});
-
 it('fails with soft deleted calendars', function (): void {
-    $user = User::factory()->create();
-    $connector = Connector::factory()->for($user)->create();
-    $calendar = Calendar::factory()->create();
-    $calendar->connectors()->attach($connector);
+    actingAsUser();
+    $calendar = calendarFactory()->create();
     $calendar->delete();
-
-    actingAs($user);
 
     $validator = Validator::make(
         ['calendar_id' => $calendar->id],

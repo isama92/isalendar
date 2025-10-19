@@ -1,20 +1,19 @@
 <?php
 
 use App\Actions\SynchronizeConnector;
-use App\Enums\Service;
-use App\Models\Connector;
+use App\Models\Provider;
 use App\Services\Calendar\GoogleCalendar\Actions\Synchronize as GoogleCalendarSynchronize;
 use Illuminate\Support\Facades\Queue;
 use Spatie\QueueableAction\Testing\QueueableActionFake;
+
+use function Tests\Helpers\connectorFactory;
 
 uses()->group('actions');
 
 it('synchronizes Google Calendar connector', function (): void {
     Queue::fake();
 
-    $connector = Connector::factory()->create([
-        'provider_id' => Service::GOOGLE_CALENDAR->id(),
-    ]);
+    $connector = connectorFactory()->create();
 
     app(SynchronizeConnector::class)->execute($connector);
 
@@ -24,9 +23,7 @@ it('synchronizes Google Calendar connector', function (): void {
 it('does not synchronize Microsoft Outlook connector', function (): void {
     Queue::fake();
 
-    $connector = Connector::factory()->create([
-        'provider_id' => Service::MICROSOFT_OUTLOOK->id(),
-    ]);
+    $connector = connectorFactory()->for(Provider::microsoftOutlook())->create();
 
     app(SynchronizeConnector::class)->execute($connector);
 

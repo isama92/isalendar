@@ -2,22 +2,19 @@
 
 use App\Actions\GetThrottleLimitKey;
 use App\Enums\Service;
-use App\Models\Calendar;
-use App\Models\Connector;
-use App\Models\Event;
 use App\Models\Provider;
 use App\Models\User;
 use Illuminate\Support\Facades\RateLimiter;
 
-use function Pest\Laravel\actingAs;
 use function Pest\Laravel\get;
+use function Tests\Helpers\calendarFactory;
+use function Tests\Helpers\connectorFactory;
+use function Tests\Helpers\eventFactory;
 
 uses()->group('web', 'calendars');
 
 it('displays calendars for authenticated user', function (): void {
-    $user = User::factory()->create();
-
-    actingAs($user);
+    actingAsUser();
 
     get(route('calendars.index'))
         ->assertSuccessful()
@@ -34,19 +31,14 @@ it('redirects unauthenticated users to login', function (): void {
 });
 
 it('shows correct calendars with event counts', function (): void {
-    $user = User::factory()->create();
-    $connector = Connector::factory()->for($user)->create();
+    actingAsUser();
+    $connector = connectorFactory()->create();
 
-    $calendar1 = Calendar::factory()->create();
-    $calendar2 = Calendar::factory()->create();
+    $calendar1 = calendarFactory(connector: $connector)->create();
+    $calendar2 = calendarFactory(connector: $connector)->create();
 
-    $calendar1->connectors()->attach($connector);
-    $calendar2->connectors()->attach($connector);
-
-    Event::factory()->count(5)->for($calendar1)->create();
-    Event::factory()->count(3)->for($calendar2)->create();
-
-    actingAs($user);
+    eventFactory(5)->for($calendar1)->create();
+    eventFactory(3)->for($calendar2)->create();
 
     get(route('calendars.index'))
         ->assertSuccessful()
@@ -59,18 +51,11 @@ it('shows correct calendars with event counts', function (): void {
 });
 
 it('only shows authenticated user calendars', function (): void {
-    $user = User::factory()->create();
-    $connector = Connector::factory()->for($user)->create();
+    actingAsUser();
+    $userCalendar = calendarFactory()->create();
 
-    $userCalendar = Calendar::factory()->create();
-    $userCalendar->connectors()->attach($connector);
-
-    $otherUser = User::factory()->create();
-    $otherConnector = Connector::factory()->for($otherUser)->create();
-    $otherCalendar = Calendar::factory()->create();
-    $otherCalendar->connectors()->attach($otherConnector);
-
-    actingAs($user);
+    $otherConnector = connectorFactory()->for(User::factory())->create();
+    calendarFactory(connector: $otherConnector)->create();
 
     get(route('calendars.index'))
         ->assertSuccessful()
@@ -82,7 +67,7 @@ it('only shows authenticated user calendars', function (): void {
 });
 
 it('shows enabled providers', function (): void {
-    $user = User::factory()->create();
+    actingAsUser();
     Provider::forceCreate([
         'name' => 'disabled',
         'image_path' => '',
@@ -90,8 +75,6 @@ it('shows enabled providers', function (): void {
         'auth_route' => '',
         'enabled' => false,
     ]);
-
-    actingAs($user);
 
     get(route('calendars.index'))
         ->assertSuccessful()
@@ -103,9 +86,7 @@ it('shows enabled providers', function (): void {
 });
 
 it('displays empty state when no calendars', function (): void {
-    $user = User::factory()->create();
-
-    actingAs($user);
+    actingAsUser();
 
     get(route('calendars.index'))
         ->assertSuccessful()
@@ -116,17 +97,10 @@ it('displays empty state when no calendars', function (): void {
 });
 
 it('returns all calendars for frontend pagination', function (): void {
-    $user = User::factory()->create();
-    $connector = Connector::factory()->for($user)->create();
+    actingAsUser();
 
     // Create 15 calendars - all should be returned for frontend pagination
-    $calendars = Calendar::factory()->count(15)->create();
-
-    foreach ($calendars as $calendar) {
-        $calendar->connectors()->attach($connector);
-    }
-
-    actingAs($user);
+    calendarFactory(15)->create();
 
     get(route('calendars.index'))
         ->assertSuccessful()
@@ -137,13 +111,8 @@ it('returns all calendars for frontend pagination', function (): void {
 });
 
 it('shows zero event count for calendars without events', function (): void {
-    $user = User::factory()->create();
-    $connector = Connector::factory()->for($user)->create();
-
-    $calendar = Calendar::factory()->create(['name' => 'Empty Calendar']);
-    $calendar->connectors()->attach($connector);
-
-    actingAs($user);
+    actingAsUser();
+    calendarFactory()->create(['name' => 'Empty Calendar']);
 
     get(route('calendars.index'))
         ->assertSuccessful()
@@ -155,21 +124,16 @@ it('shows zero event count for calendars without events', function (): void {
 });
 
 it('shows multiple calendars for user with multiple connectors', function (): void {
-    $user = User::factory()->create();
+    actingAsUser();
 
     $provider1 = Provider::googleCalendar();
     $provider2 = Provider::microsoftOutlook();
 
-    $connector1 = Connector::factory()->for($user)->for($provider1, 'provider')->create();
-    $connector2 = Connector::factory()->for($user)->for($provider2, 'provider')->create();
+    $connector1 = connectorFactory()->for($provider1)->create();
+    $connector2 = connectorFactory()->for($provider2)->create();
 
-    $calendar1 = Calendar::factory()->create();
-    $calendar2 = Calendar::factory()->create();
-
-    $calendar1->connectors()->attach($connector1);
-    $calendar2->connectors()->attach($connector2);
-
-    actingAs($user);
+    calendarFactory(connector: $connector1)->create();
+    calendarFactory(connector: $connector2)->create();
 
     get(route('calendars.index'))
         ->assertSuccessful()
@@ -180,13 +144,8 @@ it('shows multiple calendars for user with multiple connectors', function (): vo
 });
 
 it('includes can_sync status for each calendar', function (): void {
-    $user = User::factory()->create();
-    $connector = Connector::factory()->for($user)->create();
-
-    $calendar = Calendar::factory()->create();
-    $calendar->connectors()->attach($connector);
-
-    actingAs($user);
+    actingAsUser();
+    calendarFactory()->create();
 
     get(route('calendars.index'))
         ->assertSuccessful()
@@ -198,17 +157,13 @@ it('includes can_sync status for each calendar', function (): void {
 });
 
 it('shows can_sync as false when connector is rate limited', function (): void {
-    $user = User::factory()->create();
-    $connector = Connector::factory()->for($user)->create();
-
-    $calendar = Calendar::factory()->create();
-    $calendar->connectors()->attach($connector);
+    $user = actingAsUser();
+    $connector = calendarFactory()->create()
+        ->connectors->sole();
 
     // Hit the rate limiter
     $key = app(GetThrottleLimitKey::class)->execute('connector-sync', [$user->id, $connector->id]);
     RateLimiter::hit($key, 3600);
-
-    actingAs($user);
 
     get(route('calendars.index'))
         ->assertSuccessful()

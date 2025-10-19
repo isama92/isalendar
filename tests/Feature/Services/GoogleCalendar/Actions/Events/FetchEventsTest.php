@@ -1,7 +1,5 @@
 <?php
 
-use App\Models\Calendar;
-use App\Models\Connector;
 use App\Services\Calendar\GoogleCalendar\Actions\Auth\GetAuthClient;
 use App\Services\Calendar\GoogleCalendar\Actions\Events\FetchEvents;
 use App\Services\Calendar\GoogleCalendar\Data\GoogleEventData;
@@ -13,14 +11,13 @@ use Google\Service\Calendar\Events;
 use Illuminate\Support\Collection;
 
 use function Pest\Laravel\partialMock;
+use function Tests\Helpers\calendarFactory;
 
 uses()->group('gcalendar', 'gcalendar.events');
 
 it('fetches events from Google and returns GoogleEventData', function (): void {
-    $connector = Connector::factory()->create();
-    $calendar = Calendar::factory()->create();
-
-    $connector->calendars()->attach($calendar);
+    $calendar = calendarFactory()->create();
+    $connector = $calendar->connectors->sole();
 
     $ge1 = new GoogleEvent;
     $ge1Start = new EventDateTime;
@@ -99,10 +96,8 @@ it('fetches events from Google and returns GoogleEventData', function (): void {
 });
 
 it('returns an empty collection when Google returns no event items', function (): void {
-    $connector = Connector::factory()->create();
-    $calendar = Calendar::factory()->create();
-
-    $connector->calendars()->attach($calendar);
+    $calendar = calendarFactory()->create();
+    $connector = $calendar->connectors->sole();
 
     $list = new Events;
     $list->setItems([]);

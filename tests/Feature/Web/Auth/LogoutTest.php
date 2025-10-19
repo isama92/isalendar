@@ -1,17 +1,12 @@
 <?php
 
-use App\Models\User;
-
-use function Pest\Laravel\actingAs;
 use function Pest\Laravel\assertGuest;
 use function Pest\Laravel\post;
 
 uses()->group('web', 'auth');
 
 it('logs out authenticated user', function (): void {
-    $user = User::factory()->create();
-
-    actingAs($user);
+    actingAsUser();
     expect(auth()->check())->toBeTrue();
 
     post(route('logout'))
@@ -23,9 +18,7 @@ it('logs out authenticated user', function (): void {
 });
 
 it('invalidates session on logout', function (): void {
-    $user = User::factory()->create();
-
-    actingAs($user);
+    actingAsUser();
 
     $sessionId = session()->getId();
 
@@ -37,9 +30,7 @@ it('invalidates session on logout', function (): void {
 });
 
 it('regenerates csrf token on logout', function (): void {
-    $user = User::factory()->create();
-
-    actingAs($user);
+    actingAsUser();
 
     $oldToken = csrf_token();
 

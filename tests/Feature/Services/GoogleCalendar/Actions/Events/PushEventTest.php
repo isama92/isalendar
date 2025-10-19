@@ -1,32 +1,25 @@
 <?php
 
-use App\Models\Calendar;
-use App\Models\Connector;
-use App\Models\Event;
 use App\Services\Calendar\GoogleCalendar\Actions\Auth\GetAuthClient;
 use App\Services\Calendar\GoogleCalendar\Actions\Events\PushEvent;
 use Google\Client as GoogleClient;
 use Google\Service\Calendar\Event as GoogleEvent;
 
 use function Pest\Laravel\partialMock;
+use function Tests\Helpers\eventFactory;
 
 uses()->group('gcalendar', 'gcalendar.events');
 
 it('creates a new event on Google Calendar when external_id is null', function (): void {
-    $connector = Connector::factory()->create();
-    $calendar = Calendar::factory()->create();
-    $connector->calendars()->attach($calendar);
-
-    $event = Event::factory()
-        ->for($calendar)
-        ->create([
-            'external_id' => null,
-            'title' => 'New Event',
-            'starts_at' => now()->toDateTimeString(),
-            'ends_at' => now()->addHour()->toDateTimeString(),
-            'all_day' => false,
-            'timezone' => 'Europe/Amsterdam',
-        ]);
+    $event = eventFactory()->create([
+        'external_id' => null,
+        'title' => 'New Event',
+        'starts_at' => now()->toDateTimeString(),
+        'ends_at' => now()->addHour()->toDateTimeString(),
+        'all_day' => false,
+        'timezone' => 'Europe/Amsterdam',
+    ]);
+    $connector = $event->calendar->connectors->sole();
 
     $googleClientMock = partialMock(GoogleClient::class);
     $googleClientMock->shouldReceive('getUniverseDomain')
@@ -51,20 +44,15 @@ it('creates a new event on Google Calendar when external_id is null', function (
 });
 
 it('updates an existing event on Google Calendar when external_id exists', function (): void {
-    $connector = Connector::factory()->create();
-    $calendar = Calendar::factory()->create();
-    $connector->calendars()->attach($calendar);
-
-    $event = Event::factory()
-        ->for($calendar)
-        ->create([
-            'external_id' => 'existing_google_id',
-            'title' => 'Updated Event',
-            'starts_at' => now()->toDateTimeString(),
-            'ends_at' => now()->addHour()->toDateTimeString(),
-            'all_day' => false,
-            'timezone' => 'Europe/Amsterdam',
-        ]);
+    $event = eventFactory()->create([
+        'external_id' => 'existing_google_id',
+        'title' => 'Updated Event',
+        'starts_at' => now()->toDateTimeString(),
+        'ends_at' => now()->addHour()->toDateTimeString(),
+        'all_day' => false,
+        'timezone' => 'Europe/Amsterdam',
+    ]);
+    $connector = $event->calendar->connectors->sole();
 
     $googleClientMock = partialMock(GoogleClient::class);
     $googleClientMock->shouldReceive('getUniverseDomain')
@@ -89,20 +77,15 @@ it('updates an existing event on Google Calendar when external_id exists', funct
 });
 
 it('handles all-day events correctly', function (): void {
-    $connector = Connector::factory()->create();
-    $calendar = Calendar::factory()->create();
-    $connector->calendars()->attach($calendar);
-
-    $event = Event::factory()
-        ->for($calendar)
-        ->create([
-            'external_id' => null,
-            'title' => 'All Day Event',
-            'starts_at' => now()->startOfDay()->toDateTimeString(),
-            'ends_at' => now()->endOfDay()->toDateTimeString(),
-            'all_day' => true,
-            'timezone' => null,
-        ]);
+    $event = eventFactory()->create([
+        'external_id' => null,
+        'title' => 'All Day Event',
+        'starts_at' => now()->startOfDay()->toDateTimeString(),
+        'ends_at' => now()->endOfDay()->toDateTimeString(),
+        'all_day' => true,
+        'timezone' => null,
+    ]);
+    $connector = $event->calendar->connectors->sole();
 
     $googleClientMock = partialMock(GoogleClient::class);
     $googleClientMock->shouldReceive('getUniverseDomain')

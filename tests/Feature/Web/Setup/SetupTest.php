@@ -9,6 +9,11 @@ use function Pest\Laravel\post;
 
 uses()->group('web', 'setup');
 
+beforeEach(function (): void {
+    test()->user->settings->forceDelete();
+    test()->user->forceDelete();
+});
+
 describe('setup create', function (): void {
     it('displays setup page when no users exist', function (): void {
         get(route('setup'))

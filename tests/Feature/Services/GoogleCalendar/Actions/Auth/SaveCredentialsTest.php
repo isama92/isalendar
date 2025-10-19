@@ -10,7 +10,7 @@ use Mockery\MockInterface;
 uses()->group('gcalendar', 'gcalendar.auth');
 
 it('saves credentials and creates a disabled Google Calendar connector with access token', function (): void {
-    $user = User::factory()->create();
+    $user = test()->user;
 
     $googleId = 'google-123';
     $token = 'access_xyz';

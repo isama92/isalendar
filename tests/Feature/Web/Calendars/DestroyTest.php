@@ -5,36 +5,27 @@ use App\Models\Connector;
 use App\Models\Event;
 use App\Models\User;
 
-use function Pest\Laravel\actingAs;
 use function Pest\Laravel\delete;
+use function Tests\Helpers\calendarFactory;
+use function Tests\Helpers\connectorFactory;
+use function Tests\Helpers\eventFactory;
 
 uses()->group('web', 'calendars');
 
 it('allows user to delete their calendar', function (): void {
-    $user = User::factory()->create();
-    $connector = Connector::factory()->for($user)->create();
-
-    $calendar = Calendar::factory()->create();
-    $calendar->connectors()->attach($connector);
-
-    actingAs($user);
+    actingAsUser();
+    $calendar = calendarFactory()->create();
 
     delete(route('calendars.destroy', $calendar))
         ->assertRedirect(route('calendars.index'))
         ->assertSessionHas('success');
 
-    expect($calendar->connectors())
-        ->count()->toBe(0);
+    expect($calendar->connectors())->count()->toBe(0);
 });
 
 it('soft deletes calendar when no connectors remain', function (): void {
-    $user = User::factory()->create();
-    $connector = Connector::factory()->for($user)->create();
-
-    $calendar = Calendar::factory()->create();
-    $calendar->connectors()->attach($connector);
-
-    actingAs($user);
+    actingAsUser();
+    $calendar = calendarFactory()->create();
 
     delete(route('calendars.destroy', $calendar));
 
@@ -44,16 +35,15 @@ it('soft deletes calendar when no connectors remain', function (): void {
 });
 
 it('does not delete calendar when other connectors remain', function (): void {
-    $user1 = User::factory()->create();
+    actingAsUser();
     $user2 = User::factory()->create();
 
-    $connector1 = Connector::factory()->for($user1)->create();
-    $connector2 = Connector::factory()->for($user2)->create();
+    $connector1 = connectorFactory()->create();
+    $connector2 = connectorFactory()->for($user2)->create();
 
-    $calendar = Calendar::factory()->create();
-    $calendar->connectors()->attach([$connector1->id, $connector2->id]);
-
-    actingAs($user1);
+    $calendar = Calendar::factory()
+        ->hasAttached([$connector1, $connector2])
+        ->create();
 
     delete(route('calendars.destroy', $calendar));
 
@@ -65,31 +55,21 @@ it('does not delete calendar when other connectors remain', function (): void {
 });
 
 it('deletes connector when no calendars remain', function (): void {
-    $user = User::factory()->create();
-    $connector = Connector::factory()->for($user)->create();
-
-    $calendar = Calendar::factory()->create();
-    $calendar->connectors()->attach($connector);
-
-    actingAs($user);
+    actingAsUser();
+    $calendar = calendarFactory()->create();
+    $connector = $calendar->connectors->sole();
 
     delete(route('calendars.destroy', $calendar));
 
-    expect(Connector::find($connector->id))
-        ->toBeNull();
+    expect(Connector::find($connector->id))->toBeNull();
 });
 
 it('does not delete connector when other calendars remain', function (): void {
-    $user = User::factory()->create();
-    $connector = Connector::factory()->for($user)->create();
+    actingAsUser();
+    $connector = connectorFactory()->create();
 
-    $calendar1 = Calendar::factory()->create();
-    $calendar2 = Calendar::factory()->create();
-
-    $calendar1->connectors()->attach($connector);
-    $calendar2->connectors()->attach($connector);
-
-    actingAs($user);
+    $calendar1 = calendarFactory(connector: $connector)->create();
+    $calendar2 = calendarFactory(connector: $connector)->create();
 
     delete(route('calendars.destroy', $calendar1));
 
@@ -101,70 +81,44 @@ it('does not delete connector when other calendars remain', function (): void {
 });
 
 it('prevents unauthenticated user from deleting calendar', function (): void {
-    $user = User::factory()->create();
-    $connector = Connector::factory()->for($user)->create();
-
-    $calendar = Calendar::factory()->create();
-    $calendar->connectors()->attach($connector);
+    $calendar = calendarFactory()->create();
 
     delete(route('calendars.destroy', $calendar))
         ->assertRedirect(route('login'));
 
-    expect($calendar->connectors())
-        ->count()->toBe(1);
+    expect($calendar->connectors())->count()->toBe(1);
 });
 
 it('prevents user from deleting another users calendar', function (): void {
-    $user = User::factory()->create();
-    $otherUser = User::factory()->create();
-    $otherConnector = Connector::factory()->for($otherUser)->create();
-
-    $otherCalendar = Calendar::factory()->create();
-    $otherCalendar->connectors()->attach($otherConnector);
-
-    actingAs($user);
+    actingAsUser();
+    $otherConnector = connectorFactory()->for(User::factory())->create();
+    $otherCalendar = calendarFactory(connector: $otherConnector)->create();
 
     delete(route('calendars.destroy', $otherCalendar))
         ->assertForbidden();
 
-    expect($otherCalendar->connectors())
-        ->count()->toBe(1);
+    expect($otherCalendar->connectors())->count()->toBe(1);
 });
 
 it('detaches calendar from connector on deletion', function (): void {
-    $user = User::factory()->create();
-    $connector = Connector::factory()->for($user)->create();
+    actingAsUser();
+    $calendar = calendarFactory()->create();
 
-    $calendar = Calendar::factory()->create();
-    $calendar->connectors()->attach($connector);
-
-    actingAs($user);
-
-    expect($calendar->connectors())
-        ->count()->toBe(1);
+    expect($calendar->connectors())->count()->toBe(1);
 
     delete(route('calendars.destroy', $calendar));
 
-    expect($calendar->connectors())
-        ->count()->toBe(0);
+    expect($calendar->connectors())->count()->toBe(0);
 });
 
 it('soft deletes all events when calendar is deleted', function (): void {
-    $user = User::factory()->create();
-    $connector = Connector::factory()->for($user)->create();
+    actingAsUser();
+    $calendar = eventFactory(5)->create()
+        ->first()->calendar;
 
-    $calendar = Calendar::factory()->create();
-    $calendar->connectors()->attach($connector);
-
-    Event::factory()->count(5)->for($calendar)->create();
-
-    actingAs($user);
-
-    expect($calendar->events())
-        ->count()->toBe(5);
+    expect($calendar->events())->count()->toBe(5);
 
     delete(route('calendars.destroy', $calendar));
 
-    expect(Event::where('calendar_id', $calendar->id))
-        ->count()->toBe(0);
+    expect(Event::where('calendar_id', $calendar->id))->count()->toBe(0);
 });

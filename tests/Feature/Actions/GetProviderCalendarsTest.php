@@ -2,20 +2,18 @@
 
 use App\Actions\GetProviderCalendars;
 use App\Data\CalendarData;
-use App\Enums\Service;
-use App\Models\Connector;
+use App\Models\Provider;
 use App\Services\Calendar\GoogleCalendar\Actions\Calendars\FetchNormalizedCalendars;
 use Illuminate\Support\Collection;
 use Spatie\LaravelData\Optional;
 
 use function Pest\Laravel\partialMock;
+use function Tests\Helpers\connectorFactory;
 
 uses()->group('actions');
 
 it('fetches calendars for Google Calendar provider', function (): void {
-    $connector = Connector::factory()->create([
-        'provider_id' => Service::GOOGLE_CALENDAR->id(),
-    ]);
+    $connector = connectorFactory()->create();
 
     $expectedCalendars = collect([
         new CalendarData(
@@ -53,9 +51,9 @@ it('fetches calendars for Google Calendar provider', function (): void {
 });
 
 it('returns empty collection for Microsoft Outlook provider', function (): void {
-    $connector = Connector::factory()->create([
-        'provider_id' => Service::MICROSOFT_OUTLOOK->id(),
-    ]);
+    $connector = connectorFactory()
+        ->for(Provider::microsoftOutlook())
+        ->create();
 
     $result = app(GetProviderCalendars::class)->execute($connector);
 

@@ -1,22 +1,19 @@
 <?php
 
-use App\Models\Calendar;
-use App\Models\Connector;
 use App\Services\Calendar\GoogleCalendar\Actions\Synchronize;
 use Illuminate\Bus\PendingBatch;
 use Illuminate\Support\Facades\Bus;
 
+use function Tests\Helpers\calendarFactory;
+
 uses()->group('gcalendar', 'gcalendar.sync');
 
 it('dispatches import and export batches for enabled calendars and sets synchronized_at', function (): void {
-    $connector = Connector::factory()->create(['synchronized_at' => null]);
-
     // 3 enabled, 2 disabled calendars
-    $enabledCalendars = Calendar::factory()->count(3)->create();
-    $disabledCalendars = Calendar::factory()->count(2)->disabled()->create();
+    $connector = calendarFactory(3)->create()
+        ->first()->connectors->sole();
 
-    $connector->calendars()->syncWithoutDetaching($enabledCalendars);
-    $connector->calendars()->syncWithoutDetaching($disabledCalendars);
+    calendarFactory(2)->disabled()->create();
 
     $batchCount = 0;
     $finallyCallback = null;
@@ -64,10 +61,8 @@ it('dispatches import and export batches for enabled calendars and sets synchron
 it('does not dispatch an empty batch when there are no enabled calendars', function (): void {
     Bus::fake();
 
-    $connector = Connector::factory()->create();
-    $calendars = Calendar::factory()->count(2)->disabled()->create();
-
-    $connector->calendars()->sync($calendars);
+    $connector = calendarFactory(2)->create()
+        ->first()->connectors->sole();
 
     app(Synchronize::class)->execute($connector);
 

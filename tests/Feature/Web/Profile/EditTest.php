@@ -1,17 +1,13 @@
 <?php
 
-use App\Models\User;
 use Illuminate\Support\Collection;
 
-use function Pest\Laravel\actingAs;
 use function Pest\Laravel\get;
 
 uses()->group('web', 'profile');
 
 it('displays profile edit page', function (): void {
-    $user = User::factory()->create();
-
-    actingAs($user);
+    actingAsUser();
 
     get(route('profile.edit'))
         ->assertSuccessful()

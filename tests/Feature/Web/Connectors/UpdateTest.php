@@ -1,9 +1,6 @@
 <?php
 
 use App\Actions\GetThrottleLimitKey;
-use App\Enums\Service;
-use App\Models\Connector;
-use App\Models\Provider;
 use App\Models\User;
 use App\Services\Calendar\GoogleCalendar\Actions\Synchronize as GoogleCalendarSynchronize;
 use Illuminate\Routing\Middleware\ThrottleRequests;
@@ -11,9 +8,9 @@ use Illuminate\Support\Facades\Queue;
 use Illuminate\Support\Facades\RateLimiter;
 use Spatie\QueueableAction\Testing\QueueableActionFake;
 
-use function Pest\Laravel\actingAs;
 use function Pest\Laravel\put;
 use function Pest\Laravel\withoutMiddleware;
+use function Tests\Helpers\connectorFactory;
 
 uses()->group('web', 'connectors');
 
@@ -22,13 +19,9 @@ beforeEach(fn () => RateLimiter::clear('connector-sync'));
 it('synchronizes connector successfully', function (): void {
     Queue::fake();
 
-    $user = User::factory()->create();
-    $connector = Connector::factory()
-        ->for($user)
-        ->for(Provider::googleCalendar())
-        ->create();
+    actingAsUser();
 
-    actingAs($user);
+    $connector = connectorFactory()->create();
 
     put(route('connectors.synchronize', $connector))
         ->assertRedirect(route('calendars.index'))
@@ -40,14 +33,9 @@ it('synchronizes connector successfully', function (): void {
 it('prevents synchronization when connector is disabled', function (): void {
     Queue::fake();
 
-    $user = User::factory()->create();
-    $connector = Connector::factory()
-        ->for($user)
-        ->for(Provider::googleCalendar())
-        ->disabled()
-        ->create();
+    actingAsUser();
 
-    actingAs($user);
+    $connector = connectorFactory()->disabled()->create();
 
     put(route('connectors.synchronize', $connector))
         ->assertNotFound();
@@ -58,13 +46,9 @@ it('prevents synchronization when connector is disabled', function (): void {
 it('prevents synchronization when rate limited', function (): void {
     Queue::fake();
 
-    $user = User::factory()->create();
-    $connector = Connector::factory()
-        ->for($user)
-        ->for(Provider::googleCalendar())
-        ->create();
+    $user = actingAsUser();
 
-    actingAs($user);
+    $connector = connectorFactory()->create();
 
     $key = app(GetThrottleLimitKey::class)->execute('connector-sync', [$user->id, $connector->id]);
     RateLimiter::hit($key, 3600);
@@ -78,13 +62,9 @@ it('prevents synchronization when rate limited', function (): void {
 it('does not rate limit without the middleware', function (): void {
     Queue::fake();
 
-    $user = User::factory()->create();
-    $connector = Connector::factory()
-        ->for($user)
-        ->for(Provider::googleCalendar())
-        ->create();
+    actingAsUser();
 
-    actingAs($user);
+    $connector = connectorFactory()->create();
 
     withoutMiddleware(ThrottleRequests::class)
         ->put(route('connectors.synchronize', $connector))
@@ -100,15 +80,9 @@ it('does not rate limit without the middleware', function (): void {
 it('prevents synchronization of another user connector', function (): void {
     Queue::fake();
 
-    $user = User::factory()->create();
-    $otherUser = User::factory()->create();
+    $connector = connectorFactory()->for(User::factory())->create();
 
-    $connector = Connector::factory()
-        ->for($otherUser)
-        ->for(Provider::googleCalendar())
-        ->create();
-
-    actingAs($user);
+    actingAsUser();
 
     put(route('connectors.synchronize', $connector))
         ->assertForbidden();
@@ -117,10 +91,7 @@ it('prevents synchronization of another user connector', function (): void {
 });
 
 it('redirects unauthenticated users to login', function (): void {
-    $connector = Connector::factory()->create([
-        'provider_id' => Service::GOOGLE_CALENDAR->id(),
-        'enabled' => true,
-    ]);
+    $connector = connectorFactory()->create();
 
     put(route('connectors.synchronize', $connector))
         ->assertRedirect(route('login'));
@@ -129,13 +100,9 @@ it('redirects unauthenticated users to login', function (): void {
 it('allows synchronization after rate limit period', function (): void {
     Queue::fake();
 
-    $user = User::factory()->create();
-    $connector = Connector::factory()
-        ->for($user)
-        ->for(Provider::googleCalendar())
-        ->create();
+    $user = actingAsUser();
 
-    actingAs($user);
+    $connector = connectorFactory()->create();
 
     put(route('connectors.synchronize', $connector))
         ->assertRedirect(route('calendars.index'));

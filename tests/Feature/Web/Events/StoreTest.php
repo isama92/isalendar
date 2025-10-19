@@ -1,24 +1,18 @@
 <?php
 
-use App\Models\Calendar;
-use App\Models\Connector;
 use App\Models\Event;
 use App\Models\User;
 
-use function Pest\Laravel\actingAs;
 use function Pest\Laravel\assertDatabaseHas;
 use function Pest\Laravel\post;
+use function Tests\Helpers\calendarFactory;
+use function Tests\Helpers\connectorFactory;
 
 uses()->group('web', 'events');
 
 it('creates event successfully', function (): void {
-    $user = User::factory()->create();
-    $connector = Connector::factory()->for($user)->create();
-
-    $calendar = Calendar::factory()->create();
-    $calendar->connectors()->attach($connector);
-
-    actingAs($user);
+    actingAsUser();
+    $calendar = calendarFactory()->create();
 
     post(route('events.store'), [
         'calendar_id' => $calendar->id,
@@ -40,13 +34,8 @@ it('creates event successfully', function (): void {
 });
 
 it('redirects to new when redirect_to is new', function (): void {
-    $user = User::factory()->create();
-    $connector = Connector::factory()->for($user)->create();
-
-    $calendar = Calendar::factory()->create();
-    $calendar->connectors()->attach($connector);
-
-    actingAs($user);
+    actingAsUser();
+    $calendar = calendarFactory()->create();
 
     post(route('events.store'), [
         'calendar_id' => $calendar->id,
@@ -61,13 +50,8 @@ it('redirects to new when redirect_to is new', function (): void {
 });
 
 it('redirects to show when redirect_to is show', function (): void {
-    $user = User::factory()->create();
-    $connector = Connector::factory()->for($user)->create();
-
-    $calendar = Calendar::factory()->create();
-    $calendar->connectors()->attach($connector);
-
-    actingAs($user);
+    actingAsUser();
+    $calendar = calendarFactory()->create();
 
     $response = post(route('events.store'), [
         'calendar_id' => $calendar->id,
@@ -85,7 +69,7 @@ it('redirects to show when redirect_to is show', function (): void {
 });
 
 it('redirects unauthenticated users to login', function (): void {
-    $calendar = Calendar::factory()->create();
+    $calendar = calendarFactory()->create();
 
     post(route('events.store'), [
         'calendar_id' => $calendar->id,
@@ -97,14 +81,10 @@ it('redirects unauthenticated users to login', function (): void {
 });
 
 it('prevents user from creating event in another users calendar', function (): void {
-    $user = User::factory()->create();
-    $otherUser = User::factory()->create();
-    $otherConnector = Connector::factory()->for($otherUser)->create();
+    actingAsUser();
 
-    $otherCalendar = Calendar::factory()->create();
-    $otherCalendar->connectors()->attach($otherConnector);
-
-    actingAs($user);
+    $otherConnector = connectorFactory()->for(User::factory())->create();
+    $otherCalendar = calendarFactory(connector: $otherConnector)->create();
 
     post(route('events.store'), [
         'calendar_id' => $otherCalendar->id,
@@ -119,9 +99,7 @@ it('prevents user from creating event in another users calendar', function (): v
 
 describe('Validation', function (): void {
     it('required fields are required', function (): void {
-        $user = User::factory()->create();
-
-        actingAs($user);
+        actingAsUser();
 
         post(route('events.store'), [])
             ->assertSessionHasErrors([
@@ -137,9 +115,7 @@ describe('Validation', function (): void {
     });
 
     it('validates calendar_id must exist', function (): void {
-        $user = User::factory()->create();
-
-        actingAs($user);
+        actingAsUser();
 
         post(route('events.store'), [
             'calendar_id' => 99999,
@@ -151,13 +127,8 @@ describe('Validation', function (): void {
     });
 
     it('validates title must be string', function (): void {
-        $user = User::factory()->create();
-        $connector = Connector::factory()->for($user)->create();
-
-        $calendar = Calendar::factory()->create();
-        $calendar->connectors()->attach($connector);
-
-        actingAs($user);
+        actingAsUser();
+        $calendar = calendarFactory()->create();
 
         post(route('events.store'), [
             'calendar_id' => $calendar->id,
@@ -169,13 +140,8 @@ describe('Validation', function (): void {
     });
 
     it('validates title must not exceed 255 characters', function (): void {
-        $user = User::factory()->create();
-        $connector = Connector::factory()->for($user)->create();
-
-        $calendar = Calendar::factory()->create();
-        $calendar->connectors()->attach($connector);
-
-        actingAs($user);
+        actingAsUser();
+        $calendar = calendarFactory()->create();
 
         post(route('events.store'), [
             'calendar_id' => $calendar->id,
@@ -187,13 +153,8 @@ describe('Validation', function (): void {
     });
 
     it('validates ends_at must be after or equal to starts_at', function (): void {
-        $user = User::factory()->create();
-        $connector = Connector::factory()->for($user)->create();
-
-        $calendar = Calendar::factory()->create();
-        $calendar->connectors()->attach($connector);
-
-        actingAs($user);
+        actingAsUser();
+        $calendar = calendarFactory()->create();
 
         post(route('events.store'), [
             'calendar_id' => $calendar->id,
@@ -207,13 +168,8 @@ describe('Validation', function (): void {
     });
 
     it('validates timezone is required when all_day is false', function (): void {
-        $user = User::factory()->create();
-        $connector = Connector::factory()->for($user)->create();
-
-        $calendar = Calendar::factory()->create();
-        $calendar->connectors()->attach($connector);
-
-        actingAs($user);
+        actingAsUser();
+        $calendar = calendarFactory()->create();
 
         post(route('events.store'), [
             'calendar_id' => $calendar->id,
@@ -228,13 +184,8 @@ describe('Validation', function (): void {
     });
 
     it('validates description must be string', function (): void {
-        $user = User::factory()->create();
-        $connector = Connector::factory()->for($user)->create();
-
-        $calendar = Calendar::factory()->create();
-        $calendar->connectors()->attach($connector);
-
-        actingAs($user);
+        actingAsUser();
+        $calendar = calendarFactory()->create();
 
         post(route('events.store'), [
             'calendar_id' => $calendar->id,
@@ -249,13 +200,8 @@ describe('Validation', function (): void {
     });
 
     it('allows null description', function (): void {
-        $user = User::factory()->create();
-        $connector = Connector::factory()->for($user)->create();
-
-        $calendar = Calendar::factory()->create();
-        $calendar->connectors()->attach($connector);
-
-        actingAs($user);
+        actingAsUser();
+        $calendar = calendarFactory()->create();
 
         post(route('events.store'), [
             'calendar_id' => $calendar->id,
@@ -271,13 +217,8 @@ describe('Validation', function (): void {
     });
 
     it('strips disallowed HTML tags from description', function (): void {
-        $user = User::factory()->create();
-        $connector = Connector::factory()->for($user)->create();
-
-        $calendar = Calendar::factory()->create();
-        $calendar->connectors()->attach($connector);
-
-        actingAs($user);
+        actingAsUser();
+        $calendar = calendarFactory()->create();
 
         post(route('events.store'), [
             'calendar_id' => $calendar->id,

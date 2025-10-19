@@ -2,7 +2,6 @@
 
 use App\Models\User;
 
-use function Pest\Laravel\actingAs;
 use function Pest\Laravel\assertAuthenticated;
 use function Pest\Laravel\assertGuest;
 use function Pest\Laravel\get;
@@ -22,7 +21,7 @@ describe('login create', function (): void {
 
 describe('login store', function (): void {
     it('authenticates user with valid credentials', function (): void {
-        $user = User::factory()->create([
+        User::factory()->create([
             'email' => 'test@example.com',
             'password' => bcrypt('password123'),
         ]);
@@ -37,23 +36,8 @@ describe('login store', function (): void {
         assertAuthenticated();
     });
 
-    it('regenerates session on successful login', function (): void {
-        $user = User::factory()->create([
-            'email' => 'user@example.com',
-            'password' => bcrypt('secret123'),
-        ]);
-
-        $response = post(route('login.submit'), [
-            'email' => 'user@example.com',
-            'password' => 'secret123',
-        ]);
-
-        $response->assertSessionHasNoErrors();
-        assertAuthenticated();
-    });
-
     it('redirects to intended url after login', function (): void {
-        $user = User::factory()->create([
+        User::factory()->create([
             'email' => 'intended@example.com',
             'password' => bcrypt('password123'),
         ]);
@@ -70,7 +54,7 @@ describe('login store', function (): void {
     });
 
     it('fails with invalid credentials', function (): void {
-        $user = User::factory()->create([
+        User::factory()->create([
             'email' => 'user@example.com',
             'password' => bcrypt('correct-password'),
         ]);
@@ -94,20 +78,12 @@ describe('login store', function (): void {
         assertGuest();
     });
 
-    it('requires email field', function (): void {
-        post(route('login.submit'), [
-            'password' => 'password123',
-        ])
-            ->assertSessionHasErrors('email');
-
-        assertGuest();
-    });
-
-    it('requires password field', function (): void {
-        post(route('login.submit'), [
-            'email' => 'test@example.com',
-        ])
-            ->assertSessionHasErrors('password');
+    it('requires fields', function (): void {
+        post(route('login.submit'), [])
+            ->assertSessionHasErrors([
+                'email',
+                'password',
+            ]);
 
         assertGuest();
     });
@@ -123,9 +99,7 @@ describe('login store', function (): void {
     });
 
     it('redirects already authenticated users to dashboard', function (): void {
-        $user = User::factory()->create();
-
-        actingAs($user);
+        actingAsUser();
 
         post(route('login.submit'), [
             'email' => 'test@example.com',
@@ -135,7 +109,7 @@ describe('login store', function (): void {
     });
 
     it('trims whitespace from email', function (): void {
-        $user = User::factory()->create([
+        User::factory()->create([
             'email' => 'test@example.com',
             'password' => bcrypt('password123'),
         ]);

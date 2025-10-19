@@ -14,7 +14,7 @@ class RedirectIfSetupNeeded
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if (! User::withTrashed()->exists() && ! $request->routeIs('setup', 'setup.*')) {
+        if (! User::withTrashed()->exists() && ! $request->routeIs('setup', 'setup.*', 'locale.update')) {
             return redirect()->route('setup');
         }
 

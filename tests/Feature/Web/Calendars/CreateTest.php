@@ -12,14 +12,15 @@ use function Pest\Laravel\assertDatabaseHas;
 use function Pest\Laravel\get;
 use function Pest\Laravel\mock;
 use function Pest\Laravel\post;
+use function Tests\Helpers\calendarFactory;
+use function Tests\Helpers\connectorFactory;
 
 uses()->group('web', 'calendars');
 
 describe('calendars create', function (): void {
     it('displays create page with available calendars for authenticated user', function (): void {
-        $user = User::factory()->create();
-        $provider = Provider::googleCalendar();
-        $connector = Connector::factory()->for($user)->for($provider)->create();
+        actingAsUser();
+        $connector = connectorFactory()->create();
 
         $calendarDataCollection = collect([
             new CalendarData(
@@ -39,71 +40,53 @@ describe('calendars create', function (): void {
             ->once()
             ->andReturn($calendarDataCollection);
 
-        actingAs($user);
-
         get(route('calendars.create', $connector))
             ->assertSuccessful()
             ->assertInertia(fn ($page) => $page
                 ->component('Calendars/Create')
                 ->has('calendars', 2)
                 ->has('provider')
-                ->where('provider.id', $provider->id)
-                ->where('provider.name', $provider->name)
+                ->where('provider.id', $connector->provider->id)
+                ->where('provider.name', $connector->provider->name)
                 ->where('connectorRouteKey', $connector->getRouteKey())
             );
     });
 
     it('redirects unauthenticated users to login', function (): void {
-        $provider = Provider::googleCalendar();
-        $connector = Connector::factory()->for($provider)->create();
+        $connector = connectorFactory()->create();
 
         get(route('calendars.create', $connector))
             ->assertRedirect(route('login'));
     });
 
     it('prevents unauthorized user from accessing create page', function (): void {
-        $user = User::factory()->create();
-        $otherUser = User::factory()->create();
-        $provider = Provider::googleCalendar();
-        $connector = Connector::factory()->for($otherUser)->for($provider)->create();
-
-        actingAs($user);
+        actingAsUser();
+        $connector = connectorFactory()->for(User::factory())->create();
 
         get(route('calendars.create', $connector))
             ->assertForbidden();
     });
 
     it('returns 404 when connector provider is disabled', function (): void {
-        $user = User::factory()->create();
-        $provider = Provider::microsoftOutlook();
-        $connector = Connector::factory()->for($user)->for($provider)->create();
-
-        actingAs($user);
+        actingAsUser();
+        $connector = connectorFactory()->for(Provider::microsoftOutlook())->create();
 
         get(route('calendars.create', $connector))
             ->assertNotFound();
     });
 
     it('returns 403 when connector does not belong to authenticated user', function (): void {
-        $user = User::factory()->create();
-        $otherUser = User::factory()->create();
-        $provider = Provider::googleCalendar();
-        $connector = Connector::factory()->for($otherUser)->for($provider)->create();
-
-        actingAs($user);
+        actingAsUser();
+        $connector = connectorFactory()->for(User::factory())->create();
 
         get(route('calendars.create', $connector))
             ->assertForbidden();
     });
 
     it('filters out existing calendars from connector', function (): void {
-        $user = User::factory()->create();
-        $provider = Provider::googleCalendar();
-        $connector = Connector::factory()->for($user)->for($provider)->create();
-
-        // Create an existing calendar
-        $existingCalendar = Calendar::factory()->create(['external_id' => 'existing-ext-id']);
-        $existingCalendar->connectors()->attach($connector);
+        actingAsUser();
+        $connector = calendarFactory()->create(['external_id' => 'existing-ext-id'])
+            ->connectors->sole();
 
         $calendarDataCollection = collect([
             new CalendarData(
@@ -123,8 +106,6 @@ describe('calendars create', function (): void {
             ->once()
             ->andReturn($calendarDataCollection);
 
-        actingAs($user);
-
         get(route('calendars.create', $connector))
             ->assertSuccessful()
             ->assertInertia(fn ($page) => $page
@@ -135,9 +116,8 @@ describe('calendars create', function (): void {
     });
 
     it('stores calendar list in session', function (): void {
-        $user = User::factory()->create();
-        $provider = Provider::googleCalendar();
-        $connector = Connector::factory()->for($user)->for($provider)->create();
+        actingAsUser();
+        $connector = connectorFactory()->create();
 
         $calendarDataCollection = collect([
             new CalendarData(
@@ -151,8 +131,6 @@ describe('calendars create', function (): void {
             ->shouldReceive('execute')
             ->once()
             ->andReturn($calendarDataCollection);
-
-        actingAs($user);
 
         get(route('calendars.create', $connector))
             ->assertSuccessful()
@@ -160,9 +138,8 @@ describe('calendars create', function (): void {
     });
 
     it('shows correct provider information', function (): void {
-        $user = User::factory()->create();
-        $provider = Provider::googleCalendar();
-        $connector = Connector::factory()->for($user)->for($provider)->create();
+        actingAsUser();
+        $connector = connectorFactory()->create();
 
         $calendarDataCollection = collect([
             new CalendarData(
@@ -177,25 +154,20 @@ describe('calendars create', function (): void {
             ->once()
             ->andReturn($calendarDataCollection);
 
-        actingAs($user);
-
         get(route('calendars.create', $connector))
             ->assertSuccessful()
             ->assertInertia(fn ($page) => $page
                 ->component('Calendars/Create')
-                ->where('provider.id', $provider->id)
-                ->where('provider.name', $provider->name)
+                ->where('provider.id', $connector->provider->id)
+                ->where('provider.name', $connector->provider->name)
                 ->has('provider.image_path')
             );
     });
 
     it('shows empty calendars list when all calendars already exist', function (): void {
-        $user = User::factory()->create();
-        $provider = Provider::googleCalendar();
-        $connector = Connector::factory()->for($user)->for($provider)->create();
-
-        $existingCalendar = Calendar::factory()->create(['external_id' => 'ext-1']);
-        $existingCalendar->connectors()->attach($connector);
+        actingAsUser();
+        $connector = calendarFactory()->create(['external_id' => 'ext-1'])
+            ->connectors->sole();
 
         $calendarDataCollection = collect([
             new CalendarData(
@@ -210,8 +182,6 @@ describe('calendars create', function (): void {
             ->once()
             ->andReturn($calendarDataCollection);
 
-        actingAs($user);
-
         get(route('calendars.create', $connector))
             ->assertSuccessful()
             ->assertInertia(fn ($page) => $page
@@ -223,9 +193,8 @@ describe('calendars create', function (): void {
 
 describe('calendars store', function (): void {
     it('creates calendar successfully', function (): void {
-        $user = User::factory()->create();
-        $provider = Provider::googleCalendar();
-        $connector = Connector::factory()->for($user)->for($provider)->create();
+        actingAsUser();
+        $connector = connectorFactory()->create();
 
         $calendarData = new CalendarData(
             externalId: 'ext-1',
@@ -234,8 +203,6 @@ describe('calendars store', function (): void {
         );
 
         session()->put('calendars.create.list', collect([$calendarData]));
-
-        actingAs($user);
 
         post(route('calendars.store', $connector), [
             'external_id' => 'ext-1',
@@ -245,9 +212,8 @@ describe('calendars store', function (): void {
     });
 
     it('creates calendar in database', function (): void {
-        $user = User::factory()->create();
-        $provider = Provider::googleCalendar();
-        $connector = Connector::factory()->for($user)->for($provider)->create();
+        actingAsUser();
+        $connector = connectorFactory()->create();
 
         $calendarData = new CalendarData(
             externalId: 'ext-1',
@@ -256,8 +222,6 @@ describe('calendars store', function (): void {
         );
 
         session()->put('calendars.create.list', collect([$calendarData]));
-
-        actingAs($user);
 
         post(route('calendars.store', $connector), [
             'external_id' => 'ext-1',
@@ -271,9 +235,8 @@ describe('calendars store', function (): void {
     });
 
     it('attaches calendar to connector', function (): void {
-        $user = User::factory()->create();
-        $provider = Provider::googleCalendar();
-        $connector = Connector::factory()->for($user)->for($provider)->create();
+        actingAsUser();
+        $connector = connectorFactory()->create();
 
         $calendarData = new CalendarData(
             externalId: 'ext-1',
@@ -282,8 +245,6 @@ describe('calendars store', function (): void {
         );
 
         session()->put('calendars.create.list', collect([$calendarData]));
-
-        actingAs($user);
 
         post(route('calendars.store', $connector), [
             'external_id' => 'ext-1',
@@ -296,9 +257,8 @@ describe('calendars store', function (): void {
     });
 
     it('enables connector after calendar creation', function (): void {
-        $user = User::factory()->create();
-        $provider = Provider::googleCalendar();
-        $connector = Connector::factory()->for($user)->for($provider)->create(['enabled' => false]);
+        actingAsUser();
+        $connector = connectorFactory()->disabled()->create();
 
         $calendarData = new CalendarData(
             externalId: 'ext-1',
@@ -307,8 +267,6 @@ describe('calendars store', function (): void {
         );
 
         session()->put('calendars.create.list', collect([$calendarData]));
-
-        actingAs($user);
 
         expect($connector->enabled)->toBeFalse();
 
@@ -320,8 +278,7 @@ describe('calendars store', function (): void {
     });
 
     it('redirects unauthenticated users to login', function (): void {
-        $provider = Provider::googleCalendar();
-        $connector = Connector::factory()->for($provider)->create();
+        $connector = connectorFactory()->create();
 
         post(route('calendars.store', $connector), [
             'external_id' => 'ext-1',
@@ -344,11 +301,8 @@ describe('calendars store', function (): void {
     });
 
     it('returns 404 when connector provider is disabled', function (): void {
-        $user = User::factory()->create();
-        $provider = Provider::microsoftOutlook();
-        $connector = Connector::factory()->for($user)->for($provider)->create();
-
-        actingAs($user);
+        actingAsUser();
+        $connector = connectorFactory()->for(Provider::microsoftOutlook())->create();
 
         post(route('calendars.store', $connector), [
             'external_id' => 'ext-1',
@@ -357,36 +311,26 @@ describe('calendars store', function (): void {
     });
 
     it('returns 403 when connector does not belong to authenticated user', function (): void {
-        $user = User::factory()->create();
-        $otherUser = User::factory()->create();
-        $provider = Provider::googleCalendar();
-        $connector = Connector::factory()->for($otherUser)->for($provider)->create();
+        actingAsUser();
+        $otherConnector = connectorFactory()->for(User::factory())->create();
 
-        actingAs($user);
-
-        post(route('calendars.store', $connector), [
+        post(route('calendars.store', $otherConnector), [
             'external_id' => 'ext-1',
         ])
             ->assertForbidden();
     });
 
     it('requires external_id field', function (): void {
-        $user = User::factory()->create();
-        $provider = Provider::googleCalendar();
-        $connector = Connector::factory()->for($user)->for($provider)->create();
-
-        actingAs($user);
+        actingAsUser();
+        $connector = connectorFactory()->create();
 
         post(route('calendars.store', $connector), [])
             ->assertSessionHasErrors('external_id');
     });
 
     it('validates external_id must be string', function (): void {
-        $user = User::factory()->create();
-        $provider = Provider::googleCalendar();
-        $connector = Connector::factory()->for($user)->for($provider)->create();
-
-        actingAs($user);
+        actingAsUser();
+        $connector = connectorFactory()->create();
 
         post(route('calendars.store', $connector), [
             'external_id' => 12345,
@@ -395,11 +339,8 @@ describe('calendars store', function (): void {
     });
 
     it('validates external_id must not exceed 255 characters', function (): void {
-        $user = User::factory()->create();
-        $provider = Provider::googleCalendar();
-        $connector = Connector::factory()->for($user)->for($provider)->create();
-
-        actingAs($user);
+        actingAsUser();
+        $connector = connectorFactory()->create();
 
         post(route('calendars.store', $connector), [
             'external_id' => str_repeat('a', 256),
@@ -408,14 +349,9 @@ describe('calendars store', function (): void {
     });
 
     it('validates external_id must not already exist for this connector', function (): void {
-        $user = User::factory()->create();
-        $provider = Provider::googleCalendar();
-        $connector = Connector::factory()->for($user)->for($provider)->create();
-
-        $existingCalendar = Calendar::factory()->create(['external_id' => 'existing-ext-id']);
-        $existingCalendar->connectors()->attach($connector);
-
-        actingAs($user);
+        actingAsUser();
+        $connector = calendarFactory()->create(['external_id' => 'existing-ext-id'])
+            ->connectors->sole();
 
         post(route('calendars.store', $connector), [
             'external_id' => 'existing-ext-id',
@@ -424,12 +360,10 @@ describe('calendars store', function (): void {
     });
 
     it('restores soft-deleted calendar if it exists', function (): void {
-        $user = User::factory()->create();
-        $provider = Provider::googleCalendar();
-        $connector = Connector::factory()->for($user)->for($provider)->create();
+        actingAsUser();
+        $calendar = calendarFactory()->create(['external_id' => 'ext-1', 'name' => 'Old Name']);
+        $connector = $calendar->connectors->sole();
 
-        // Create and soft delete a calendar
-        $calendar = Calendar::factory()->create(['external_id' => 'ext-1', 'name' => 'Old Name']);
         $calendar->delete();
 
         expect(Calendar::find($calendar->id))->toBeNull()
@@ -442,8 +376,6 @@ describe('calendars store', function (): void {
         );
 
         session()->put('calendars.create.list', collect([$calendarData]));
-
-        actingAs($user);
 
         post(route('calendars.store', $connector), [
             'external_id' => 'ext-1',
@@ -458,15 +390,14 @@ describe('calendars store', function (): void {
     });
 
     it('updates existing calendar data when restoring', function (): void {
-        $user = User::factory()->create();
-        $provider = Provider::googleCalendar();
-        $connector = Connector::factory()->for($user)->for($provider)->create();
-
-        $calendar = Calendar::factory()->create([
+        actingAsUser();
+        $calendar = calendarFactory()->create([
             'external_id' => 'ext-1',
             'name' => 'Original Name',
             'description' => 'Original description',
         ]);
+        $connector = $calendar->connectors->sole();
+
         $calendar->delete();
 
         $calendarData = new CalendarData(
@@ -476,8 +407,6 @@ describe('calendars store', function (): void {
         );
 
         session()->put('calendars.create.list', collect([$calendarData]));
-
-        actingAs($user);
 
         post(route('calendars.store', $connector), [
             'external_id' => 'ext-1',
@@ -489,12 +418,9 @@ describe('calendars store', function (): void {
     });
 
     it('does not attach calendar twice if already attached', function (): void {
-        $user = User::factory()->create();
-        $provider = Provider::googleCalendar();
-        $connector = Connector::factory()->for($user)->for($provider)->create();
-
-        $calendar = Calendar::factory()->create(['external_id' => 'ext-1']);
-        $calendar->connectors()->attach($connector);
+        actingAsUser();
+        $calendar = calendarFactory()->create(['external_id' => 'ext-1']);
+        $connector = $calendar->connectors->sole();
 
         $calendarData = new CalendarData(
             externalId: 'ext-1',
@@ -503,8 +429,6 @@ describe('calendars store', function (): void {
         );
 
         session()->put('calendars.create.list', collect([$calendarData]));
-
-        actingAs($user);
 
         post(route('calendars.store', $connector), [
             'external_id' => 'ext-1',

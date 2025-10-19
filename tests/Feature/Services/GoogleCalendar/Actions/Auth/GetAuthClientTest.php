@@ -9,6 +9,7 @@ use Mockery\MockInterface;
 use Tests\Helpers\ImmediateLock;
 
 use function Pest\Laravel\mock;
+use function Tests\Helpers\connectorFactory;
 
 uses()->group('gcalendar', 'gcalendar.auth');
 
@@ -20,7 +21,7 @@ it('returns the google client without refreshing when the token is not expired',
         expiresIn: 3600
     );
 
-    $connector = Connector::factory()->create([
+    $connector = connectorFactory()->create([
         'access_details' => $token,
     ]);
 
@@ -61,7 +62,7 @@ it('refreshes the token via cache lock when the token is expired and persists th
         'expires_in' => 7200,
     ];
 
-    $connector = Connector::factory()->create([
+    $connector = connectorFactory()->create([
         'access_details' => $oldToken,
     ]);
 
@@ -114,7 +115,7 @@ it('calls refresh exactly once even if executed concurrently thanks to the cache
         'expires_in' => 7200,
     ];
 
-    $connector = Connector::factory()->create([
+    $connector = connectorFactory()->create([
         'access_details' => $oldToken,
     ]);
 

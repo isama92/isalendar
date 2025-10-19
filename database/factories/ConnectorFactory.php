@@ -39,4 +39,11 @@ class ConnectorFactory extends Factory
             'enabled' => false,
         ]);
     }
+
+    public function synchronized(): static
+    {
+        return $this->state(fn (array $attributes): array => [
+            'synchronized_at' => now(),
+        ]);
+    }
 }

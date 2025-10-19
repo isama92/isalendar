@@ -1,31 +1,24 @@
 <?php
 
-use App\Models\Calendar;
-use App\Models\Connector;
-use App\Models\Event;
 use App\Models\User;
 
-use function Pest\Laravel\actingAs;
 use function Pest\Laravel\put;
+use function Tests\Helpers\calendarFactory;
+use function Tests\Helpers\connectorFactory;
+use function Tests\Helpers\eventFactory;
 
 uses()->group('web', 'events');
 
 it('updates event successfully', function (): void {
-    $user = User::factory()->create();
-    $connector = Connector::factory()->for($user)->create();
+    actingAsUser();
 
-    $calendar = Calendar::factory()->create();
-    $calendar->connectors()->attach($connector);
-
-    $event = Event::factory()->for($calendar)->create([
+    $event = eventFactory()->create([
         'title' => 'Old Title',
         'description' => 'Old Description',
     ]);
 
-    actingAs($user);
-
     put(route('events.update', $event), [
-        'calendar_id' => $calendar->id,
+        'calendar_id' => $event->calendar->id,
         'title' => 'New Title',
         'all_day' => false,
         'starts_at' => '2025-01-15 10:00:00',
@@ -42,18 +35,11 @@ it('updates event successfully', function (): void {
 });
 
 it('redirects to edit when redirect_to is edit', function (): void {
-    $user = User::factory()->create();
-    $connector = Connector::factory()->for($user)->create();
-
-    $calendar = Calendar::factory()->create();
-    $calendar->connectors()->attach($connector);
-
-    $event = Event::factory()->for($calendar)->create();
-
-    actingAs($user);
+    actingAsUser();
+    $event = eventFactory()->create();
 
     put(route('events.update', $event), [
-        'calendar_id' => $calendar->id,
+        'calendar_id' => $event->calendar->id,
         'title' => 'Updated Event',
         'all_day' => false,
         'starts_at' => '2025-01-15 10:00:00',
@@ -65,18 +51,11 @@ it('redirects to edit when redirect_to is edit', function (): void {
 });
 
 it('redirects to index when redirect_to is index', function (): void {
-    $user = User::factory()->create();
-    $connector = Connector::factory()->for($user)->create();
-
-    $calendar = Calendar::factory()->create();
-    $calendar->connectors()->attach($connector);
-
-    $event = Event::factory()->for($calendar)->create();
-
-    actingAs($user);
+    actingAsUser();
+    $event = eventFactory()->create();
 
     put(route('events.update', $event), [
-        'calendar_id' => $calendar->id,
+        'calendar_id' => $event->calendar->id,
         'title' => 'Updated Event',
         'all_day' => false,
         'starts_at' => '2025-01-15 10:00:00',
@@ -88,20 +67,10 @@ it('redirects to index when redirect_to is index', function (): void {
 });
 
 it('can move event to different calendar', function (): void {
-    $user = User::factory()->create();
-    $connector = Connector::factory()->for($user)->create();
-
-    $calendar1 = Calendar::factory()->create();
-    $calendar2 = Calendar::factory()->create();
-
-    $calendar1->connectors()->attach($connector);
-    $calendar2->connectors()->attach($connector);
-
-    $event = Event::factory()->for($calendar1)->create();
-
-    actingAs($user);
-
-    expect($event->calendar_id)->toBe($calendar1->id);
+    actingAsUser();
+    $event = eventFactory()->create();
+    $calendar1 = $event->calendar;
+    $calendar2 = calendarFactory()->create();
 
     put(route('events.update', $event), [
         'calendar_id' => $calendar2->id,
@@ -118,11 +87,10 @@ it('can move event to different calendar', function (): void {
 });
 
 it('redirects unauthenticated users to login', function (): void {
-    $calendar = Calendar::factory()->create();
-    $event = Event::factory()->for($calendar)->create();
+    $event = eventFactory()->create();
 
     put(route('events.update', $event), [
-        'calendar_id' => $calendar->id,
+        'calendar_id' => $event->calendar->id,
         'title' => 'Updated Event',
         'starts_at' => '2025-01-15 10:00:00',
         'ends_at' => '2025-01-15 11:00:00',
@@ -131,18 +99,11 @@ it('redirects unauthenticated users to login', function (): void {
 });
 
 it('prevents user from updating another users event', function (): void {
-    $user = User::factory()->create();
-    $otherUser = User::factory()->create();
-    $otherConnector = Connector::factory()->for($otherUser)->create();
+    actingAsUser();
 
-    $otherCalendar = Calendar::factory()->create();
-    $otherCalendar->connectors()->attach($otherConnector);
-
-    $otherEvent = Event::factory()->for($otherCalendar)->create([
-        'title' => 'Original Title',
-    ]);
-
-    actingAs($user);
+    $otherConnector = connectorFactory()->for(User::factory())->create();
+    $otherCalendar = calendarFactory(connector: $otherConnector)->create();
+    $otherEvent = eventFactory()->for($otherCalendar)->create(['title' => 'Original Title']);
 
     put(route('events.update', $otherEvent), [
         'calendar_id' => $otherCalendar->id,
@@ -154,26 +115,15 @@ it('prevents user from updating another users event', function (): void {
     ])
         ->assertForbidden();
 
-    expect($otherEvent->fresh())
-        ->title->toBe('Original Title');
+    expect($otherEvent->fresh())->title->toBe('Original Title');
 });
 
 it('prevents user from moving event to another users calendar', function (): void {
-    $user = User::factory()->create();
-    $otherUser = User::factory()->create();
+    actingAsUser();
 
-    $userConnector = Connector::factory()->for($user)->create();
-    $otherConnector = Connector::factory()->for($otherUser)->create();
-
-    $userCalendar = Calendar::factory()->create();
-    $otherCalendar = Calendar::factory()->create();
-
-    $userCalendar->connectors()->attach($userConnector);
-    $otherCalendar->connectors()->attach($otherConnector);
-
-    $event = Event::factory()->for($userCalendar)->create();
-
-    actingAs($user);
+    $otherConnector = connectorFactory()->for(User::factory())->create();
+    $otherCalendar = calendarFactory(connector: $otherConnector)->create();
+    $event = eventFactory()->create();
 
     put(route('events.update', $event), [
         'calendar_id' => $otherCalendar->id,
@@ -185,20 +135,13 @@ it('prevents user from moving event to another users calendar', function (): voi
     ])
         ->assertSessionHasErrors('calendar_id');
 
-    expect($event->fresh()->calendar_id)->toBe($userCalendar->id);
+    expect($event->fresh()->calendar_id)->toBe($event->calendar->id);
 });
 
 describe('Validation', function (): void {
     it('required fields are required', function (): void {
-        $user = User::factory()->create();
-        $connector = Connector::factory()->for($user)->create();
-
-        $calendar = Calendar::factory()->create();
-        $calendar->connectors()->attach($connector);
-
-        $event = Event::factory()->for($calendar)->create();
-
-        actingAs($user);
+        actingAsUser();
+        $event = eventFactory()->create();
 
         put(route('events.update', $event), [])
             ->assertSessionHasErrors([
@@ -214,15 +157,8 @@ describe('Validation', function (): void {
     });
 
     it('validates calendar_id must exist', function (): void {
-        $user = User::factory()->create();
-        $connector = Connector::factory()->for($user)->create();
-
-        $calendar = Calendar::factory()->create();
-        $calendar->connectors()->attach($connector);
-
-        $event = Event::factory()->for($calendar)->create();
-
-        actingAs($user);
+        actingAsUser();
+        $event = eventFactory()->create();
 
         put(route('events.update', $event), [
             'calendar_id' => 99999,
@@ -234,18 +170,11 @@ describe('Validation', function (): void {
     });
 
     it('validates title must be string', function (): void {
-        $user = User::factory()->create();
-        $connector = Connector::factory()->for($user)->create();
-
-        $calendar = Calendar::factory()->create();
-        $calendar->connectors()->attach($connector);
-
-        $event = Event::factory()->for($calendar)->create();
-
-        actingAs($user);
+        actingAsUser();
+        $event = eventFactory()->create();
 
         put(route('events.update', $event), [
-            'calendar_id' => $calendar->id,
+            'calendar_id' => $event->calendar->id,
             'title' => 12345,
             'starts_at' => '2025-01-15 10:00:00',
             'ends_at' => '2025-01-15 11:00:00',
@@ -254,18 +183,11 @@ describe('Validation', function (): void {
     });
 
     it('validates title must not exceed 255 characters', function (): void {
-        $user = User::factory()->create();
-        $connector = Connector::factory()->for($user)->create();
-
-        $calendar = Calendar::factory()->create();
-        $calendar->connectors()->attach($connector);
-
-        $event = Event::factory()->for($calendar)->create();
-
-        actingAs($user);
+        actingAsUser();
+        $event = eventFactory()->create();
 
         put(route('events.update', $event), [
-            'calendar_id' => $calendar->id,
+            'calendar_id' => $event->calendar->id,
             'title' => str_repeat('a', 256),
             'starts_at' => '2025-01-15 10:00:00',
             'ends_at' => '2025-01-15 11:00:00',
@@ -274,18 +196,11 @@ describe('Validation', function (): void {
     });
 
     it('validates ends_at must be after or equal to starts_at', function (): void {
-        $user = User::factory()->create();
-        $connector = Connector::factory()->for($user)->create();
-
-        $calendar = Calendar::factory()->create();
-        $calendar->connectors()->attach($connector);
-
-        $event = Event::factory()->for($calendar)->create();
-
-        actingAs($user);
+        actingAsUser();
+        $event = eventFactory()->create();
 
         put(route('events.update', $event), [
-            'calendar_id' => $calendar->id,
+            'calendar_id' => $event->calendar->id,
             'title' => 'Updated Event',
             'all_day' => false,
             'starts_at' => '2025-01-15 11:00:00',
@@ -296,18 +211,11 @@ describe('Validation', function (): void {
     });
 
     it('validates timezone is required when all_day is false', function (): void {
-        $user = User::factory()->create();
-        $connector = Connector::factory()->for($user)->create();
-
-        $calendar = Calendar::factory()->create();
-        $calendar->connectors()->attach($connector);
-
-        $event = Event::factory()->for($calendar)->create();
-
-        actingAs($user);
+        actingAsUser();
+        $event = eventFactory()->create();
 
         put(route('events.update', $event), [
-            'calendar_id' => $calendar->id,
+            'calendar_id' => $event->calendar->id,
             'title' => 'Updated Event',
             'all_day' => false,
             'starts_at' => '2025-01-15 10:00:00',
@@ -317,18 +225,11 @@ describe('Validation', function (): void {
     });
 
     it('validates description must be string', function (): void {
-        $user = User::factory()->create();
-        $connector = Connector::factory()->for($user)->create();
-
-        $calendar = Calendar::factory()->create();
-        $calendar->connectors()->attach($connector);
-
-        $event = Event::factory()->for($calendar)->create();
-
-        actingAs($user);
+        actingAsUser();
+        $event = eventFactory()->create();
 
         put(route('events.update', $event), [
-            'calendar_id' => $calendar->id,
+            'calendar_id' => $event->calendar->id,
             'title' => 'Updated Event',
             'all_day' => false,
             'starts_at' => '2025-01-15 10:00:00',
@@ -340,20 +241,11 @@ describe('Validation', function (): void {
     });
 
     it('allows null description', function (): void {
-        $user = User::factory()->create();
-        $connector = Connector::factory()->for($user)->create();
-
-        $calendar = Calendar::factory()->create();
-        $calendar->connectors()->attach($connector);
-
-        $event = Event::factory()->for($calendar)->create([
-            'description' => 'Original Description',
-        ]);
-
-        actingAs($user);
+        actingAsUser();
+        $event = eventFactory()->create(['description' => 'Original Description']);
 
         put(route('events.update', $event), [
-            'calendar_id' => $calendar->id,
+            'calendar_id' => $event->calendar->id,
             'title' => 'Updated Event',
             'all_day' => false,
             'starts_at' => '2025-01-15 10:00:00',
@@ -368,18 +260,11 @@ describe('Validation', function (): void {
     });
 
     it('strips disallowed HTML tags from description', function (): void {
-        $user = User::factory()->create();
-        $connector = Connector::factory()->for($user)->create();
-
-        $calendar = Calendar::factory()->create();
-        $calendar->connectors()->attach($connector);
-
-        $event = Event::factory()->for($calendar)->create();
-
-        actingAs($user);
+        actingAsUser();
+        $event = eventFactory()->create();
 
         put(route('events.update', $event), [
-            'calendar_id' => $calendar->id,
+            'calendar_id' => $event->calendar->id,
             'title' => 'Updated Event',
             'all_day' => false,
             'starts_at' => '2025-01-15 10:00:00',

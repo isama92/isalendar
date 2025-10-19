@@ -1,11 +1,10 @@
 <?php
 
-use App\Models\Calendar;
-use App\Models\Connector;
 use App\Models\User;
 
-use function Pest\Laravel\actingAs;
 use function Pest\Laravel\get;
+use function Tests\Helpers\calendarFactory;
+use function Tests\Helpers\connectorFactory;
 
 uses()->group('web', 'events');
 
@@ -15,25 +14,16 @@ it('redirects unauthenticated users to login', function (): void {
 });
 
 it('returns 403 when user has no connectors', function (): void {
-    $user = User::factory()->create();
-
-    actingAs($user);
+    actingAsUser();
 
     get(route('events.create'))
         ->assertForbidden();
 });
 
 it('displays user calendars for selection', function (): void {
-    $user = User::factory()->create();
-    $connector = Connector::factory()->for($user)->create();
-
-    $calendar1 = Calendar::factory()->create(['name' => 'Calendar 1']);
-    $calendar2 = Calendar::factory()->disabled()->create(['name' => 'Calendar 2']);
-
-    $calendar1->connectors()->attach($connector);
-    $calendar2->connectors()->attach($connector);
-
-    actingAs($user);
+    actingAsUser();
+    $calendar1 = calendarFactory()->create(['name' => 'Calendar 1']);
+    $calendar2 = calendarFactory()->disabled()->create(['name' => 'Calendar 2']);
 
     get(route('events.create'))
         ->assertSuccessful()
@@ -47,19 +37,13 @@ it('displays user calendars for selection', function (): void {
 });
 
 it('does not display other users calendars', function (): void {
-    $user = User::factory()->create();
-    $otherUser = User::factory()->create();
+    actingAsUser();
 
-    $userConnector = Connector::factory()->for($user)->create();
-    $otherConnector = Connector::factory()->for($otherUser)->create();
+    $userCalendar = calendarFactory()->create();
 
-    $userCalendar = Calendar::factory()->create();
-    $otherCalendar = Calendar::factory()->create();
+    $otherConnector = connectorFactory()->for(User::factory())->create();
 
-    $userCalendar->connectors()->attach($userConnector);
-    $otherCalendar->connectors()->attach($otherConnector);
-
-    actingAs($user);
+    calendarFactory(connector: $otherConnector)->create();
 
     get(route('events.create'))
         ->assertSuccessful()

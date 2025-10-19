@@ -1,7 +1,6 @@
 <?php
 
 use App\Data\CalendarData;
-use App\Models\Connector;
 use App\Services\Calendar\GoogleCalendar\Actions\Auth\GetAuthClient;
 use App\Services\Calendar\GoogleCalendar\Actions\Calendars\FetchNormalizedCalendars;
 use Google\Client as GoogleClient;
@@ -10,11 +9,12 @@ use Google\Service\Calendar\CalendarListEntry as GoogleCalendar;
 use Illuminate\Support\Collection;
 
 use function Pest\Laravel\partialMock;
+use function Tests\Helpers\connectorFactory;
 
 uses()->group('gcalendar', 'gcalendar.calendars');
 
 it('fetches calendars from Google and returns normalized CalendarData', function (): void {
-    $connector = Connector::factory()->create();
+    $connector = connectorFactory()->create();
 
     $gc1 = new GoogleCalendar;
     $gc1->setId('cal_1');
@@ -60,7 +60,7 @@ it('fetches calendars from Google and returns normalized CalendarData', function
 });
 
 it('returns an empty collection when Google returns no calendar items', function (): void {
-    $connector = Connector::factory()->create();
+    $connector = connectorFactory()->create();
 
     $list = new CalendarList;
     $list->setItems([]);

@@ -1,11 +1,9 @@
 <?php
 
 use App\Actions\SaveUserPhoto;
-use App\Models\User;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Hash;
 
-use function Pest\Laravel\actingAs;
 use function Pest\Laravel\partialMock;
 use function Pest\Laravel\put;
 
@@ -13,15 +11,14 @@ uses()->group('web', 'profile');
 
 describe('profile update', function (): void {
     it('updates user profile successfully', function (): void {
-        $user = User::factory()->create([
+        $user = actingAsUser();
+        $user->update([
             'first_name' => 'OldFN',
             'last_name' => 'OldLN',
         ]);
 
         partialMock(SaveUserPhoto::class)
             ->shouldNotReceive('execute');
-
-        actingAs($user);
 
         put(route('profile.update'), [
             'first_name' => 'NewFN',
@@ -37,19 +34,16 @@ describe('profile update', function (): void {
             ->and($user->settings)
             ->not->toBeNull()
             ->default_timezone->toBe('America/New_York');
-
     });
 
     it('uploads user photo', function (): void {
-        $user = User::factory()->create();
+        $user = actingAsUser();
         $file = UploadedFile::fake()->image('photo.jpg');
 
         partialMock(SaveUserPhoto::class)
             ->shouldReceive('execute')
             ->once()
             ->with($user, $file);
-
-        actingAs($user);
 
         put(route('profile.update'), [
             'first_name' => $user->first_name,
@@ -71,13 +65,12 @@ describe('profile update', function (): void {
     });
 
     it('updates only specified fields', function (): void {
-        $user = User::factory()->create([
+        $user = actingAsUser();
+        $user->update([
             'first_name' => 'Original',
             'last_name' => 'Name',
             'email' => 'original@example.com',
         ]);
-
-        actingAs($user);
 
         put(route('profile.update'), [
             'first_name' => 'Updated',
@@ -94,11 +87,8 @@ describe('profile update', function (): void {
 
 describe('password update', function (): void {
     it('updates user password successfully', function (): void {
-        $user = User::factory()->create([
-            'password' => 'old-password',
-        ]);
-
-        actingAs($user);
+        $user = actingAsUser();
+        $user->update(['password' => 'old-password']);
 
         put(route('profile.update'), [
             'first_name' => $user->first_name,
@@ -117,13 +107,12 @@ describe('password update', function (): void {
     });
 
     it('allows updating profile without changing password', function (): void {
-        $user = User::factory()->create([
+        $user = actingAsUser();
+        $user->update([
             'first_name' => 'John',
             'last_name' => 'Doe',
             'password' => 'old-password',
         ]);
-
-        actingAs($user);
 
         put(route('profile.update'), [
             'first_name' => 'Jane',
@@ -141,10 +130,8 @@ describe('password update', function (): void {
 });
 
 describe('validation', function (): void {
-    it('requires first_name field', function (): void {
-        $user = User::factory()->create();
-
-        actingAs($user);
+    it('requires fields', function (): void {
+        actingAsUser();
 
         put(route('profile.update'), [])
             ->assertSessionHasErrors([
@@ -155,9 +142,7 @@ describe('validation', function (): void {
     });
 
     it('validates first_name is string', function (): void {
-        $user = User::factory()->create();
-
-        actingAs($user);
+        actingAsUser();
 
         put(route('profile.update'), [
             'first_name' => 12345,
@@ -168,9 +153,7 @@ describe('validation', function (): void {
     });
 
     it('validates last_name is string', function (): void {
-        $user = User::factory()->create();
-
-        actingAs($user);
+        actingAsUser();
 
         put(route('profile.update'), [
             'first_name' => 'John',
@@ -181,9 +164,7 @@ describe('validation', function (): void {
     });
 
     it('validates first_name max length 255', function (): void {
-        $user = User::factory()->create();
-
-        actingAs($user);
+        actingAsUser();
 
         put(route('profile.update'), [
             'first_name' => str_repeat('a', 256),
@@ -194,9 +175,7 @@ describe('validation', function (): void {
     });
 
     it('validates last_name max length 255', function (): void {
-        $user = User::factory()->create();
-
-        actingAs($user);
+        actingAsUser();
 
         put(route('profile.update'), [
             'first_name' => 'John',
@@ -207,9 +186,7 @@ describe('validation', function (): void {
     });
 
     it('validates timezone is valid', function (): void {
-        $user = User::factory()->create();
-
-        actingAs($user);
+        actingAsUser();
 
         put(route('profile.update'), [
             'first_name' => 'John',
@@ -220,9 +197,7 @@ describe('validation', function (): void {
     });
 
     it('validates photo mime type', function (): void {
-        $user = User::factory()->create();
-
-        actingAs($user);
+        actingAsUser();
 
         put(route('profile.update'), [
             'first_name' => 'John',
@@ -234,9 +209,7 @@ describe('validation', function (): void {
     });
 
     it('validates photo max size 2MB', function (): void {
-        $user = User::factory()->create();
-
-        actingAs($user);
+        actingAsUser();
 
         put(route('profile.update'), [
             'first_name' => 'John',
@@ -248,11 +221,8 @@ describe('validation', function (): void {
     });
 
     it('requires current_password when changing password', function (): void {
-        $user = User::factory()->create([
-            'password' => 'old-password',
-        ]);
-
-        actingAs($user);
+        $user = actingAsUser();
+        $user->update(['password' => 'old-password']);
 
         put(route('profile.update'), [
             'first_name' => $user->first_name,
@@ -265,11 +235,8 @@ describe('validation', function (): void {
     });
 
     it('validates current_password matches user password', function (): void {
-        $user = User::factory()->create([
-            'password' => 'old-password',
-        ]);
-
-        actingAs($user);
+        $user = actingAsUser();
+        $user->update(['password' => 'old-password']);
 
         put(route('profile.update'), [
             'first_name' => $user->first_name,
@@ -283,11 +250,8 @@ describe('validation', function (): void {
     });
 
     it('validates password minimum length 8', function (): void {
-        $user = User::factory()->create([
-            'password' => 'old-password',
-        ]);
-
-        actingAs($user);
+        $user = actingAsUser();
+        $user->update(['password' => 'old-password']);
 
         put(route('profile.update'), [
             'first_name' => $user->first_name,
@@ -301,11 +265,8 @@ describe('validation', function (): void {
     });
 
     it('validates password is confirmed', function (): void {
-        $user = User::factory()->create([
-            'password' => 'old-password',
-        ]);
-
-        actingAs($user);
+        $user = actingAsUser();
+        $user->update(['password' => 'old-password']);
 
         put(route('profile.update'), [
             'first_name' => $user->first_name,

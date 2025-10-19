@@ -1,20 +1,18 @@
 <?php
 
-use App\Models\Calendar;
-use App\Models\Connector;
-use App\Models\Event;
 use App\Models\User;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Factories\Sequence;
 
-use function Pest\Laravel\actingAs;
 use function Pest\Laravel\get;
+use function Tests\Helpers\calendarFactory;
+use function Tests\Helpers\connectorFactory;
+use function Tests\Helpers\eventFactory;
 
 uses()->group('web', 'dashboard');
 
 it('displays stats for authenticated user', function (): void {
-    $user = User::factory()->create();
-
-    actingAs($user);
+    actingAsUser();
 
     get(route('dashboard'))
         ->assertSuccessful()
@@ -39,10 +37,7 @@ it('redirects unauthenticated users to login', function (): void {
 it('shows correct event counts', function (): void {
     Carbon::setTestNow('2025-01-06 00:00:00');
 
-    $user = User::factory()->create();
-    $connector = Connector::factory()->for($user)->create();
-    $calendar = Calendar::factory()->create();
-    $calendar->connectors()->attach($connector);
+    actingAsUser();
 
     $today = now()->startOfDay()->toImmutable();
     $tomorrow = $today->addDay();
@@ -50,12 +45,14 @@ it('shows correct event counts', function (): void {
     $nextWeekStart = $thisWeekStart->addWeek();
 
     // Create events for different time periods
-    Event::factory()->for($calendar)->create(['starts_at' => $today->addHours(10)]);
-    Event::factory()->for($calendar)->create(['starts_at' => $tomorrow->addHours(10)]);
-    Event::factory()->for($calendar)->create(['starts_at' => $thisWeekStart->addDays(3)]);
-    Event::factory()->for($calendar)->create(['starts_at' => $nextWeekStart->addDays(2)]);
-
-    actingAs($user);
+    eventFactory(4)
+        ->state(new Sequence(
+            ['starts_at' => $today->addHours(10)],
+            ['starts_at' => $tomorrow->addHours(10)],
+            ['starts_at' => $thisWeekStart->addDays(3)],
+            ['starts_at' => $nextWeekStart->addDays(2)],
+        ))
+        ->create();
 
     get(route('dashboard'))
         ->assertSuccessful()
@@ -71,27 +68,20 @@ it('shows correct event counts', function (): void {
 });
 
 it('shows correct all-day event counts', function (): void {
-    $user = User::factory()->create();
-    $connector = Connector::factory()->for($user)->create();
-    $calendar = Calendar::factory()->create();
-    $calendar->connectors()->attach($connector);
+    actingAsUser();
+    $calendar = calendarFactory()->create();
 
     $today = Carbon::now()->startOfDay();
     $tomorrow = Carbon::now()->addDay()->startOfDay();
 
     // Create all-day events
-    Event::factory()->for($calendar)->create([
-        'all_day' => true,
-        'starts_at' => $today,
-        'ends_at' => null,
-    ]);
-    Event::factory()->for($calendar)->create([
-        'all_day' => true,
-        'starts_at' => $tomorrow,
-        'ends_at' => null,
-    ]);
-
-    actingAs($user);
+    eventFactory(2)
+        ->for($calendar)
+        ->state(new Sequence(
+            ['all_day' => true, 'starts_at' => $today, 'ends_at' => null],
+            ['all_day' => true, 'starts_at' => $tomorrow, 'ends_at' => null],
+        ))
+        ->create();
 
     get(route('dashboard'))
         ->assertSuccessful()
@@ -104,20 +94,13 @@ it('shows correct all-day event counts', function (): void {
 });
 
 it('only shows authenticated user events', function (): void {
-    $user = User::factory()->create();
-    $connector = Connector::factory()->for($user)->create();
-    $calendar = Calendar::factory()->create();
-    $calendar->connectors()->attach($connector);
+    actingAsUser();
 
-    $otherUser = User::factory()->create();
-    $otherConnector = Connector::factory()->for($otherUser)->create();
-    $otherCalendar = Calendar::factory()->create();
-    $otherCalendar->connectors()->attach($otherConnector);
+    eventFactory(5)->create();
 
-    Event::factory()->count(5)->for($calendar)->create();
-    Event::factory()->count(3)->for($otherCalendar)->create();
-
-    actingAs($user);
+    $otherConnector = connectorFactory()->for(User::factory())->create();
+    $otherCalendar = calendarFactory(connector: $otherConnector)->create();
+    eventFactory(3)->for($otherCalendar)->create();
 
     get(route('dashboard'))
         ->assertSuccessful()
@@ -129,23 +112,15 @@ it('only shows authenticated user events', function (): void {
 });
 
 it('shows calendars count for multiple calendars', function (): void {
-    $user = User::factory()->create();
-    $connector = Connector::factory()->for($user)->create();
+    actingAsUser();
 
-    $calendar1 = Calendar::factory()->create();
-    $calendar1->connectors()->attach($connector);
+    $calendar1 = calendarFactory()->create();
+    $calendar2 = calendarFactory()->create();
+    $calendar3 = calendarFactory()->create();
 
-    $calendar2 = Calendar::factory()->create();
-    $calendar2->connectors()->attach($connector);
-
-    $calendar3 = Calendar::factory()->create();
-    $calendar3->connectors()->attach($connector);
-
-    Event::factory()->count(3)->for($calendar1)->create();
-    Event::factory()->count(2)->for($calendar2)->create();
-    Event::factory()->count(4)->for($calendar3)->create();
-
-    actingAs($user);
+    eventFactory(3)->for($calendar1)->create();
+    eventFactory(2)->for($calendar2)->create();
+    eventFactory(4)->for($calendar3)->create();
 
     get(route('dashboard'))
         ->assertSuccessful()
@@ -157,25 +132,20 @@ it('shows calendars count for multiple calendars', function (): void {
 });
 
 it('calculates average events per day of week correctly', function (): void {
-    $user = User::factory()->create();
-    $connector = Connector::factory()->for($user)->create();
-    $calendar = Calendar::factory()->create();
-    $calendar->connectors()->attach($connector);
+    actingAsUser();
 
-    $today = Carbon::now()->startOfDay();
+    $today = Carbon::now()->startOfDay()->toImmutable();
 
     // Create multiple events on different days of the week
     // Sunday = 0, Monday = 1, ..., Saturday = 6
-    $sunday = $today->copy()->startOfWeek()->subDay();
-    Event::factory()->count(3)->for($calendar)->create(['starts_at' => $sunday->copy()->addHours(10)]);
+    $sunday = $today->startOfWeek()->subDay();
+    eventFactory(3)->create(['starts_at' => $sunday->addHours(10)]);
 
-    $monday = $today->copy()->startOfWeek();
-    Event::factory()->count(5)->for($calendar)->create(['starts_at' => $monday->copy()->addHours(10)]);
+    $monday = $today->startOfWeek();
+    eventFactory(5)->create(['starts_at' => $monday->addHours(10)]);
 
-    $wednesday = $today->copy()->startOfWeek()->addDays(2);
-    Event::factory()->count(2)->for($calendar)->create(['starts_at' => $wednesday->copy()->addHours(10)]);
-
-    actingAs($user);
+    $wednesday = $today->startOfWeek()->addDays(2);
+    eventFactory(2)->create(['starts_at' => $wednesday->addHours(10)]);
 
     get(route('dashboard'))
         ->assertSuccessful()

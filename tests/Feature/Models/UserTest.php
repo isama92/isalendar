@@ -1,18 +1,18 @@
 <?php
 
 use App\Models\Calendar;
-use App\Models\Connector;
 use App\Models\User;
 use App\Models\UserSetting;
+
+use function Tests\Helpers\calendarFactory;
+use function Tests\Helpers\connectorFactory;
 
 uses()->group('models');
 
 it('can access calendars through connectors', function (): void {
-    $user = User::factory()->create();
-    $connector = Connector::factory()->for($user)->create();
-    $calendar = Calendar::factory()->create();
-
-    $connector->calendars()->attach($calendar);
+    $user = actingAsUser();
+    $connector = connectorFactory()->create();
+    $calendar = calendarFactory(connector: $connector)->create();
 
     expect($user->calendars)
         ->toHaveCount(1)
@@ -20,17 +20,14 @@ it('can access calendars through connectors', function (): void {
 });
 
 it('can access multiple calendars from multiple connectors', function (): void {
-    $user = User::factory()->create();
+    $user = actingAsUser();
 
-    $connector1 = Connector::factory()->for($user)->create();
-    $connector2 = Connector::factory()->for($user)->create();
+    $connector1 = connectorFactory()->create();
+    $connector2 = connectorFactory()->create();
 
-    $calendar1 = Calendar::factory()->create();
-    $calendar2 = Calendar::factory()->create();
-    $calendar3 = Calendar::factory()->create();
-
-    $connector1->calendars()->attach([$calendar1->id, $calendar2->id]);
-    $connector2->calendars()->attach($calendar3->id);
+    $calendar1 = calendarFactory(connector: $connector1)->create();
+    $calendar2 = calendarFactory(connector: $connector1)->create();
+    $calendar3 = calendarFactory(connector: $connector2)->create();
 
     expect($user->calendars)
         ->toHaveCount(3)
@@ -41,14 +38,11 @@ it('only accesses calendars from own connectors', function (): void {
     $user1 = User::factory()->create();
     $user2 = User::factory()->create();
 
-    $connector1 = Connector::factory()->for($user1)->create();
-    $connector2 = Connector::factory()->for($user2)->create();
+    $connector1 = connectorFactory()->for($user1)->create();
+    $connector2 = connectorFactory()->for($user2)->create();
 
-    $calendar1 = Calendar::factory()->create();
-    $calendar2 = Calendar::factory()->create();
-
-    $connector1->calendars()->attach($calendar1);
-    $connector2->calendars()->attach($calendar2);
+    $calendar1 = calendarFactory(connector: $connector1)->create();
+    $calendar2 = calendarFactory(connector: $connector2)->create();
 
     expect($user1->refresh()->calendars)
         ->toHaveCount(1)
@@ -59,15 +53,14 @@ it('only accesses calendars from own connectors', function (): void {
 });
 
 it('does not return duplicate calendars when shared across multiple connectors', function (): void {
-    $user = User::factory()->create();
+    $user = actingAsUser();
 
-    $connector1 = Connector::factory()->for($user)->create();
-    $connector2 = Connector::factory()->for($user)->create();
+    $connector1 = connectorFactory()->create();
+    $connector2 = connectorFactory()->create();
 
-    $sharedCalendar = Calendar::factory()->create();
-
-    $connector1->calendars()->attach($sharedCalendar);
-    $connector2->calendars()->attach($sharedCalendar);
+    $sharedCalendar = Calendar::factory()
+        ->hasAttached([$connector1, $connector2])
+        ->create();
 
     expect($user->refresh()->calendars)
         ->toHaveCount(1)
@@ -75,20 +68,20 @@ it('does not return duplicate calendars when shared across multiple connectors',
 });
 
 it('returns empty collection when user has no connectors', function (): void {
-    $user = User::factory()->create();
+    $user = actingAsUser();
 
     expect($user->calendars)->toBeEmpty();
 });
 
 it('returns empty collection when connectors have no calendars', function (): void {
-    $user = User::factory()->create();
-    Connector::factory()->for($user)->create();
+    $user = actingAsUser();
+    connectorFactory()->create();
 
     expect($user->calendars)->toBeEmpty();
 });
 
 it('user settings are automatically created on user creation', function (): void {
-    $user = User::factory()->create();
+    $user = actingAsUser();
 
     expect($user->settings)
         ->not->toBeNull()
@@ -97,7 +90,7 @@ it('user settings are automatically created on user creation', function (): void
 });
 
 it('uses user photo_path attribute', function (): void {
-    $user = User::factory()->create();
+    $user = actingAsUser();
 
     expect($user->photo_path)->toBe("{$user->id}.webp");
 });

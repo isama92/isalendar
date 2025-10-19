@@ -14,12 +14,10 @@ beforeEach(function (): void {
 });
 
 it('displays user photo when it exists', function (): void {
-    $user = User::factory()->create();
+    $user = actingAsUser();
 
     $content = 'fake-image-content';
     test()->disk->put($user->photo_path, $content);
-
-    actingAs($user);
 
     $response = get(route('profile.photo'))
         ->assertSuccessful()
@@ -29,9 +27,7 @@ it('displays user photo when it exists', function (): void {
 });
 
 it('returns 404 when photo does not exist', function (): void {
-    $user = User::factory()->create();
-
-    actingAs($user);
+    actingAsUser();
 
     get(route('profile.photo'))
         ->assertNotFound();
@@ -43,12 +39,10 @@ it('redirects unauthenticated users to login', function (): void {
 });
 
 it('does not serve photos from other disks', function (): void {
-    $user = User::factory()->create();
+    $user = actingAsUser();
 
     Storage::fake();
     Storage::put($user->photo_path, 'photo-content');
-
-    actingAs($user);
 
     get(route('profile.photo'))
         ->assertNotFound();
@@ -65,12 +59,12 @@ it('serves different photos for different users', function (): void {
     test()->disk->put($user2->photo_path, $content2);
 
     actingAs($user1);
-    $response1 = get(route('profile.photo'))
-        ->assertSuccessful();
+    $response1 = get(route('profile.photo'));
+    $response1->assertSuccessful();
     expect($response1->getContent())->toBe($content1);
 
     actingAs($user2);
-    $response2 = get(route('profile.photo'))
-        ->assertSuccessful();
+    $response2 = get(route('profile.photo'));
+    $response2->assertSuccessful();
     expect($response2->getContent())->toBe($content2);
 });

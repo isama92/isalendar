@@ -59,8 +59,8 @@ describe('oidc redirect', function (): void {
             'last_name' => 'Doe',
         ]);
 
-        expect(Auth::check())->toBeTrue();
-        expect(Auth::user()->email)->toBe('test@example.com');
+        expect(Auth::check())->toBeTrue()
+            ->and(Auth::user()->email)->toBe('test@example.com');
     });
 
     it('updates existing user when user exists', function (): void {
@@ -89,10 +89,11 @@ describe('oidc redirect', function (): void {
 
         $existingUser->refresh();
 
-        expect($existingUser->first_name)->toBe('Updated');
-        expect($existingUser->last_name)->toBe('User');
-        expect(Auth::check())->toBeTrue();
-        expect(Auth::user()->is($existingUser))->toBeTrue();
+        expect(Auth::check())->toBeTrue()
+            ->and(Auth::user()->is($existingUser))->toBeTrue()
+            ->and($existingUser)
+            ->first_name->toBe('Updated')
+            ->last_name->toBe('User');
     });
 
     it('logs in the user with remember me enabled', function (): void {
@@ -117,8 +118,8 @@ describe('oidc redirect', function (): void {
         get(route('auth.oidc.redirect'))
             ->assertRedirect('/');
 
-        expect(Auth::check())->toBeTrue();
-        expect(Auth::viaRemember())->toBeFalse();
+        expect(Auth::check())->toBeTrue()
+            ->and(Auth::viaRemember())->toBeFalse();
     });
 
     it('redirects to dashboard after successful authentication', function (): void {
@@ -151,7 +152,7 @@ describe('oidc redirect', function (): void {
 
         $socialiteUser = Mockery::mock(OAuth2User::class);
         $socialiteUser->shouldReceive('getEmail')->andReturn('singlename@example.com');
-        $socialiteUser->shouldReceive('getName')->andReturn('Madonna');
+        $socialiteUser->shouldReceive('getName')->andReturn('Maria');
 
         $oidcProvider = Mockery::mock(OidcProvider::class);
         $oidcProvider->shouldReceive('user')
@@ -168,8 +169,9 @@ describe('oidc redirect', function (): void {
 
         $user->refresh();
 
-        expect($user->first_name)->toBe('Madonna');
-        expect($user->last_name)->toBe('');
+        expect($user)
+            ->first_name->toBe('Maria')
+            ->last_name->toBe('');
     });
 
     it('prevents soft-deleted users from logging in', function (): void {

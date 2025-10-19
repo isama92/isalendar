@@ -1,22 +1,20 @@
 <?php
 
 use App\Models\Calendar;
-use App\Models\Connector;
 use App\Models\Provider;
 use App\Models\User;
 
 use function Pest\Laravel\actingAs;
+use function Tests\Helpers\calendarFactory;
+use function Tests\Helpers\connectorFactory;
 
 uses()->group('models');
 
 it('loads the connector for the logged in user with hidden access details', function (): void {
-    $user = User::factory()->create();
-    $connector = Connector::factory()->for($user)->create();
-    $calendar = Calendar::factory()->create();
+    actingAsUser();
+    $connector = connectorFactory()->create();
+    calendarFactory(connector: $connector)->create();
 
-    $connector->calendars()->attach($calendar->id);
-
-    actingAs($user);
     expect(Calendar::sole())
         ->relationLoaded('connectorsForUser')->toBeTrue()
         ->connectorsForUser->toHaveCount(1)
@@ -29,13 +27,12 @@ it('can access to the authenticated user connector', function (): void {
     $user1 = User::factory()->create();
     $user2 = User::factory()->create();
 
-    $connector1 = Connector::factory()->for($user1)->create();
-    $connector2 = Connector::factory()->for($user2)->create();
+    $connector1 = connectorFactory()->for($user1)->create();
+    $connector2 = connectorFactory()->for($user2)->create();
 
-    $calendar = Calendar::factory()->create();
-
-    $connector1->calendars()->attach($calendar->id);
-    $connector2->calendars()->attach($calendar->id);
+    Calendar::factory()
+        ->hasAttached([$connector1, $connector2])
+        ->create();
 
     actingAs($user2);
     expect(Calendar::sole()->connector->id)->toBe($connector2->id);
@@ -48,13 +45,12 @@ it('can access users through connectors', function (): void {
     $user1 = User::factory()->create();
     $user2 = User::factory()->create();
 
-    $connector1 = Connector::factory()->for($user1)->create();
-    $connector2 = Connector::factory()->for($user2)->create();
+    $connector1 = connectorFactory()->for($user1)->create();
+    $connector2 = connectorFactory()->for($user2)->create();
 
-    $calendar = Calendar::factory()->create();
-
-    $connector1->calendars()->attach($calendar);
-    $connector2->calendars()->attach($calendar);
+    $calendar = Calendar::factory()
+        ->hasAttached([$connector1, $connector2])
+        ->create();
 
     expect($calendar->users)
         ->toHaveCount(2)
@@ -66,15 +62,13 @@ it('can access multiple users when shared across connectors', function (): void 
     $user2 = User::factory()->create();
     $user3 = User::factory()->create();
 
-    $connector1 = Connector::factory()->for($user1)->create();
-    $connector2 = Connector::factory()->for($user2)->create();
-    $connector3 = Connector::factory()->for($user3)->create();
+    $connector1 = connectorFactory()->for($user1)->create();
+    $connector2 = connectorFactory()->for($user2)->create();
+    $connector3 = connectorFactory()->for($user3)->create();
 
-    $calendar = Calendar::factory()->create();
-
-    $connector1->calendars()->attach($calendar);
-    $connector2->calendars()->attach($calendar);
-    $connector3->calendars()->attach($calendar);
+    $calendar = Calendar::factory()
+        ->hasAttached([$connector1, $connector2, $connector3])
+        ->create();
 
     expect($calendar->refresh()->users)
         ->toHaveCount(3)
@@ -85,12 +79,12 @@ it('only includes users who have connectors attached to it', function (): void {
     $user1 = User::factory()->create();
     $user2 = User::factory()->create();
 
-    $connector1 = Connector::factory()->for($user1)->create();
-    Connector::factory()->for($user2)->create();
+    $connector1 = connectorFactory()->for($user1)->create();
+    connectorFactory()->for($user2)->create();
 
-    $calendar = Calendar::factory()->create();
-
-    $connector1->calendars()->attach($calendar);
+    $calendar = Calendar::factory()
+        ->hasAttached($connector1)
+        ->create();
 
     expect($calendar->refresh()->users)
         ->toHaveCount(1)
@@ -98,15 +92,14 @@ it('only includes users who have connectors attached to it', function (): void {
 });
 
 it('does not return duplicate users when user has multiple connectors attached', function (): void {
-    $user = User::factory()->create();
+    $user = actingAsUser();
 
-    $connector1 = Connector::factory()->for($user)->create();
-    $connector2 = Connector::factory()->for($user)->create();
+    $connector1 = connectorFactory()->create();
+    $connector2 = connectorFactory()->create();
 
-    $calendar = Calendar::factory()->create();
-
-    $connector1->calendars()->attach($calendar);
-    $connector2->calendars()->attach($calendar);
+    $calendar = Calendar::factory()
+        ->hasAttached([$connector1, $connector2])
+        ->create();
 
     expect($calendar->refresh()->users)
         ->toHaveCount(1)
@@ -120,11 +113,12 @@ it('returns empty collection when no connectors are attached', function (): void
 });
 
 it('can access users and their connectors relationship data', function (): void {
-    $user = User::factory()->create();
-    $connector = Connector::factory()->for($user)->create();
-    $calendar = Calendar::factory()->create();
+    $user = actingAsUser();
+    $connector = connectorFactory()->create();
 
-    $connector->calendars()->attach($calendar);
+    $calendar = Calendar::factory()
+        ->hasAttached($connector)
+        ->create();
 
     expect($calendar->refresh()->users->firstOrFail())
         ->id->toBe($user->id)
@@ -136,13 +130,12 @@ it('can access provider through connectors', function (): void {
     $user1 = User::factory()->create();
     $user2 = User::factory()->create();
 
-    $connector1 = Connector::factory()->for($user1)->for($provider)->create();
-    $connector2 = Connector::factory()->for($user2)->for($provider)->create();
+    $connector1 = connectorFactory()->for($user1)->for($provider)->create();
+    $connector2 = connectorFactory()->for($user2)->for($provider)->create();
 
-    $calendar = Calendar::factory()->create();
-
-    $connector1->calendars()->attach($calendar);
-    $connector2->calendars()->attach($calendar);
+    Calendar::factory()
+        ->hasAttached([$connector1, $connector2])
+        ->create();
 
     expect(Calendar::sole()->provider)
         ->not->toBeNull()

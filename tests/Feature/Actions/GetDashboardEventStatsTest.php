@@ -6,14 +6,16 @@ use App\Models\Connector;
 use App\Models\Event;
 use App\Models\User;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Factories\Sequence;
 
-use function Pest\Laravel\actingAs;
+use function Tests\Helpers\calendarFactory;
+use function Tests\Helpers\connectorFactory;
+use function Tests\Helpers\eventFactory;
 
 uses()->group('actions');
 
 it('returns correct data structure with all required keys', function (): void {
-    $user = User::factory()->create();
-    actingAs($user);
+    actingAsUser();
 
     $stats = app(GetDashboardEventStats::class)->execute();
 
@@ -32,8 +34,7 @@ it('returns correct data structure with all required keys', function (): void {
 });
 
 it('returns zero counts when user has no events', function (): void {
-    $user = User::factory()->create();
-    actingAs($user);
+    actingAsUser();
 
     $stats = app(GetDashboardEventStats::class)->execute();
 
@@ -47,14 +48,8 @@ it('returns zero counts when user has no events', function (): void {
 });
 
 it('counts total events correctly', function (): void {
-    $user = User::factory()->create();
-    $connector = Connector::factory()->for($user)->create();
-    $calendar = Calendar::factory()->create();
-    $calendar->connectors()->attach($connector);
-
-    Event::factory()->count(5)->for($calendar)->create();
-
-    actingAs($user);
+    actingAsUser();
+    eventFactory(5)->create();
 
     $stats = app(GetDashboardEventStats::class)->execute();
 
@@ -62,18 +57,10 @@ it('counts total events correctly', function (): void {
 });
 
 it('counts total calendars correctly', function (): void {
-    $user = User::factory()->create();
-    $connector = Connector::factory()->for($user)->create();
+    actingAsUser();
 
-    $calendar1 = Calendar::factory()->create();
-    $calendar2 = Calendar::factory()->create();
-    $calendar3 = Calendar::factory()->create();
-
-    $calendar1->connectors()->attach($connector);
-    $calendar2->connectors()->attach($connector);
-    $calendar3->connectors()->attach($connector);
-
-    actingAs($user);
+    // creates 1 connector with 3 calendars
+    calendarFactory(3)->create();
 
     $stats = app(GetDashboardEventStats::class)->execute();
 
@@ -81,18 +68,16 @@ it('counts total calendars correctly', function (): void {
 });
 
 it('counts events for today correctly', function (): void {
-    $user = User::factory()->create();
-    $connector = Connector::factory()->for($user)->create();
-    $calendar = Calendar::factory()->create();
-    $calendar->connectors()->attach($connector);
+    $today = Carbon::now()->startOfDay()->toImmutable();
 
-    $today = Carbon::now()->startOfDay();
-
-    Event::factory()->for($calendar)->create(['starts_at' => $today->copy()->addHours(10)]);
-    Event::factory()->for($calendar)->create(['starts_at' => $today->copy()->addHours(14)]);
-    Event::factory()->for($calendar)->create(['starts_at' => $today->copy()->addDay()]); // Tomorrow, should not count
-
-    actingAs($user);
+    actingAsUser();
+    eventFactory(3)
+        ->state(new Sequence(
+            ['starts_at' => $today->addHours(10)],
+            ['starts_at' => $today->addHours(14)],
+            ['starts_at' => $today->addDay()],
+        ))
+        ->create();
 
     $stats = app(GetDashboardEventStats::class)->execute();
 
@@ -100,24 +85,15 @@ it('counts events for today correctly', function (): void {
 });
 
 it('counts all-day events for today correctly', function (): void {
-    $user = User::factory()->create();
-    $connector = Connector::factory()->for($user)->create();
-    $calendar = Calendar::factory()->create();
-    $calendar->connectors()->attach($connector);
+    $today = Carbon::now()->startOfDay()->toImmutable();
 
-    $today = Carbon::now()->startOfDay();
-
-    Event::factory()->for($calendar)->create([
-        'all_day' => true,
-        'starts_at' => $today,
-        'ends_at' => null,
-    ]);
-    Event::factory()->for($calendar)->create([
-        'all_day' => false,
-        'starts_at' => $today->copy()->addHours(10),
-    ]);
-
-    actingAs($user);
+    actingAsUser();
+    eventFactory(2)
+        ->state(new Sequence(
+            ['all_day' => true, 'starts_at' => $today, 'ends_at' => null],
+            ['all_day' => false, 'starts_at' => $today->addHours(10)],
+        ))
+        ->create();
 
     $stats = app(GetDashboardEventStats::class)->execute();
 
@@ -125,19 +101,17 @@ it('counts all-day events for today correctly', function (): void {
 });
 
 it('counts events for tomorrow correctly', function (): void {
-    $user = User::factory()->create();
-    $connector = Connector::factory()->for($user)->create();
-    $calendar = Calendar::factory()->create();
-    $calendar->connectors()->attach($connector);
+    $today = Carbon::now()->startOfDay()->toImmutable();
+    $tomorrow = $today->addDay();
 
-    $today = Carbon::now()->startOfDay();
-    $tomorrow = $today->copy()->addDay();
-
-    Event::factory()->for($calendar)->create(['starts_at' => $today->copy()->addHours(10)]); // Today
-    Event::factory()->for($calendar)->create(['starts_at' => $tomorrow->copy()->addHours(10)]); // Tomorrow
-    Event::factory()->for($calendar)->create(['starts_at' => $tomorrow->copy()->addHours(14)]); // Tomorrow
-
-    actingAs($user);
+    actingAsUser();
+    eventFactory(3)
+        ->state(new Sequence(
+            ['starts_at' => $today->addHours(10)], // Today
+            ['starts_at' => $tomorrow->addHours(10)], // Tomorrow
+            ['starts_at' => $tomorrow->addHours(14)], // Tomorrow
+        ))
+        ->create();
 
     $stats = app(GetDashboardEventStats::class)->execute();
 
@@ -145,21 +119,18 @@ it('counts events for tomorrow correctly', function (): void {
 });
 
 it('counts events for this week correctly', function (): void {
-    $user = User::factory()->create();
-    $connector = Connector::factory()->for($user)->create();
-    $calendar = Calendar::factory()->create();
-    $calendar->connectors()->attach($connector);
+    $today = Carbon::now()->startOfDay()->toImmutable();
+    $thisWeekStart = $today->startOfWeek();
+    $nextWeek = $today->addWeek();
 
-    $today = Carbon::now()->startOfDay();
-    $thisWeekStart = $today->copy()->startOfWeek();
-    $thisWeekEnd = $today->copy()->endOfWeek();
-    $nextWeek = $today->copy()->addWeek();
-
-    Event::factory()->for($calendar)->create(['starts_at' => $thisWeekStart->copy()->addDay()]);
-    Event::factory()->for($calendar)->create(['starts_at' => $thisWeekStart->copy()->addDays(3)]);
-    Event::factory()->for($calendar)->create(['starts_at' => $nextWeek]); // Next week
-
-    actingAs($user);
+    actingAsUser();
+    eventFactory(3)
+        ->state(new Sequence(
+            ['starts_at' => $thisWeekStart->addDay()],
+            ['starts_at' => $thisWeekStart->addDays(3)],
+            ['starts_at' => $nextWeek], // Next week
+        ))
+        ->create();
 
     $stats = app(GetDashboardEventStats::class)->execute();
 
@@ -167,19 +138,17 @@ it('counts events for this week correctly', function (): void {
 });
 
 it('counts events for next week correctly', function (): void {
-    $user = User::factory()->create();
-    $connector = Connector::factory()->for($user)->create();
-    $calendar = Calendar::factory()->create();
-    $calendar->connectors()->attach($connector);
+    $today = Carbon::now()->startOfDay()->toImmutable();
+    $nextWeekStart = $today->addWeek()->startOfWeek();
 
-    $today = Carbon::now()->startOfDay();
-    $nextWeekStart = $today->copy()->addWeek()->startOfWeek();
-
-    Event::factory()->for($calendar)->create(['starts_at' => $today]); // This week
-    Event::factory()->for($calendar)->create(['starts_at' => $nextWeekStart->copy()->addDay()]);
-    Event::factory()->for($calendar)->create(['starts_at' => $nextWeekStart->copy()->addDays(3)]);
-
-    actingAs($user);
+    actingAsUser();
+    eventFactory(3)
+        ->state(new Sequence(
+            ['starts_at' => $today], // This week
+            ['starts_at' => $nextWeekStart->addDay()],
+            ['starts_at' => $nextWeekStart->addDays(3)],
+        ))
+        ->create();
 
     $stats = app(GetDashboardEventStats::class)->execute();
 
@@ -187,24 +156,19 @@ it('counts events for next week correctly', function (): void {
 });
 
 it('calculates average events per day of week correctly', function (): void {
-    $user = User::factory()->create();
-    $connector = Connector::factory()->for($user)->create();
-    $calendar = Calendar::factory()->create();
-    $calendar->connectors()->attach($connector);
+    $today = Carbon::now()->startOfDay()->toImmutable();
+    $sunday = $today->startOfWeek()->subDay();
+    $monday = $today->startOfWeek();
+    $wednesday = $today->startOfWeek()->addDays(2);
 
-    $today = Carbon::now()->startOfDay();
-    $sunday = $today->copy()->startOfWeek()->subDay();
-    $monday = $today->copy()->startOfWeek();
-    $wednesday = $today->copy()->startOfWeek()->addDays(2);
+    actingAsUser();
 
     // 3 events on Sunday
-    Event::factory()->count(3)->for($calendar)->create(['starts_at' => $sunday->copy()->addHours(10)]);
+    eventFactory(3)->create(['starts_at' => $sunday->addHours(10)]);
     // 5 events on Monday
-    Event::factory()->count(5)->for($calendar)->create(['starts_at' => $monday->copy()->addHours(10)]);
+    eventFactory(5)->create(['starts_at' => $monday->addHours(10)]);
     // 2 events on Wednesday
-    Event::factory()->count(2)->for($calendar)->create(['starts_at' => $wednesday->copy()->addHours(10)]);
-
-    actingAs($user);
+    eventFactory(2)->create(['starts_at' => $wednesday->addHours(10)]);
 
     $stats = app(GetDashboardEventStats::class)->execute();
 
@@ -223,22 +187,14 @@ it('calculates average events per day of week correctly', function (): void {
 });
 
 it('only counts events for the authenticated user', function (): void {
-    $user1 = User::factory()->create();
-    $user2 = User::factory()->create();
+    actingAsUser();
+    eventFactory(5)->create();
 
-    $connector1 = Connector::factory()->for($user1)->create();
-    $connector2 = Connector::factory()->for($user2)->create();
-
-    $calendar1 = Calendar::factory()->create();
-    $calendar2 = Calendar::factory()->create();
-
-    $calendar1->connectors()->attach($connector1);
-    $calendar2->connectors()->attach($connector2);
-
-    Event::factory()->count(5)->for($calendar1)->create();
-    Event::factory()->count(3)->for($calendar2)->create();
-
-    actingAs($user1);
+    // Create events for a different user
+    $connector = connectorFactory()->for(User::factory())->create();
+    Event::factory()->count(3)
+        ->for(calendarFactory(connector: $connector))
+        ->create();
 
     $stats = app(GetDashboardEventStats::class)->execute();
 
@@ -247,21 +203,14 @@ it('only counts events for the authenticated user', function (): void {
 });
 
 it('only counts calendars for the authenticated user', function (): void {
-    $user1 = User::factory()->create();
-    $user2 = User::factory()->create();
+    actingAsUser();
 
-    $connector1 = Connector::factory()->for($user1)->create();
-    $connector2 = Connector::factory()->for($user2)->create();
+    // creates 1 connector with 2 calendars for authenticated user
+    calendarFactory(2)->create();
 
-    $calendar1 = Calendar::factory()->create();
-    $calendar2 = Calendar::factory()->create();
-    $calendar3 = Calendar::factory()->create();
-
-    $calendar1->connectors()->attach($connector1);
-    $calendar2->connectors()->attach($connector1);
-    $calendar3->connectors()->attach($connector2);
-
-    actingAs($user1);
+    // Create calendar for a different user
+    $connector = connectorFactory()->for(User::factory())->create();
+    calendarFactory(connector: $connector)->create();
 
     $stats = app(GetDashboardEventStats::class)->execute();
 
@@ -269,28 +218,16 @@ it('only counts calendars for the authenticated user', function (): void {
 });
 
 it('handles mixed regular and all-day events in counts', function (): void {
-    $user = User::factory()->create();
-    $connector = Connector::factory()->for($user)->create();
-    $calendar = Calendar::factory()->create();
-    $calendar->connectors()->attach($connector);
+    $today = Carbon::now()->startOfDay()->toImmutable();
 
-    $today = Carbon::now()->startOfDay();
-
-    Event::factory()->for($calendar)->create([
-        'all_day' => true,
-        'starts_at' => $today,
-        'ends_at' => null,
-    ]);
-    Event::factory()->for($calendar)->create([
-        'all_day' => false,
-        'starts_at' => $today->copy()->addHours(10),
-    ]);
-    Event::factory()->for($calendar)->create([
-        'all_day' => false,
-        'starts_at' => $today->copy()->addHours(15),
-    ]);
-
-    actingAs($user);
+    actingAsUser();
+    eventFactory(3)
+        ->state(new Sequence(
+            ['all_day' => true, 'starts_at' => $today, 'ends_at' => null],
+            ['all_day' => false, 'starts_at' => $today->addHours(10)],
+            ['all_day' => false, 'starts_at' => $today->addHours(15)],
+        ))
+        ->create();
 
     $stats = app(GetDashboardEventStats::class)->execute();
 

@@ -22,9 +22,7 @@ describe('password reset link create', function (): void {
     });
 
     it('redirects authenticated users to dashboard', function (): void {
-        $user = User::factory()->create();
-
-        actingAs($user);
+        actingAsUser();
 
         get(route('password.request'))
             ->assertRedirect(route('dashboard'));
@@ -256,22 +254,13 @@ describe('password reset store', function (): void {
             ->assertSessionHasErrors('email');
     });
 
-    it('requires token field', function (): void {
-        post(route('password.update'), [
-            'email' => 'user@example.com',
-            'password' => 'new-password',
-            'password_confirmation' => 'new-password',
-        ])
-            ->assertSessionHasErrors('token');
-    });
-
-    it('requires email field', function (): void {
-        post(route('password.update'), [
-            'token' => 'some-token',
-            'password' => 'new-password',
-            'password_confirmation' => 'new-password',
-        ])
-            ->assertSessionHasErrors('email');
+    it('requires fields', function (): void {
+        post(route('password.update'), [])
+            ->assertSessionHasErrors([
+                'token',
+                'email',
+                'password',
+            ]);
     });
 
     it('validates email format', function (): void {
@@ -282,15 +271,6 @@ describe('password reset store', function (): void {
             'password_confirmation' => 'new-password',
         ])
             ->assertSessionHasErrors('email');
-    });
-
-    it('requires password field', function (): void {
-        post(route('password.update'), [
-            'token' => 'some-token',
-            'email' => 'user@example.com',
-            'password_confirmation' => 'new-password',
-        ])
-            ->assertSessionHasErrors('password');
     });
 
     it('validates password minimum length', function (): void {

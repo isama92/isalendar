@@ -1,15 +1,17 @@
 <?php
 
-use App\Models\Calendar;
 use App\Models\Event;
 use App\Services\Calendar\GoogleCalendar\Actions\Events\SaveEvent;
 use App\Services\Calendar\GoogleCalendar\Data\GoogleEventData;
 use App\Services\Calendar\GoogleCalendar\Enums\Status;
 
+use function Tests\Helpers\calendarFactory;
+use function Tests\Helpers\eventFactory;
+
 uses()->group('gcalendar', 'gcalendar.events');
 
 it('creates an event', function (): void {
-    $calendar = Calendar::factory()->create();
+    $calendar = calendarFactory()->create();
     $googleEventData = GoogleEventData::from([
         'id' => 'ev',
         'status' => Status::CONFIRMED,
@@ -37,20 +39,16 @@ it('creates an event', function (): void {
 });
 
 it('updates an event when remote updatedAt is after local updated_at', function (): void {
-    $calendar = Calendar::factory()->create();
-
-    $oldEvent = Event::factory()
-        ->for($calendar)
-        ->create([
-            'external_id' => 'ev',
-            'title' => 'Old Event',
-            'all_day' => false,
-            'timezone' => 'Europe/Amsterdam',
-            'starts_at' => '1946-01-01 12:34:56',
-            'ends_at' => '1946-01-01 16:34:52',
-            'description' => 'an old event',
-            'updated_at' => now()->subHour(),
-        ]);
+    $oldEvent = eventFactory()->create([
+        'external_id' => 'ev',
+        'title' => 'Old Event',
+        'all_day' => false,
+        'timezone' => 'Europe/Amsterdam',
+        'starts_at' => '1946-01-01 12:34:56',
+        'ends_at' => '1946-01-01 16:34:52',
+        'description' => 'an old event',
+        'updated_at' => now()->subHour(),
+    ]);
 
     $googleEventData = GoogleEventData::from([
         'id' => 'ev',
@@ -65,10 +63,10 @@ it('updates an event when remote updatedAt is after local updated_at', function 
         'description' => 'an event',
     ]);
 
-    app(SaveEvent::class)->execute($googleEventData, $calendar);
+    app(SaveEvent::class)->execute($googleEventData, $oldEvent->calendar);
 
     expect($oldEvent->refresh())
-        ->calendar_id->toBe($calendar->id)
+        ->calendar_id->toBe($oldEvent->calendar->id)
         ->external_id->toBe($googleEventData->id)
         ->title->toBe($googleEventData->summary)
         ->all_day->toBe(true)
@@ -79,10 +77,7 @@ it('updates an event when remote updatedAt is after local updated_at', function 
 });
 
 it('does not update an event when remote updatedAt is before local updated_at', function (): void {
-    $calendar = Calendar::factory()->create();
-
-    $oldEvent = Event::factory()
-        ->for($calendar)
+    $oldEvent = eventFactory()
         ->create([
             'external_id' => 'ev',
             'title' => 'Old Event',
@@ -107,10 +102,10 @@ it('does not update an event when remote updatedAt is before local updated_at', 
         'description' => 'a new event description',
     ]);
 
-    app(SaveEvent::class)->execute($googleEventData, $calendar);
+    app(SaveEvent::class)->execute($googleEventData, $oldEvent->calendar);
 
     expect($oldEvent->refresh())
-        ->calendar_id->toBe($calendar->id)
+        ->calendar_id->toBe($oldEvent->calendar->id)
         ->external_id->toBe('ev')
         ->title->toBe('Old Event')
         ->all_day->toBe(false)
@@ -121,7 +116,7 @@ it('does not update an event when remote updatedAt is before local updated_at', 
 });
 
 it('does not save a cancelled event', function (): void {
-    $calendar = Calendar::factory()->create();
+    $calendar = calendarFactory()->create();
     $googleEventData = GoogleEventData::from([
         'id' => 'ev',
         'status' => Status::CANCELLED,
@@ -141,10 +136,7 @@ it('does not save a cancelled event', function (): void {
 });
 
 it('deletes an existing cancelled event', function (): void {
-    $calendar = Calendar::factory()->create();
-
-    $oldEvent = Event::factory()
-        ->for($calendar)
+    $oldEvent = eventFactory()
         ->create([
             'external_id' => 'ev',
             'title' => 'Old Event',
@@ -168,7 +160,7 @@ it('deletes an existing cancelled event', function (): void {
         'description' => 'an event',
     ]);
 
-    app(SaveEvent::class)->execute($googleEventData, $calendar);
+    app(SaveEvent::class)->execute($googleEventData, $oldEvent->calendar);
 
     expect($oldEvent->refresh())
         ->deleted_at->not()->toBeNull();

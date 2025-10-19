@@ -1,14 +1,13 @@
 <?php
 
 use App\Enums\Service;
-use App\Models\Calendar;
-use App\Models\Connector;
-use App\Models\Event;
 use App\Models\Provider;
 use App\Models\User;
 
-use function Pest\Laravel\actingAs;
 use function Pest\Laravel\get;
+use function Tests\Helpers\calendarFactory;
+use function Tests\Helpers\connectorFactory;
+use function Tests\Helpers\eventFactory;
 
 uses()->group('web', 'events');
 
@@ -18,23 +17,16 @@ it('redirects unauthenticated users to login', function (): void {
 });
 
 it('shows correct events with properties, calendar names, and without pagination', function (): void {
-    $user = User::factory()->create();
-    $connector = Connector::factory()->for($user)->create();
+    actingAsUser();
+    $calendar1 = calendarFactory()->create(['name' => 'Work Calendar']);
+    $calendar2 = calendarFactory()->create(['name' => 'Personal Calendar']);
 
-    $calendar1 = Calendar::factory()->create(['name' => 'Work Calendar']);
-    $calendar2 = Calendar::factory()->create(['name' => 'Personal Calendar']);
-
-    $calendar1->connectors()->attach($connector);
-    $calendar2->connectors()->attach($connector);
-
-    Event::factory()->for($calendar1)->create([
+    eventFactory()->for($calendar1)->create([
         'title' => 'Work Event',
         'all_day' => true,
         'description' => 'Event description',
     ]);
-    Event::factory()->count(25)->for($calendar2)->create();
-
-    actingAs($user);
+    eventFactory(25)->for($calendar2)->create();
 
     get(route('events.index'))
         ->assertSuccessful()
@@ -49,22 +41,13 @@ it('shows correct events with properties, calendar names, and without pagination
 });
 
 it('only shows authenticated user events', function (): void {
-    $user = User::factory()->create();
-    $connector = Connector::factory()->for($user)->create();
+    actingAsUser();
 
-    $userCalendar = Calendar::factory()->create();
-    $userCalendar->connectors()->attach($connector);
+    $userEvent = eventFactory()->create();
 
-    $userEvent = Event::factory()->for($userCalendar)->create();
-
-    $otherUser = User::factory()->create();
-    $otherConnector = Connector::factory()->for($otherUser)->create();
-    $otherCalendar = Calendar::factory()->create();
-    $otherCalendar->connectors()->attach($otherConnector);
-
-    Event::factory()->for($otherCalendar)->create();
-
-    actingAs($user);
+    $otherConnector = connectorFactory()->for(User::factory())->create();
+    $otherCalendar = calendarFactory(connector: $otherConnector)->create();
+    eventFactory()->for($otherCalendar)->create();
 
     get(route('events.index'))
         ->assertSuccessful()
@@ -76,7 +59,6 @@ it('only shows authenticated user events', function (): void {
 });
 
 it('shows enabled providers', function (): void {
-    $user = User::factory()->create();
     Provider::forceCreate([
         'name' => 'disabled',
         'image_path' => '',
@@ -85,7 +67,7 @@ it('shows enabled providers', function (): void {
         'enabled' => false,
     ]);
 
-    actingAs($user);
+    actingAsUser();
 
     get(route('events.index'))
         ->assertSuccessful()
@@ -97,24 +79,15 @@ it('shows enabled providers', function (): void {
 });
 
 it('shows events from multiple connectors', function (): void {
-    $user = User::factory()->create();
+    actingAsUser();
 
-    $provider1 = Provider::googleCalendar();
-    $provider2 = Provider::microsoftOutlook();
+    $connector1 = connectorFactory()->for(Provider::googleCalendar())->create();
+    $calendar1 = calendarFactory(connector: $connector1)->create();
+    eventFactory()->for($calendar1)->create();
 
-    $connector1 = Connector::factory()->for($user)->for($provider1, 'provider')->create();
-    $connector2 = Connector::factory()->for($user)->for($provider2, 'provider')->create();
-
-    $calendar1 = Calendar::factory()->create();
-    $calendar2 = Calendar::factory()->create();
-
-    $calendar1->connectors()->attach($connector1);
-    $calendar2->connectors()->attach($connector2);
-
-    Event::factory()->for($calendar1)->create();
-    Event::factory()->for($calendar2)->create();
-
-    actingAs($user);
+    $connector2 = connectorFactory()->for(Provider::microsoftOutlook())->create();
+    $calendar2 = calendarFactory(connector: $connector2)->create();
+    eventFactory()->for($calendar2)->create();
 
     get(route('events.index'))
         ->assertSuccessful()

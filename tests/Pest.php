@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Log;
 use Tests\TestCase;
@@ -13,6 +14,7 @@ pest()->extend(TestCase::class)
         GeoIP::shouldReceive('getLocation')
             ->zeroOrMoreTimes()
             ->andReturn(['timezone' => 'Europe/Amsterdam']);
+        test()->user = User::factory()->create();
     })
     ->in('Feature');
 
