@@ -143,12 +143,16 @@ OIDC_BUTTON_LABEL="Login with Authelia"
 - Calendars `enabled` field is used by the user to disable the sync of a calendar
 - Pagination is handled in the frontend; with a high number of events (higher than 100k), it might have performance issues
 
-### TODO
+## TODOS
 - Stop using `google/apiclient` library
   - Use Saloon to make requests
   - Implement rate limit retries
   - Implement pagination
 - log to stdout in production
+
+## BUGS
+- docker run --rm ghcr.io/isama92/isalendar:latest php artisan key:generate --show
+  - not working: the entrypoint waits for db
 
 ## License
 

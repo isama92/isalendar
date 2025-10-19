@@ -56,6 +56,8 @@ storage/logs/*
 storage/framework/testing/.gitignore
 !storage/framework/views/.gitignore
 !storage/logs/.gitignore
+bootstrap/cache/*
+!bootstrap/cache/.gitignore
 
 # Testing
 tests
