@@ -4,11 +4,9 @@ import Checkbox from '@/Components/Checkbox';
 import LanguageSwitcher from '@/Components/LanguageSwitcher';
 import ThemeSwitcher from '@/Components/ThemeSwitcher';
 import { LockClosedIcon } from '@heroicons/react/24/solid';
-import { Link, useForm, usePage } from '@inertiajs/react';
+import { Link, useForm } from '@inertiajs/react';
 
-const Login = () => {
-    const { appName, locale, oidcEnabled, oidcButtonLabel } = usePage().props;
-
+const Login = ({ appName, locale, oidcEnabled, oidcButtonLabel }) => {
     const { data, setData, post, processing, errors } = useForm({
         email: '',
         password: '',

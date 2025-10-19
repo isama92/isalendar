@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 return [
     'calendars' => 'Calendari',
     'calendar' => 'Calendario',

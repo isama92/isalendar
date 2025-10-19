@@ -2,11 +2,9 @@ import LogoDark from '@/../images/logo-dark.png';
 import LogoLight from '@/../images/logo-light.png';
 import LanguageSwitcher from '@/Components/LanguageSwitcher';
 import ThemeSwitcher from '@/Components/ThemeSwitcher';
-import { useForm, usePage } from '@inertiajs/react';
+import { useForm } from '@inertiajs/react';
 
-const ResetPassword = ({ token, email }) => {
-    const { appName, locale } = usePage().props;
-
+const ResetPassword = ({ appName, locale, token, email }) => {
     const { data, setData, post, processing, errors } = useForm({
         token,
         email: email || '',

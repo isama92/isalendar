@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 return [
     'profile' => 'Profilo',
     'first_name' => 'Nome',

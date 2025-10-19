@@ -1,9 +1,10 @@
 import EventsByDayOfWeekChart from '@/Components/EventsByDayOfWeekChart';
 import StatCard from '@/Components/StatCard';
 import { ExclamationTriangleIcon } from '@heroicons/react/20/solid';
-import { Link, usePage } from '@inertiajs/react';
+import { Link } from '@inertiajs/react';
 
 const Dashboard = ({
+    connectorEnabled,
     totalEvents,
     totalCalendars,
     eventsToday,
@@ -12,8 +13,6 @@ const Dashboard = ({
     eventsNextWeek,
     averagePerDayOfWeek,
 }) => {
-    const { connectorEnabled } = usePage().props;
-
     return (
         <div className="space-y-6 px-3">
             {/* No Calendar Alert */}

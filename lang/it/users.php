@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 return [
     'users' => 'Utenti',
     'user' => 'Utente',
@@ -7,6 +9,7 @@ return [
     'last_name' => 'Cognome',
     'email' => 'Email',
     'password' => 'Password',
+    'password_confirmation' => 'Conferma password',
     'role' => 'Ruolo',
     'email_verified_at' => 'Email Verificata Il',
     'created_at' => 'Creato Il',

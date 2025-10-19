@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 return [
     'dashboard' => 'Dashboard',
     'welcome_message' => 'Welcome to your dashboard.',
