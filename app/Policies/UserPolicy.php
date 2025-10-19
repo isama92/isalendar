@@ -33,6 +33,7 @@ class UserPolicy
 
     public function delete(User $user, User $model): bool
     {
+        // policy skipped for super admins
         if ($user->id === $model->id) {
             return false;
         }
@@ -42,6 +43,7 @@ class UserPolicy
 
     public function restore(User $user, User $model): bool
     {
+        // policy skipped for super admins
         if ($user->id === $model->id) {
             return false;
         }
