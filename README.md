@@ -23,8 +23,8 @@ The easiest way to deploy Isalendar is using the pre-built Docker image.
 # Create a directory for Isalendar
 mkdir isalendar && cd isalendar
 
-# Download docker-compose.yml
-curl -O https://raw.githubusercontent.com/isama92/isalendar/main/docker-compose.yml
+# Download compose.production.yml
+curl -O https://raw.githubusercontent.com/isama92/isalendar/main/compose.production.yml
 
 # Download environment template
 curl -O https://raw.githubusercontent.com/isama92/isalendar/main/.env.production.example

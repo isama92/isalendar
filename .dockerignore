@@ -1,0 +1,80 @@
+# Git
+.git
+.gitignore
+.gitattributes
+
+# Documentation
+README.md
+
+# AI
+.claude
+CLAUDE.md
+.mcp.json
+
+# Development tools
+.editorconfig
+.phpcs.xml
+phpmd.ruleset.xml
+phpstan.neon
+phpstan-types.neon
+rector.php
+pint.json
+.php-cs-fixer.cache
+.prettierrc.json
+eslint.config.mjs
+build-and-push.sh
+Dockerfile
+
+# IDE
+.vscode
+.idea
+*.swp
+*.swo
+*~
+
+# Environment files
+.env
+.env.*
+
+# Node.js
+node_modules
+npm-debug.log
+yarn-error.log
+
+# Laravel development
+storage/app/*
+storage/debugbar
+storage/framework/cache/*
+storage/framework/sessions/*
+storage/framework/testing/*
+storage/framework/views/*
+storage/logs/*
+!storage/app/.gitignore
+!storage/framework/.gitignore
+!storage/framework/cache/.gitignore
+!storage/framework/sessions/.gitignore
+storage/framework/testing/.gitignore
+!storage/framework/views/.gitignore
+!storage/logs/.gitignore
+
+# Testing
+tests
+.phpunit.result.cache
+phpunit.xml
+coverage
+
+# Vendor (will be installed during build)
+vendor
+
+# Sail
+compose.yaml
+docker
+
+# Build artifacts
+public/hot
+public/build
+public/storage
+
+# OS
+.DS_Store
+Thumbs.db

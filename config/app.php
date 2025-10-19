@@ -20,5 +20,5 @@ return [
         'driver' => env('APP_MAINTENANCE_DRIVER', 'file'),
         'store' => env('APP_MAINTENANCE_STORE', 'database'),
     ],
-    'default_user_timezone' => env('APP_USER_TIMEZONE', 'Europe/Amsterdam'),
+    'default_user_timezone' => env('APP_TIMEZONE', 'Europe/Amsterdam'),
 ];
