@@ -38,6 +38,14 @@ return Application::configure(basePath: dirname(__DIR__))
                 AddCspHeaders::class,
                 RedirectIfSetupNeeded::class,
             ]);
+
+        // Horizon middleware group - same as web but without CSP
+        $middleware->group(
+            'horizon',
+            collect($middleware->getMiddlewareGroups()['web'])
+                ->filter(fn(string $m) => $m !== AddCspHeaders::class)
+                ->toArray()
+        );
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //
