@@ -9,18 +9,20 @@ const EventDateTime = ({ date, timezone: eventTimezone, allDay, isEndDate = fals
     const userTimezone = getUserTimezone();
     const userTime = formatDateTime(date);
 
-    if (userTimezone === eventTimezone) {
+    const userOffset = dayjs.utc(date).tz(userTimezone).format('Z');
+    const eventOffset = dayjs.utc(date).tz(eventTimezone).format('Z');
+
+    if (userOffset === eventOffset) {
         return userTime;
     }
 
     const eventTime = formatDateTimeWithTimezone(date, eventTimezone);
-    const offset = dayjs.utc(date).tz(eventTimezone).format('Z');
 
     return (
         <div>
             <div>{userTime}</div>
             <div className="text-xs text-gray-500 dark:text-gray-400" title={eventTimezone}>
-                ({offset}) {eventTime}
+                ({eventOffset}) {eventTime}
             </div>
         </div>
     );
