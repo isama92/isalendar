@@ -150,6 +150,7 @@ OIDC_BUTTON_LABEL="Login with Authelia"
   - Implement pagination
 - command to force delete a calendar
 - event templates
+- use "action panel" for the "you don't have a calendar yet, click here to create it" thing
 
 ## License
 

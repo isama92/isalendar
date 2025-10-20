@@ -2,11 +2,12 @@ import LogoDark from '@/../images/logo-dark.png';
 import LogoLight from '@/../images/logo-light.png';
 import LanguageSwitcher from '@/Components/LanguageSwitcher';
 import Notification from '@/Components/Notification';
+import QuickActions from '@/Components/QuickActions';
 import ThemeSwitcher from '@/Components/ThemeSwitcher';
 import UserDropdown from '@/Components/UserDropdown';
 import { getNavigationItems } from '@/utils/navigation';
 import { Dialog, DialogBackdrop, DialogPanel, TransitionChild } from '@headlessui/react';
-import { Bars3Icon, PlusIcon } from '@heroicons/react/20/solid';
+import { Bars3Icon } from '@heroicons/react/20/solid';
 import { XMarkIcon } from '@heroicons/react/24/outline';
 import { Link, usePage } from '@inertiajs/react';
 import clsx from 'clsx';
@@ -159,15 +160,7 @@ const UserLayout = ({ children }) => {
 
                     <div className="flex flex-1 items-center justify-end gap-x-4 self-stretch lg:gap-x-6">
                         <div className="flex items-center gap-2">
-                            {connectorEnabled && (
-                                <Link
-                                    href={route('events.create')}
-                                    className="inline-flex items-center gap-x-1.5 rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-xs hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 dark:bg-indigo-500 dark:hover:bg-indigo-400"
-                                >
-                                    <PlusIcon aria-hidden="true" className="-ml-0.5 size-5" />
-                                    {__('actions.named.create', { name: __('events.event') })}
-                                </Link>
-                            )}
+                            {connectorEnabled && <QuickActions />}
                             <UserDropdown />
                         </div>
                     </div>

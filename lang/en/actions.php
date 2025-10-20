@@ -92,6 +92,8 @@ return [
     'open_website' => 'Open on the website',
     'preview' => 'Preview',
     'price' => 'Price',
+    'quick_actions' => 'Quick Actions',
+    'batch_create_events' => 'Batch Create Events',
     'record' => 'Record',
     'restore' => 'Restore',
     'save' => 'Save',

@@ -92,6 +92,8 @@ return [
     'open_website' => 'Apri sul sito',
     'preview' => 'Anteprima',
     'price' => 'Prezzo',
+    'quick_actions' => 'Azioni Rapide',
+    'batch_create_events' => 'Crea Eventi in Batch',
     'record' => 'Documentazione',
     'restore' => 'Ripristina',
     'save' => 'Salva',
