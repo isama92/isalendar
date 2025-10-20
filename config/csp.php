@@ -18,10 +18,10 @@ return [
      */
     'directives' => [
         [Directive::DEFAULT, [Keyword::SELF]],
-        [Directive::SCRIPT, [Keyword::SELF, Keyword::UNSAFE_INLINE, 'cdn.jsdelivr.net']],
-        [Directive::STYLE, [Keyword::SELF, Keyword::UNSAFE_INLINE]],
+        [Directive::SCRIPT, [Keyword::SELF, Keyword::UNSAFE_INLINE]],
+        [Directive::STYLE, [Keyword::SELF, Keyword::UNSAFE_INLINE, 'https://rsms.me']],
         [Directive::IMG, [Keyword::SELF, 'data:']],
-        [Directive::FONT, [Keyword::SELF, 'data:']],
+        [Directive::FONT, [Keyword::SELF, 'data:', 'https://rsms.me']],
         [Directive::CONNECT, [Keyword::SELF]],
         [Directive::FORM_ACTION, [Keyword::SELF]],
         [Directive::BASE, [Keyword::SELF]],

@@ -11,7 +11,7 @@ NC='\033[0m' # No Color
 # Configuration
 REGISTRY="ghcr.io"
 IMAGE_NAME="isama92/isalendar"
-PLATFORMS="linux/amd64"
+PLATFORMS="linux/amd64,linux/arm64"
 
 echo -e "${GREEN}Isalendar Docker Build & Push Script${NC}"
 echo "======================================="

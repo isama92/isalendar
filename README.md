@@ -148,7 +148,6 @@ OIDC_BUTTON_LABEL="Login with Authelia"
   - Use Saloon to make requests
   - Implement rate limit retries
   - Implement pagination
-- log to stdout in production
 
 ## BUGS
 - docker run --rm ghcr.io/isama92/isalendar:latest php artisan key:generate --show
