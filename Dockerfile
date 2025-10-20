@@ -70,6 +70,7 @@ RUN composer install \
 COPY docker/nginx/default.conf /etc/nginx/http.d/default.conf
 COPY docker/php/php.ini /usr/local/etc/php/conf.d/custom.ini
 COPY docker/supervisor/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+COPY docker/mysql/client.cnf /etc/my.cnf
 COPY docker/entrypoint.sh /usr/local/bin/entrypoint.sh
 
 # Set permissions
