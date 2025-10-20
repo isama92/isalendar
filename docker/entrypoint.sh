@@ -25,6 +25,10 @@ echo "Redis is up!"
 echo "Running migrations..."
 php artisan migrate --force --no-interaction
 
+# Run deployment seeder
+echo "Running deployment seeder..."
+php artisan db:seed --class=DeployerSeeder --force --no-interaction
+
 # Optimize application for production
 echo "Optimizing application..."
 php artisan optimize

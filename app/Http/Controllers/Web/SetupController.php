@@ -14,7 +14,10 @@ class SetupController extends Controller
 {
     public function create(): Response
     {
-        return Inertia::render('Setup');
+        return Inertia::render('Setup', [
+            'title' => __('setup.title', ['app' => config('app.name')]),
+            'subtitle' => __('setup.subtitle'),
+        ]);
     }
 
     public function store(SetupRequest $request): RedirectResponse
