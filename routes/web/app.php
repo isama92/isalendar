@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Web\BatchEventsController;
 use App\Http\Controllers\Web\CalendarsController;
 use App\Http\Controllers\Web\ConnectorsController;
 use App\Http\Controllers\Web\DashboardController;
@@ -63,6 +64,10 @@ Route::middleware('auth')->group(function (): void {
                 ->name('create');
             Route::post('/', [EventsController::class, 'store'])
                 ->name('store');
+            Route::get('/batch/create', [BatchEventsController::class, 'create'])
+                ->name('batch.create');
+            Route::post('/batch', [BatchEventsController::class, 'store'])
+                ->name('batch.store');
             Route::get('/{event}', [EventsController::class, 'show'])
                 ->name('show');
             Route::get('/{event}/edit', [EventsController::class, 'edit'])

@@ -23,4 +23,10 @@ return [
     'delete_confirm' => 'Are you sure you want to delete this event?',
     'delete_confirm_message' => 'Are you sure you want to delete this event? This action cannot be undone.',
     'no_events_found' => 'No events found.',
+    'event_dates' => 'Event Dates',
+    'batch_event_details_description' => 'Enter event details that will apply to all events',
+    'batch_event_dates_description' => 'Add one or more dates for your events',
+    'batch_event_details' => 'Event Details',
+    'batch_event_dates' => 'Event Dates',
+    'batch_created' => ':count events created successfully!',
 ];

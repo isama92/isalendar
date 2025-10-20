@@ -56,7 +56,12 @@ class EventsController extends Controller
 
     public function store(StoreEventRequest $request): RedirectResponse
     {
-        $event = Event::create($request->validated());
+        $validatedData = $request->validated();
+
+        $calendar = Calendar::forCurrentUser()
+            ->findOrFail($validatedData['calendar_id']);
+
+        $event = $calendar->events()->create($validatedData);
 
         $redirectTo = $request->input('redirect_to', 'index');
 

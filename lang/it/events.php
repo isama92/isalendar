@@ -23,4 +23,10 @@ return [
     'delete_confirm' => 'Sei sicuro di voler eliminare questo evento?',
     'delete_confirm_message' => 'Sei sicuro di voler eliminare questo evento? Questa azione non può essere annullata.',
     'no_events_found' => 'Nessun evento trovato.',
+    'event_dates' => 'Date Evento',
+    'batch_event_details_description' => 'Inserisci i dettagli dell\'evento che verranno applicati a tutti gli eventi',
+    'batch_event_dates_description' => 'Aggiungi una o più date per i tuoi eventi',
+    'batch_event_details' => 'Dettagli Evento',
+    'batch_event_dates' => 'Date Evento',
+    'batch_created' => ':count eventi creati con successo!',
 ];

@@ -138,4 +138,7 @@ return [
     'user' => 'User',
     'view' => 'View',
     'yes' => 'Yes',
+    'add_date' => 'Add Date',
+    'next' => 'Next',
+    'remove' => 'Remove',
 ];
