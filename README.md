@@ -37,7 +37,7 @@ Edit the `.env` file and set the required values:
 
 ```bash
 # Generate a Laravel application key
-# You can use: docker run --rm ghcr.io/isama92/isalendar:latest php artisan key:generate --show
+# You can use: docker run --rm --entrypoint php ghcr.io/isama92/isalendar:latest artisan key:generate --show
 APP_KEY=base64:YOUR_GENERATED_KEY_HERE
 
 # Set your domain
@@ -148,10 +148,6 @@ OIDC_BUTTON_LABEL="Login with Authelia"
   - Use Saloon to make requests
   - Implement rate limit retries
   - Implement pagination
-
-## BUGS
-- docker run --rm ghcr.io/isama92/isalendar:latest php artisan key:generate --show
-  - not working: the entrypoint waits for db
 
 ## License
 
