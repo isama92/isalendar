@@ -11,6 +11,7 @@ return [
      */
     'presets' => [
         // Spatie\Csp\Presets\Basic::class,
+        \App\Csp\Horizon::class,
     ],
 
     /**
