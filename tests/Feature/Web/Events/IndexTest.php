@@ -1,6 +1,5 @@
 <?php
 
-use App\Enums\Service;
 use App\Models\Provider;
 use App\Models\User;
 
@@ -69,12 +68,14 @@ it('shows enabled providers', function (): void {
 
     actingAsUser();
 
+    $calendar = calendarFactory()->create();
+
     get(route('events.index'))
         ->assertSuccessful()
         ->assertInertia(fn ($page) => $page
             ->component('Events/Index')
-            ->has('providers', 1)
-            ->where('providers.0.id', Service::GOOGLE_CALENDAR->id())
+            ->has('calendars', 1)
+            ->where('calendars.0.id', $calendar->id)
         );
 });
 

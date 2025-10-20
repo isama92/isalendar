@@ -148,6 +148,8 @@ OIDC_BUTTON_LABEL="Login with Authelia"
   - Use Saloon to make requests
   - Implement rate limit retries
   - Implement pagination
+- command to force delete a calendar
+- event templates
 
 ## License
 

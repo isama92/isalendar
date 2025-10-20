@@ -32,7 +32,7 @@ const Create = ({ connectorRouteKey, provider, calendars }) => {
                                     <div className="flex min-w-0 items-center gap-x-4">
                                         <ProviderLogo
                                             image_path={provider.image_path}
-                                            alt={provider.name}
+                                            title={provider.name}
                                             className="size-7 flex-none rounded-full bg-gray-50 dark:bg-gray-800 dark:outline dark:-outline-offset-1 dark:outline-white/10"
                                         />
                                         <div className="min-w-0 flex-auto">

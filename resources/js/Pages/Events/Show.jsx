@@ -1,5 +1,7 @@
 import EventDateTime from '@/Components/EventDateTime';
 import Modal from '@/Components/Modal';
+import ProviderLogo from '@/Components/ProviderLogo';
+import { getTimezoneOffset } from '@/utils/date';
 import { PencilIcon, TrashIcon } from '@heroicons/react/20/solid';
 import { Link, router } from '@inertiajs/react';
 import { useState } from 'react';
@@ -51,7 +53,14 @@ const Show = ({ event }) => {
                             {__('calendars.calendar')}
                         </dt>
                         <dd className="mt-1 text-sm/6 text-gray-700 sm:mt-2 dark:text-gray-400">
-                            {event.calendar.name}
+                            <div className="flex items-center gap-2">
+                                <span>{event.calendar.name}</span>
+                                <ProviderLogo
+                                    image_path={event.calendar.provider.image_path}
+                                    title={event.calendar.provider.name}
+                                    className="h-5 w-5"
+                                />
+                            </div>
                         </dd>
                     </div>
                     <div className="border-t border-gray-100 px-4 py-6 sm:col-span-1 sm:px-6 dark:border-white/10">
@@ -79,7 +88,7 @@ const Show = ({ event }) => {
                                 {__('events.timezone')}
                             </dt>
                             <dd className="mt-1 text-sm/6 text-gray-700 sm:mt-2 dark:text-gray-400">
-                                {event.timezone}
+                                ({getTimezoneOffset(event.starts_at, event.timezone)}) {event.timezone}
                             </dd>
                         </div>
                     )}

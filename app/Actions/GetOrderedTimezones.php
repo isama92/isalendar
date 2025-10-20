@@ -31,7 +31,7 @@ class GetOrderedTimezones
             ])
             ->map(fn (array $data): array => [
                 'value' => $data['timezone'],
-                'label' => "(UTC{$data['offset']}) {$data['timezone']}",
+                'label' => "({$data['offset']}) {$data['timezone']}",
             ])
             ->values();
     }

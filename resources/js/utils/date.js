@@ -82,3 +82,13 @@ export const getUserTimezone = () => {
     // Try to get the timezone name - dayjs stores it internally
     return tzDate.$x?.$timezone || dayjs.tz.guess();
 };
+
+/**
+ * Get the timezone offset for a specific timezone and date
+ * @param {string|Date} date - The reference date for the offset calculation
+ * @param {string} timezone - The timezone to get the offset for
+ * @returns {string} The timezone offset (e.g., '+01:00', '-05:00')
+ */
+export const getTimezoneOffset = (date, timezone) => {
+    return dayjs.utc(date).tz(timezone).format('Z');
+};

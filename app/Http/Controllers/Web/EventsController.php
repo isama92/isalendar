@@ -8,7 +8,6 @@ use App\Http\Requests\StoreEventRequest;
 use App\Http\Requests\UpdateEventRequest;
 use App\Models\Calendar;
 use App\Models\Event;
-use App\Models\Provider;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
@@ -29,7 +28,7 @@ class EventsController extends Controller
 
         return Inertia::render('Events/Index', [
             'events' => $events,
-            'providers' => Provider::enabled()->get(['id', 'name']),
+            'calendars' => Calendar::forCurrentUser()->enabled()->get(['id', 'name']),
         ]);
     }
 

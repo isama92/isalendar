@@ -18,7 +18,7 @@ it('displays profile edit page', function (): void {
                 ->count() === count(timezone_identifiers_list()))
             ->has('timezones.0.value')
             ->has('timezones.0.label')
-            ->where('timezones.0.label', '(UTC-11:00) Pacific/Midway')
+            ->where('timezones.0.label', '(-11:00) Pacific/Midway')
         );
 });
 

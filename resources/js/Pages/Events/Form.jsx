@@ -1,19 +1,10 @@
+import CalendarSelect from '@/Components/CalendarSelect';
 import Checkbox from '@/Components/Checkbox';
 import RichTextEditor from '@/Components/RichTextEditor';
 import TimezoneSelect from '@/Components/TimezoneSelect';
 import { addDays, formatWithFormat, formatWithFormatAndTimezone, subtractDays } from '@/utils/date';
-import {
-    Listbox,
-    ListboxButton,
-    ListboxOption,
-    ListboxOptions,
-    Menu,
-    MenuButton,
-    MenuItem,
-    MenuItems,
-} from '@headlessui/react';
-import { ChevronUpDownIcon } from '@heroicons/react/16/solid';
-import { CheckIcon, ChevronDownIcon } from '@heroicons/react/20/solid';
+import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react';
+import { ChevronDownIcon } from '@heroicons/react/20/solid';
 import { useForm } from '@inertiajs/react';
 import clsx from 'clsx';
 import DatePicker from 'react-datepicker';
@@ -70,8 +61,6 @@ const Form = ({ currentUser, calendars, timezones, event = null }) => {
         });
     };
 
-    const selected = calendars.find(cal => cal.id === data.calendar_id);
-
     return (
         <div className="rounded-lg bg-white p-6 shadow dark:bg-gray-800">
             <form className="space-y-6">
@@ -95,75 +84,17 @@ const Form = ({ currentUser, calendars, timezones, event = null }) => {
                             >
                                 {__('calendars.calendar')}
                             </label>
-                            <Listbox value={data.calendar_id} onChange={value => setData('calendar_id', value)}>
-                                <div className="relative mt-2 sm:col-span-2 sm:mt-0 sm:max-w-md">
-                                    <ListboxButton
-                                        id="calendar_id"
-                                        name="calendar_id"
-                                        aria-invalid={!!errors.calendar_id}
-                                        aria-describedby={errors.calendar_id ? 'calendar_id-error' : ''}
-                                        className={clsx(
-                                            'grid w-full cursor-default grid-cols-1 rounded-md bg-white py-1.5 pr-2 pl-3 text-left outline-1 -outline-offset-1 outline-gray-300 sm:text-sm/6 dark:bg-white/5 dark:outline-white/10',
-                                            errors.calendar_id
-                                                ? 'text-red-900 dark:text-red-400'
-                                                : 'text-gray-900 dark:text-white'
-                                        )}
-                                    >
-                                        <span className="col-start-1 row-start-1 flex w-full gap-2 pr-6">
-                                            <span className="truncate">{selected?.name}</span>
-                                            <span
-                                                className={clsx(
-                                                    'truncate',
-                                                    errors.calendar_id
-                                                        ? 'text-red-700 dark:text-red-300'
-                                                        : 'text-gray-500 dark:text-gray-400'
-                                                )}
-                                            >
-                                                {selected?.connector?.provider?.name}
-                                            </span>
-                                        </span>
-                                        <ChevronUpDownIcon
-                                            aria-hidden="true"
-                                            className="col-start-1 row-start-1 size-5 self-center justify-self-end text-gray-500 sm:size-4 dark:text-gray-400"
-                                        />
-                                    </ListboxButton>
-
-                                    <ListboxOptions
-                                        transition
-                                        className="absolute z-10 mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg outline-1 outline-black/5 data-leave:transition data-leave:duration-100 data-leave:ease-in data-closed:data-leave:opacity-0 sm:text-sm dark:bg-gray-800 dark:shadow-none dark:-outline-offset-1 dark:outline-white/10"
-                                    >
-                                        {calendars.map(calendar => (
-                                            <ListboxOption
-                                                key={calendar.id}
-                                                value={calendar.id}
-                                                className="group relative cursor-default py-2 pr-9 pl-3 text-gray-900 select-none data-focus:bg-indigo-600 data-focus:text-white data-focus:outline-hidden dark:text-white dark:data-focus:bg-indigo-500"
-                                            >
-                                                <div className="flex">
-                                                    <span className="truncate font-normal group-data-selected:font-semibold">
-                                                        {calendar.name}
-                                                    </span>
-                                                    <span className="ml-2 truncate text-gray-500 group-data-focus:text-indigo-200 dark:text-gray-400 dark:group-data-focus:text-indigo-100">
-                                                        {calendar.provider.name}
-                                                    </span>
-                                                </div>
-
-                                                <span className="absolute inset-y-0 right-0 flex items-center pr-4 text-indigo-600 group-not-data-selected:hidden group-data-focus:text-white dark:text-indigo-400">
-                                                    <CheckIcon aria-hidden="true" className="size-5" />
-                                                </span>
-                                            </ListboxOption>
-                                        ))}
-                                    </ListboxOptions>
-                                    {errors.calendar_id && (
-                                        <p
-                                            id="calendar_id-error"
-                                            role="alert"
-                                            className="mt-2 text-sm text-red-600 dark:text-red-400"
-                                        >
-                                            {errors.calendar_id}
-                                        </p>
-                                    )}
-                                </div>
-                            </Listbox>
+                            <div className="mt-2 sm:col-span-2 sm:mt-0">
+                                <CalendarSelect
+                                    value={data.calendar_id}
+                                    onChange={value => setData('calendar_id', parseInt(value))}
+                                    calendars={calendars}
+                                    error={errors.calendar_id}
+                                    id="calendar_id"
+                                    name="calendar_id"
+                                    className="sm:max-w-md"
+                                />
+                            </div>
                         </div>
                     </div>
                 </div>

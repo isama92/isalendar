@@ -1,8 +1,10 @@
+import CalendarSelect from '@/Components/CalendarSelect';
 import EventDateTime from '@/Components/EventDateTime';
 import Modal from '@/Components/Modal';
+import ProviderLogo from '@/Components/ProviderLogo';
 import Paginator from '@/Components/Tables/Paginator';
 import Table from '@/Components/Tables/Table';
-import { formatWithFormat, formatWithFormatAndTimezone } from '@/utils/date';
+import { formatWithFormat, formatWithFormatAndTimezone, getTimezoneOffset } from '@/utils/date';
 import {
     CheckIcon,
     DocumentIcon,
@@ -25,7 +27,7 @@ import { useMemo, useState } from 'react';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 
-const Index = ({ events, providers }) => {
+const Index = ({ events, calendars }) => {
     const [sorting, setSorting] = useState([]);
     const [columnFilters, setColumnFilters] = useState([]);
     const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 10 });
@@ -56,6 +58,12 @@ const Index = ({ events, providers }) => {
             {
                 header: __('events.timezone'),
                 accessorKey: 'timezone',
+                cell: info => {
+                    const timezone = info.getValue();
+                    if (!timezone) return '-';
+                    const offset = getTimezoneOffset(info.row.original.starts_at, timezone);
+                    return `(${offset}) ${timezone}`;
+                },
             },
             {
                 header: __('events.starts_at'),
@@ -98,15 +106,19 @@ const Index = ({ events, providers }) => {
                 header: __('events.calendar_name'),
                 id: 'calendar_name',
                 accessorFn: row => row.calendar.name,
-            },
-            {
-                header: __('providers.provider'),
-                id: 'provider_name',
-                enableSorting: false,
-                accessorFn: row => row.calendar.provider.name,
+                cell: info => (
+                    <div className="flex items-center gap-2">
+                        <span>{info.getValue()}</span>
+                        <ProviderLogo
+                            image_path={info.row.original.calendar.provider.image_path}
+                            title={info.row.original.calendar.provider.name}
+                            className="h-5 w-5"
+                        />
+                    </div>
+                ),
                 filterFn: (row, id, value) => {
-                    if (value === 'all') return true;
-                    return row.original.calendar.provider.id.toString() === value;
+                    if (!value || value === 'all') return true;
+                    return row.original.calendar.id.toString() === value.toString();
                 },
             },
             {
@@ -206,18 +218,13 @@ const Index = ({ events, providers }) => {
                     <option value="true">{__('events.all_day_only')}</option>
                     <option value="false">{__('events.not_all_day')}</option>
                 </select>
-                <select
-                    value={table.getColumn('provider_name')?.getFilterValue() ?? 'all'}
-                    onChange={e => table.getColumn('provider_name')?.setFilterValue(e.target.value)}
-                    className="rounded-md border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 focus:outline-none dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100"
-                >
-                    <option value="all">{__('actions.named.all', { name: __('providers.provider') })}</option>
-                    {providers.map(provider => (
-                        <option key={provider.id} value={provider.id}>
-                            {provider.name}
-                        </option>
-                    ))}
-                </select>
+                <CalendarSelect
+                    value={table.getColumn('calendar_name')?.getFilterValue() ?? 'all'}
+                    onChange={value => table.getColumn('calendar_name')?.setFilterValue(value)}
+                    calendars={calendars}
+                    allowAll={true}
+                    allText={__('actions.named.all', { name: __('calendars.calendar') })}
+                />
                 <DatePicker
                     selected={
                         table.getColumn('starts_at')?.getFilterValue()
