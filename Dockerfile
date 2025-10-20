@@ -28,6 +28,7 @@ RUN apk add --no-cache \
     freetype-dev \
     libzip-dev \
     oniguruma-dev \
+    icu-dev \
     && docker-php-ext-configure gd --with-freetype --with-jpeg \
     && docker-php-ext-install -j$(nproc) \
         pdo_mysql \
@@ -37,7 +38,8 @@ RUN apk add --no-cache \
         mbstring \
         opcache \
         pcntl \
-        bcmath
+        bcmath \
+        intl
 
 # Install Redis extension
 RUN apk add --no-cache --virtual .build-deps $PHPIZE_DEPS \

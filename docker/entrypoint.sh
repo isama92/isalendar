@@ -25,11 +25,9 @@ echo "Redis is up!"
 echo "Running migrations..."
 php artisan migrate --force --no-interaction
 
-# Clear and cache configuration for production
+# Optimize application for production
 echo "Optimizing application..."
-php artisan config:cache
-php artisan route:cache
-php artisan view:cache
+php artisan optimize
 
 # Ensure storage directories have correct permissions
 echo "Setting permissions..."
