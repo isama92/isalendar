@@ -17,6 +17,7 @@ class GoogleEventData extends Data
 
     public function __construct(
         public string $id,
+        public string $creatorId,
         public Status $status,
         public Carbon $updatedAt,
         public ?string $summary,
@@ -35,6 +36,7 @@ class GoogleEventData extends Data
 
         return new self(
             id: $googleEvent->getId(),
+            creatorId: $googleEvent->getCreator()->getId(),
             status: Status::from($googleEvent->getStatus()),
             updatedAt: Carbon::parse($googleEvent->getUpdated()),
             summary: $googleEvent->getSummary(),

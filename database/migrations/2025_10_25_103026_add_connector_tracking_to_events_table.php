@@ -48,12 +48,7 @@ return new class extends Migration
                 }
             });
 
-        // Make columns NOT NULL
         Schema::table('events', function (Blueprint $table): void {
-            $table->foreignId('created_by_connector_id')
-                ->nullable(false)
-                ->change();
-
             $table->foreignId('last_modified_by_connector_id')
                 ->nullable(false)
                 ->change();

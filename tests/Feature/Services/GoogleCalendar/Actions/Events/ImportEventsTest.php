@@ -21,6 +21,7 @@ it('calls FetchEvents and then calls SaveEvent for each event', function (): voi
     $eventsDataCollection = collect([
         GoogleEventData::from([
             'id' => 'ev 1',
+            'creatorId' => $connector->external_id,
             'status' => Status::CONFIRMED,
             'updatedAt' => now(),
             'summary' => 'Event 1',
@@ -33,6 +34,7 @@ it('calls FetchEvents and then calls SaveEvent for each event', function (): voi
         ]),
         GoogleEventData::from([
             'id' => 'ev 2',
+            'creatorId' => $connector->external_id,
             'status' => Status::CANCELLED,
             'updatedAt' => now(),
             'summary' => 'Event 2',

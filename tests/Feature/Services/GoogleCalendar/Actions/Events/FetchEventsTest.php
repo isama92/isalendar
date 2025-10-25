@@ -6,6 +6,7 @@ use App\Services\Calendar\GoogleCalendar\Data\GoogleEventData;
 use App\Services\Calendar\GoogleCalendar\Enums\Status;
 use Google\Client as GoogleClient;
 use Google\Service\Calendar\Event as GoogleEvent;
+use Google\Service\Calendar\EventCreator;
 use Google\Service\Calendar\EventDateTime;
 use Google\Service\Calendar\Events;
 use Illuminate\Support\Collection;
@@ -20,6 +21,8 @@ it('fetches events from Google and returns GoogleEventData', function (): void {
     $connector = $calendar->connectors->sole();
 
     $ge1 = new GoogleEvent;
+    $ge1Creator = new EventCreator;
+    $ge1Creator->setId($connector->external_id);
     $ge1Start = new EventDateTime;
     $ge1Start->setDateTime(now()->toRfc3339String());
     $ge1Start->setTimeZone('Europe/Amsterdam');
@@ -27,6 +30,7 @@ it('fetches events from Google and returns GoogleEventData', function (): void {
     $ge1End->setDateTime(now()->addHour()->toRfc3339String());
     $ge1End->setTimeZone('Europe/Amsterdam');
     $ge1->setId('ev_1');
+    $ge1->setCreator($ge1Creator);
     $ge1->setSummary('Event 1');
     $ge1->setStatus(Status::CONFIRMED->value);
     $ge1->setStart($ge1Start);
@@ -34,11 +38,14 @@ it('fetches events from Google and returns GoogleEventData', function (): void {
     $ge1->setDescription('an event');
 
     $ge2 = new GoogleEvent;
+    $ge2Creator = new EventCreator;
+    $ge2Creator->setId($connector->external_id);
     $ge2Start = new EventDateTime;
     $ge2Start->setDate(now()->toDateString());
     $ge2End = new EventDateTime;
     $ge2End->setDate(now()->addDay()->toDateString());
     $ge2->setId('ev_2');
+    $ge2->setCreator($ge2Creator);
     $ge2->setSummary('Event 2');
     $ge2->setStatus(Status::TENTATIVE->value);
     $ge2->setStart($ge2Start);
@@ -74,6 +81,7 @@ it('fetches events from Google and returns GoogleEventData', function (): void {
         ->and($result->get(0))
         ->toBeInstanceOf(GoogleEventData::class)
         ->id->toBe($ge1->getId())
+        ->creatorId->toBe($connector->external_id)
         ->summary->toBe($ge1->getSummary())
         ->status->toBe(Status::CONFIRMED)
         ->timezone->toBe('Europe/Amsterdam')
@@ -85,6 +93,7 @@ it('fetches events from Google and returns GoogleEventData', function (): void {
         ->and($result->get(1))
         ->toBeInstanceOf(GoogleEventData::class)
         ->id->toBe($ge2->getId())
+        ->creatorId->toBe($connector->external_id)
         ->summary->toBe($ge2->getSummary())
         ->status->toBe(Status::TENTATIVE)
         ->timezone->toBeNull()

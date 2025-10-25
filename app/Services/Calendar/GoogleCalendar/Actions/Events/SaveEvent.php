@@ -35,12 +35,14 @@ class SaveEvent
 
     private function saveEvent(Connector $connector, Calendar $calendar, GoogleEventData $googleEventData, ?Event $event): void
     {
-        // TODO: get right connector based on who created/updated event remotely
+        $creatorConnector = $calendar->connectors()
+            ->where('external_id', $googleEventData->creatorId)
+            ->first();
 
         if (! $event instanceof Event) {
             $calendar->events()->create([
                 ...EventData::from($googleEventData)->all(),
-                'created_by_connector_id' => $connector->id,
+                'created_by_connector_id' => $creatorConnector?->id,
                 'last_modified_by_connector_id' => $connector->id,
             ]);
 

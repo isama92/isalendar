@@ -108,7 +108,6 @@ class UsersController extends Controller
     public function destroy(User $user): RedirectResponse
     {
         if ($user->trashed()) {
-            // TODO: restore in destroy method?
             Gate::authorize('restore', $user);
             $user->restore();
 

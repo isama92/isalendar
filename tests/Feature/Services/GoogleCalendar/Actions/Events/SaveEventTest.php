@@ -15,6 +15,7 @@ it('creates an event', function (): void {
     $connector = $calendar->connectors()->first();
     $googleEventData = GoogleEventData::from([
         'id' => 'ev',
+        'creatorId' => $connector->external_id,
         'status' => Status::CONFIRMED,
         'updatedAt' => now(),
         'summary' => 'Event',
@@ -36,7 +37,9 @@ it('creates an event', function (): void {
         ->timezone->toBe('Europe/Amsterdam')
         ->starts_at->toBe($googleEventData->startDateTime)
         ->ends_at->toBe($googleEventData->endDateTime)
-        ->description->toBe($googleEventData->description);
+        ->description->toBe($googleEventData->description)
+        ->created_by_connector_id->toBe($connector->id)
+        ->last_modified_by_connector_id->toBe($connector->id);
 });
 
 it('updates an event when remote updatedAt is after local updated_at', function (): void {
@@ -54,6 +57,7 @@ it('updates an event when remote updatedAt is after local updated_at', function 
     $connector = $oldEvent->calendar->connectors()->first();
     $googleEventData = GoogleEventData::from([
         'id' => 'ev',
+        'creatorId' => $connector->external_id,
         'status' => Status::CONFIRMED,
         'updatedAt' => now(),
         'summary' => 'Event',
@@ -75,7 +79,8 @@ it('updates an event when remote updatedAt is after local updated_at', function 
         ->timezone->toBeNull()
         ->starts_at->toBe($googleEventData->startDate)
         ->ends_at->toBe($googleEventData->endDate)
-        ->description->toBe($googleEventData->description);
+        ->description->toBe($googleEventData->description)
+        ->last_modified_by_connector_id->toBe($connector->id);
 });
 
 it('does not update an event when remote updatedAt is before local updated_at', function (): void {
@@ -94,6 +99,7 @@ it('does not update an event when remote updatedAt is before local updated_at', 
     $connector = $oldEvent->calendar->connectors()->first();
     $googleEventData = GoogleEventData::from([
         'id' => 'ev',
+        'creatorId' => $connector->external_id,
         'status' => Status::CONFIRMED,
         'updatedAt' => now()->subHour(),
         'summary' => 'New Event Title',
@@ -123,6 +129,7 @@ it('does not save a cancelled event', function (): void {
     $connector = $calendar->connectors()->first();
     $googleEventData = GoogleEventData::from([
         'id' => 'ev',
+        'creatorId' => $connector->external_id,
         'status' => Status::CANCELLED,
         'updatedAt' => now(),
         'summary' => 'Event',
@@ -154,6 +161,7 @@ it('deletes an existing cancelled event', function (): void {
     $connector = $oldEvent->calendar->connectors()->first();
     $googleEventData = GoogleEventData::from([
         'id' => 'ev',
+        'creatorId' => $connector->external_id,
         'status' => Status::CANCELLED,
         'updatedAt' => now(),
         'summary' => null,
@@ -169,4 +177,28 @@ it('deletes an existing cancelled event', function (): void {
 
     expect($oldEvent->refresh())
         ->deleted_at->not()->toBeNull();
+});
+
+it('sets created_by_connector_id to null when creator does not exist in database', function (): void {
+    $calendar = calendarFactory()->create();
+    $connector = $calendar->connectors()->first();
+    $googleEventData = GoogleEventData::from([
+        'id' => 'ev',
+        'creatorId' => 'external-user-id-not-in-db',
+        'status' => Status::CONFIRMED,
+        'updatedAt' => now(),
+        'summary' => 'Event created by external user',
+        'timezone' => 'Europe/Amsterdam',
+        'startDateTime' => now()->toDateTimeString(),
+        'startDate' => null,
+        'endDateTime' => now()->addMinute()->toDateTimeString(),
+        'endDate' => null,
+        'description' => 'an event',
+    ]);
+
+    app(SaveEvent::class)->execute($connector, $calendar, $googleEventData);
+
+    expect(Event::sole())
+        ->created_by_connector_id->toBeNull()
+        ->last_modified_by_connector_id->toBe($connector->id);
 });
