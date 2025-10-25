@@ -149,7 +149,6 @@ OIDC_BUTTON_LABEL="Login with Authelia"
   - Implement rate limit retries
   - Implement pagination
 - event templates
-- use "action panel" for the "you don't have a calendar yet, click here to create it" thing
 - set correct created by and last updated by when importing connector from remote
 
 ## License

@@ -17,25 +17,25 @@ const Dashboard = ({
         <div className="space-y-6 px-3">
             {/* No Calendar Alert */}
             {!connectorEnabled && (
-                <div className="flex justify-center px-4 pt-3 sm:px-6 lg:px-8">
-                    <div className="w-full max-w-4xl border-l-4 border-yellow-400 bg-yellow-50 p-4 dark:border-yellow-500 dark:bg-yellow-500/10">
-                        <div className="flex">
-                            <div className="shrink-0">
-                                <ExclamationTriangleIcon
-                                    aria-hidden="true"
-                                    className="size-5 text-yellow-400 dark:text-yellow-500"
-                                />
+                <div className="mx-auto max-w-3xl bg-white shadow-sm sm:rounded-lg dark:bg-gray-800/50 dark:shadow-none dark:outline dark:-outline-offset-1 dark:outline-white/10">
+                    <div className="px-4 py-5 sm:p-6">
+                        <div className="sm:flex sm:items-start sm:justify-between">
+                            <div>
+                                <h3 className="flex items-center gap-2 text-base font-semibold text-gray-900 dark:text-white">
+                                    <ExclamationTriangleIcon aria-hidden="true" className="size-5 text-yellow-500" />
+                                    {__('calendars.no_calendar_title')}
+                                </h3>
+                                <div className="mt-2 max-w-xl text-sm text-gray-500 dark:text-gray-400">
+                                    <p>{__('calendars.no_calendar_description')}</p>
+                                </div>
                             </div>
-                            <div className="ml-3">
-                                <p className="text-sm text-yellow-700 dark:text-yellow-300">
-                                    {__('calendars.no_calendar_yet')}{' '}
-                                    <Link
-                                        href={route('providers.create')}
-                                        className="font-medium text-yellow-700 underline hover:text-yellow-600 dark:text-yellow-300 dark:hover:text-yellow-200"
-                                    >
-                                        {__('actions.named.add', { name: __('calendars.calendar') })}
-                                    </Link>
-                                </p>
+                            <div className="mt-5 sm:mt-0 sm:ml-6 sm:flex sm:shrink-0 sm:items-center">
+                                <Link
+                                    href={route('providers.create')}
+                                    className="inline-flex items-center rounded-md bg-yellow-500 px-3 py-2 text-sm font-semibold text-white shadow-xs hover:bg-yellow-400 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-yellow-500 dark:bg-yellow-600 dark:shadow-none dark:hover:bg-yellow-500 dark:focus-visible:outline-yellow-600"
+                                >
+                                    {__('actions.named.add', { name: __('calendars.calendar') })}
+                                </Link>
                             </div>
                         </div>
                     </div>
