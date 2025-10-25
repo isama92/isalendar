@@ -31,9 +31,7 @@ class CalendarsController extends Controller
             ->withCount('events')
             ->get()
             ->map(function (Calendar $calendar) use ($getThrottleLimitKey): array {
-                $connector = $calendar->connector;
-
-                $key = $getThrottleLimitKey->execute('connector-sync', [Auth::id(), $connector->id]);
+                $key = $getThrottleLimitKey->execute('ui-calendar-sync', [Auth::id(), $calendar->id]);
 
                 return array_merge($calendar->toArray(), [
                     'can_sync' => ! RateLimiter::tooManyAttempts($key, 1),

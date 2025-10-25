@@ -86,7 +86,7 @@ const Index = ({ calendars, providers }) => {
                     <div className="flex items-center justify-end gap-3">
                         <button
                             onClick={() => {
-                                router.put(route('connectors.synchronize', info.row.original.connector.id));
+                                router.put(route('calendars.synchronize', info.row.original.id));
                             }}
                             disabled={!info.row.original.can_sync || !info.row.original.enabled}
                             title={

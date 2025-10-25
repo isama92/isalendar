@@ -2,7 +2,7 @@
 
 use App\Http\Controllers\Web\BatchEventsController;
 use App\Http\Controllers\Web\CalendarsController;
-use App\Http\Controllers\Web\ConnectorsController;
+use App\Http\Controllers\Web\CalendarSynchronizationController;
 use App\Http\Controllers\Web\DashboardController;
 use App\Http\Controllers\Web\EventsController;
 use App\Http\Controllers\Web\ProfileController;
@@ -32,14 +32,6 @@ Route::middleware('auth')->group(function (): void {
                 ->name('store');
         });
 
-    Route::prefix('/connectors')
-        ->name('connectors.')
-        ->group(function (): void {
-            Route::put('/{connector}/synchronize', [ConnectorsController::class, 'update'])
-                ->middleware('throttle:connector-sync')
-                ->name('synchronize');
-        });
-
     Route::prefix('/calendars')
         ->name('calendars.')
         ->group(function (): void {
@@ -53,6 +45,9 @@ Route::middleware('auth')->group(function (): void {
                 ->name('update');
             Route::delete('/{calendar}', [CalendarsController::class, 'destroy'])
                 ->name('destroy');
+            Route::put('/{calendar}/synchronize', [CalendarSynchronizationController::class, 'update'])
+                ->middleware('throttle:ui-calendar-sync')
+                ->name('synchronize');
         });
 
     Route::prefix('/events')

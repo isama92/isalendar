@@ -1,25 +1,31 @@
 <?php
 
-use App\Actions\SynchronizeConnector;
+use App\Actions\SynchronizeCalendar;
 use App\Console\Commands\SynchronizeConnectorCommand;
+use App\Models\Calendar;
 use App\Models\Connector;
 
 use function Pest\Laravel\artisan;
 use function Pest\Laravel\partialMock;
+use function Tests\Helpers\calendarFactory;
 
 uses()->group('commands');
 
 beforeEach(function (): void {
     test()->confirmationText = 'Are you sure you want to run this command?';
+    test()->disabledText = 'This connector is disabled. Are you sure you want to synchronize it?';
 });
 
-it('executes synchronize connector action', function (): void {
+it('executes synchronize calendar action for each enabled calendar', function (): void {
     $connector = Connector::factory()->create();
+    calendarFactory(connector: $connector)->create();
+    calendarFactory(connector: $connector)->create();
+    calendarFactory(connector: $connector)->disabled()->create();
 
-    partialMock(SynchronizeConnector::class)
+    partialMock(SynchronizeCalendar::class)
         ->shouldReceive('execute')
-        ->once()
-        ->withAnyArgs()
+        ->times(2)
+        ->withArgs(fn ($calendar): bool => $calendar instanceof Calendar)
         ->andReturnUndefined();
 
     artisan(SynchronizeConnectorCommand::class, [
@@ -43,34 +49,38 @@ it('stops if user decides not to execute a disabled connector', function (): voi
     artisan(SynchronizeConnectorCommand::class, [
         'connector' => $connector->id,
     ])
-        ->expectsConfirmation('This connector is disabled. Are you sure you want to synchronize it?', 'No')
+        ->expectsConfirmation(test()->disabledText, 'No')
         ->assertSuccessful();
 });
 
 it('executes synchronize connector if user decides to execute a disabled connector', function (): void {
     $connector = Connector::factory()->disabled()->create();
+    calendarFactory(connector: $connector)->create();
+    calendarFactory(connector: $connector)->create();
+    calendarFactory(connector: $connector)->disabled()->create();
 
-    partialMock(SynchronizeConnector::class)
+    partialMock(SynchronizeCalendar::class)
         ->shouldReceive('execute')
-        ->once()
-        ->withAnyArgs()
+        ->times(2)
+        ->withArgs(fn ($calendar): bool => $calendar instanceof Calendar)
         ->andReturnUndefined();
 
     artisan(SynchronizeConnectorCommand::class, [
         'connector' => $connector->id,
     ])
-        ->expectsConfirmation('This connector is disabled. Are you sure you want to synchronize it?', 'Yes')
+        ->expectsConfirmation(test()->disabledText, 'Yes')
         ->expectsConfirmation(test()->confirmationText, 'yes')
         ->assertSuccessful();
 });
 
 it('does not ask for confirmation if force option is used', function (): void {
     $connector = Connector::factory()->create();
+    calendarFactory(connector: $connector)->create();
 
-    partialMock(SynchronizeConnector::class)
+    partialMock(SynchronizeCalendar::class)
         ->shouldReceive('execute')
         ->once()
-        ->withAnyArgs()
+        ->withArgs(fn ($calendar): bool => $calendar instanceof Calendar)
         ->andReturnUndefined();
 
     artisan(SynchronizeConnectorCommand::class, [
@@ -82,17 +92,51 @@ it('does not ask for confirmation if force option is used', function (): void {
 
 it('asks for confirmation before executing a disabled connector if force option is used', function (): void {
     $connector = Connector::factory()->disabled()->create();
+    calendarFactory(connector: $connector)->create();
 
-    partialMock(SynchronizeConnector::class)
+    partialMock(SynchronizeCalendar::class)
         ->shouldReceive('execute')
         ->once()
-        ->withAnyArgs()
+        ->withArgs(fn ($calendar): bool => $calendar instanceof Calendar)
         ->andReturnUndefined();
 
     artisan(SynchronizeConnectorCommand::class, [
         'connector' => $connector->id,
         '--force' => true,
     ])
-        ->expectsConfirmation('This connector is disabled. Are you sure you want to synchronize it?', 'Yes')
+        ->expectsConfirmation(test()->disabledText, 'Yes')
+        ->assertSuccessful();
+});
+
+it('only synchronizes enabled calendars', function (): void {
+    $connector = Connector::factory()->create();
+    calendarFactory(connector: $connector)->create();
+    calendarFactory(connector: $connector)->create();
+    calendarFactory(connector: $connector)->disabled()->create();
+
+    partialMock(SynchronizeCalendar::class)
+        ->shouldReceive('execute')
+        ->times(2)
+        ->withArgs(fn ($calendar): bool => $calendar instanceof Calendar && $calendar->enabled)
+        ->andReturnUndefined();
+
+    artisan(SynchronizeConnectorCommand::class, [
+        'connector' => $connector->id,
+        '--force' => true,
+    ])
+        ->assertSuccessful();
+});
+
+it('succeeds when connector has no calendars', function (): void {
+    $connector = Connector::factory()->create();
+
+    partialMock(SynchronizeCalendar::class)
+        ->shouldReceive('execute')
+        ->never();
+
+    artisan(SynchronizeConnectorCommand::class, [
+        'connector' => $connector->id,
+        '--force' => true,
+    ])
         ->assertSuccessful();
 });

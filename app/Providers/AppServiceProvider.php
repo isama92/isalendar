@@ -24,8 +24,8 @@ class AppServiceProvider extends ServiceProvider
 
     private function bootRateLimiters(): void
     {
-        RateLimiter::for('connector-sync', fn (Request $request) => Limit::perHour(1)
-            ->by(sprintf('%s:%s', $request->user()?->id, $request->route('connector'))));
+        RateLimiter::for('ui-calendar-sync', fn (Request $request) => Limit::perHour(1)
+            ->by(sprintf('%s:%s', $request->user()?->id, $request->route('calendar'))));
     }
 
     private function bootOidcSocialiteProvider(): void

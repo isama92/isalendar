@@ -2,7 +2,7 @@
 
 namespace App\Console\Commands;
 
-use App\Actions\SynchronizeConnector;
+use App\Actions\SynchronizeCalendar;
 use App\Models\Connector;
 use Illuminate\Console\Command;
 use Illuminate\Console\ConfirmableTrait;
@@ -18,9 +18,9 @@ class SynchronizeConnectorCommand extends Command implements PromptsForMissingIn
 
     protected $description = 'Run synchronization a specific connector';
 
-    public function handle(SynchronizeConnector $synchronizeConnector): int
+    public function handle(SynchronizeCalendar $synchronizeCalendar): int
     {
-        $connector = Connector::with(['user', 'provider'])
+        $connector = Connector::with(['user', 'provider', 'calendars'])
             ->find($this->argument('connector'));
 
         if (! $connector instanceof Connector) {
@@ -37,13 +37,16 @@ class SynchronizeConnectorCommand extends Command implements PromptsForMissingIn
         $this->info('<comment>Connector\'s information:</comment>');
         $this->info(sprintf('User full name: %s', $connector->user->full_name));
         $this->info(sprintf('Provider: %s', $connector->provider->name ?? 'None'));
-        $this->info(sprintf('Number of calendars linked to this connector: %d', $connector->calendars()->count()));
+        $this->info(sprintf('Number of calendars linked to this connector: %d', $connector->calendars->count()));
 
         if (! $this->confirmToProceed('Confirmation is required', true)) {
             return self::SUCCESS;
         }
 
-        $synchronizeConnector->execute($connector);
+        $connector->calendars()
+            ->enabled()
+            ->each(fn ($calendar) => $synchronizeCalendar
+                ->execute($calendar));
 
         return self::SUCCESS;
     }

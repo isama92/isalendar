@@ -13,33 +13,32 @@ use function Pest\Laravel\withoutMiddleware;
 use function Tests\Helpers\calendarFactory;
 use function Tests\Helpers\connectorFactory;
 
-uses()->group('web', 'connectors');
+uses()->group('web', 'calendars');
 
-beforeEach(fn () => RateLimiter::clear('connector-sync'));
+beforeEach(fn () => RateLimiter::clear('ui-calendar-sync'));
 
-it('synchronizes connector successfully', function (): void {
+it('synchronizes calendar successfully', function (): void {
     Queue::fake();
 
     actingAsUser();
 
-    $connector = connectorFactory()->create();
-    calendarFactory(connector: $connector)->create();
+    $calendar = calendarFactory()->create();
 
-    put(route('connectors.synchronize', $connector))
+    put(route('calendars.synchronize', $calendar))
         ->assertRedirect(route('calendars.index'))
         ->assertSessionHas('success');
 
     QueueableActionFake::assertPushed(GoogleCalendarSynchronize::class);
 });
 
-it('prevents synchronization when connector is disabled', function (): void {
+it('prevents synchronization when calendar is disabled', function (): void {
     Queue::fake();
 
     actingAsUser();
 
-    $connector = connectorFactory()->disabled()->create();
+    $calendar = calendarFactory()->disabled()->create();
 
-    put(route('connectors.synchronize', $connector))
+    put(route('calendars.synchronize', $calendar))
         ->assertNotFound();
 
     Queue::assertNothingPushed();
@@ -50,12 +49,12 @@ it('prevents synchronization when rate limited', function (): void {
 
     $user = actingAsUser();
 
-    $connector = connectorFactory()->create();
+    $calendar = calendarFactory()->create();
 
-    $key = app(GetThrottleLimitKey::class)->execute('connector-sync', [$user->id, $connector->id]);
+    $key = app(GetThrottleLimitKey::class)->execute('ui-calendar-sync', [$user->id, $calendar->id]);
     RateLimiter::hit($key, 3600);
 
-    put(route('connectors.synchronize', $connector))
+    put(route('calendars.synchronize', $calendar))
         ->assertTooManyRequests();
 
     Queue::assertNothingPushed();
@@ -66,37 +65,37 @@ it('does not rate limit without the middleware', function (): void {
 
     actingAsUser();
 
-    $connector = connectorFactory()->create();
-    calendarFactory(connector: $connector)->create();
+    $calendar = calendarFactory()->create();
 
     withoutMiddleware(ThrottleRequests::class)
-        ->put(route('connectors.synchronize', $connector))
+        ->put(route('calendars.synchronize', $calendar))
         ->assertRedirect(route('calendars.index'));
 
     withoutMiddleware(ThrottleRequests::class)
-        ->put(route('connectors.synchronize', $connector))
+        ->put(route('calendars.synchronize', $calendar))
         ->assertRedirect(route('calendars.index'));
 
     QueueableActionFake::assertPushedTimes(GoogleCalendarSynchronize::class, 2);
 });
 
-it('prevents synchronization of another user connector', function (): void {
+it('prevents synchronization of another user calendar', function (): void {
     Queue::fake();
 
-    $connector = connectorFactory()->for(User::factory())->create();
+    $otherUserConnector = connectorFactory()->for(User::factory())->create();
+    $calendar = calendarFactory(connector: $otherUserConnector)->create();
 
     actingAsUser();
 
-    put(route('connectors.synchronize', $connector))
+    put(route('calendars.synchronize', $calendar))
         ->assertForbidden();
 
     Queue::assertNothingPushed();
 });
 
 it('redirects unauthenticated users to login', function (): void {
-    $connector = connectorFactory()->create();
+    $calendar = calendarFactory()->create();
 
-    put(route('connectors.synchronize', $connector))
+    put(route('calendars.synchronize', $calendar))
         ->assertRedirect(route('login'));
 });
 
@@ -105,18 +104,17 @@ it('allows synchronization after rate limit period', function (): void {
 
     $user = actingAsUser();
 
-    $connector = connectorFactory()->create();
-    calendarFactory(connector: $connector)->create();
+    $calendar = calendarFactory()->create();
 
-    put(route('connectors.synchronize', $connector))
+    put(route('calendars.synchronize', $calendar))
         ->assertRedirect(route('calendars.index'));
-    put(route('connectors.synchronize', $connector))
+    put(route('calendars.synchronize', $calendar))
         ->assertTooManyRequests();
 
-    $key = app(GetThrottleLimitKey::class)->execute('connector-sync', [$user->id, $connector->id]);
+    $key = app(GetThrottleLimitKey::class)->execute('ui-calendar-sync', [$user->id, $calendar->id]);
     RateLimiter::clear($key);
 
-    put(route('connectors.synchronize', $connector))
+    put(route('calendars.synchronize', $calendar))
         ->assertRedirect(route('calendars.index'));
 
     QueueableActionFake::assertPushedTimes(GoogleCalendarSynchronize::class, 2);

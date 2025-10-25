@@ -156,13 +156,12 @@ it('includes can_sync status for each calendar', function (): void {
         );
 });
 
-it('shows can_sync as false when connector is rate limited', function (): void {
+it('shows can_sync as false when calendar is rate limited', function (): void {
     $user = actingAsUser();
-    $connector = calendarFactory()->create()
-        ->connectors->sole();
+    $calendar = calendarFactory()->create();
 
     // Hit the rate limiter
-    $key = app(GetThrottleLimitKey::class)->execute('connector-sync', [$user->id, $connector->id]);
+    $key = app(GetThrottleLimitKey::class)->execute('ui-calendar-sync', [$user->id, $calendar->id]);
     RateLimiter::hit($key, 3600);
 
     get(route('calendars.index'))
