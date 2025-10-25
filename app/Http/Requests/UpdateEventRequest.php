@@ -39,7 +39,7 @@ class UpdateEventRequest extends FormRequest
             'title' => ['required', 'string', 'max:255'],
             'all_day' => ['boolean'],
             'starts_at' => ['required', 'date'],
-            'ends_at' => ['nullable', 'required', 'date', 'after_or_equal:starts_at'],
+            'ends_at' => ['required', 'date', 'after_or_equal:starts_at'],
             'timezone' => ['nullable', 'required_if:all_day,false', 'prohibited_if:all_day,true', 'string', 'timezone:all'],
             'description' => ['nullable', 'string'],
         ];

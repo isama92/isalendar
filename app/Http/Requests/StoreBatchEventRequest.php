@@ -52,7 +52,7 @@ class StoreBatchEventRequest extends FormRequest
             'description' => ['nullable', 'string'],
             'dates' => ['required', 'array', 'min:1'],
             'dates.*.starts_at' => ['required', 'date'],
-            'dates.*.ends_at' => ['nullable', 'date', 'after_or_equal:dates.*.starts_at'],
+            'dates.*.ends_at' => ['required', 'date', 'after_or_equal:dates.*.starts_at'],
         ];
     }
 

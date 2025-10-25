@@ -151,7 +151,6 @@ OIDC_BUTTON_LABEL="Login with Authelia"
 - command to force delete a calendar
 - event templates
 - use "action panel" for the "you don't have a calendar yet, click here to create it" thing
-- in both store event request and store batch event request the ends at is nullable, i believe it's not correct
 - set correct created by and last updated by when importing connector from remote
 
 ## License
