@@ -73,9 +73,9 @@ it('counts events for today correctly', function (): void {
     actingAsUser();
     eventFactory(3)
         ->state(new Sequence(
-            ['starts_at' => $today->addHours(10)],
-            ['starts_at' => $today->addHours(14)],
-            ['starts_at' => $today->addDay()],
+            ['all_day' => false, 'starts_at' => $today->addHours(10), 'ends_at' => $today->addHours(11)],
+            ['all_day' => false, 'starts_at' => $today->addHours(14), 'ends_at' => $today->addHours(15)],
+            ['all_day' => false, 'starts_at' => $today->addDay(), 'ends_at' => $today->addDay()->addHours(1)],
         ))
         ->create();
 
@@ -90,8 +90,8 @@ it('counts all-day events for today correctly', function (): void {
     actingAsUser();
     eventFactory(2)
         ->state(new Sequence(
-            ['all_day' => true, 'starts_at' => $today, 'ends_at' => null],
-            ['all_day' => false, 'starts_at' => $today->addHours(10)],
+            ['all_day' => true, 'starts_at' => $today, 'ends_at' => $today->addDay()],
+            ['all_day' => false, 'starts_at' => $today->addHours(10), 'ends_at' => $today->addHours(11)],
         ))
         ->create();
 
@@ -107,9 +107,9 @@ it('counts events for tomorrow correctly', function (): void {
     actingAsUser();
     eventFactory(3)
         ->state(new Sequence(
-            ['starts_at' => $today->addHours(10)], // Today
-            ['starts_at' => $tomorrow->addHours(10)], // Tomorrow
-            ['starts_at' => $tomorrow->addHours(14)], // Tomorrow
+            ['all_day' => false, 'starts_at' => $today->addHours(10), 'ends_at' => $today->addHours(11)], // Today
+            ['all_day' => false, 'starts_at' => $tomorrow->addHours(10), 'ends_at' => $tomorrow->addHours(11)], // Tomorrow
+            ['all_day' => false, 'starts_at' => $tomorrow->addHours(14), 'ends_at' => $tomorrow->addHours(15)], // Tomorrow
         ))
         ->create();
 
@@ -126,9 +126,9 @@ it('counts events for this week correctly', function (): void {
     actingAsUser();
     eventFactory(3)
         ->state(new Sequence(
-            ['starts_at' => $thisWeekStart->addDay()],
-            ['starts_at' => $thisWeekStart->addDays(3)],
-            ['starts_at' => $nextWeek], // Next week
+            ['all_day' => false, 'starts_at' => $thisWeekStart->addDay(), 'ends_at' => $thisWeekStart->addDay()->addHours(1)],
+            ['all_day' => false, 'starts_at' => $thisWeekStart->addDays(3), 'ends_at' => $thisWeekStart->addDays(3)->addHours(1)],
+            ['all_day' => false, 'starts_at' => $nextWeek, 'ends_at' => $nextWeek->addHours(1)], // Next week
         ))
         ->create();
 
@@ -144,9 +144,9 @@ it('counts events for next week correctly', function (): void {
     actingAsUser();
     eventFactory(3)
         ->state(new Sequence(
-            ['starts_at' => $today], // This week
-            ['starts_at' => $nextWeekStart->addDay()],
-            ['starts_at' => $nextWeekStart->addDays(3)],
+            ['all_day' => false, 'starts_at' => $today, 'ends_at' => $today->addHours(1)], // This week
+            ['all_day' => false, 'starts_at' => $nextWeekStart->addDay(), 'ends_at' => $nextWeekStart->addDay()->addHours(1)],
+            ['all_day' => false, 'starts_at' => $nextWeekStart->addDays(3), 'ends_at' => $nextWeekStart->addDays(3)->addHours(1)],
         ))
         ->create();
 
@@ -164,11 +164,11 @@ it('calculates average events per day of week correctly', function (): void {
     actingAsUser();
 
     // 3 events on Sunday
-    eventFactory(3)->create(['starts_at' => $sunday->addHours(10)]);
+    eventFactory(3)->create(['all_day' => false, 'starts_at' => $sunday->addHours(10), 'ends_at' => $sunday->addHours(11)]);
     // 5 events on Monday
-    eventFactory(5)->create(['starts_at' => $monday->addHours(10)]);
+    eventFactory(5)->create(['all_day' => false, 'starts_at' => $monday->addHours(10), 'ends_at' => $monday->addHours(11)]);
     // 2 events on Wednesday
-    eventFactory(2)->create(['starts_at' => $wednesday->addHours(10)]);
+    eventFactory(2)->create(['all_day' => false, 'starts_at' => $wednesday->addHours(10), 'ends_at' => $wednesday->addHours(11)]);
 
     $stats = app(GetDashboardEventStats::class)->execute();
 
@@ -223,9 +223,9 @@ it('handles mixed regular and all-day events in counts', function (): void {
     actingAsUser();
     eventFactory(3)
         ->state(new Sequence(
-            ['all_day' => true, 'starts_at' => $today, 'ends_at' => null],
-            ['all_day' => false, 'starts_at' => $today->addHours(10)],
-            ['all_day' => false, 'starts_at' => $today->addHours(15)],
+            ['all_day' => true, 'starts_at' => $today, 'ends_at' => $today->addDay()],
+            ['all_day' => false, 'starts_at' => $today->addHours(10), 'ends_at' => $today->addHours(11)],
+            ['all_day' => false, 'starts_at' => $today->addHours(15), 'ends_at' => $today->addHours(16)],
         ))
         ->create();
 
