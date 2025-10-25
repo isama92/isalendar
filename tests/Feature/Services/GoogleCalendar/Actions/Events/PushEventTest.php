@@ -19,7 +19,7 @@ it('creates a new event on Google Calendar when external_id is null', function (
         'all_day' => false,
         'timezone' => 'Europe/Amsterdam',
     ]);
-    $connector = $event->lastModifiedBy;
+    $connector = $event->createdBy;
 
     $googleClientMock = partialMock(GoogleClient::class);
     $googleClientMock->shouldReceive('getUniverseDomain')
@@ -38,7 +38,7 @@ it('creates a new event on Google Calendar when external_id is null', function (
         ->with($connector)
         ->andReturn($googleClientMock);
 
-    app(PushEvent::class)->execute($connector, $event);
+    app(PushEvent::class)->execute($event);
 
     expect($event->refresh()->external_id)->toBe('google_event_123');
 });
@@ -52,7 +52,7 @@ it('updates an existing event on Google Calendar when external_id exists', funct
         'all_day' => false,
         'timezone' => 'Europe/Amsterdam',
     ]);
-    $connector = $event->lastModifiedBy;
+    $connector = $event->createdBy;
 
     $googleClientMock = partialMock(GoogleClient::class);
     $googleClientMock->shouldReceive('getUniverseDomain')
@@ -71,7 +71,7 @@ it('updates an existing event on Google Calendar when external_id exists', funct
         ->with($connector)
         ->andReturn($googleClientMock);
 
-    app(PushEvent::class)->execute($connector, $event);
+    app(PushEvent::class)->execute($event);
 
     expect($event->refresh()->external_id)->toBe('existing_google_id');
 });
@@ -85,7 +85,7 @@ it('handles all-day events correctly', function (): void {
         'all_day' => true,
         'timezone' => null,
     ]);
-    $connector = $event->lastModifiedBy;
+    $connector = $event->createdBy;
 
     $googleClientMock = partialMock(GoogleClient::class);
     $googleClientMock->shouldReceive('getUniverseDomain')
@@ -104,7 +104,7 @@ it('handles all-day events correctly', function (): void {
         ->with($connector)
         ->andReturn($googleClientMock);
 
-    app(PushEvent::class)->execute($connector, $event);
+    app(PushEvent::class)->execute($event);
 
     expect($event->refresh()->external_id)->toBe('all_day_event_123');
 });

@@ -49,6 +49,7 @@ arch()
 arch()
     ->expect('App\Exceptions')
     ->classes()
+    ->toHaveSuffix('Exception')
     ->toImplement('Throwable')
     ->ignoring('App\Exceptions\Handler');
 

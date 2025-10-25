@@ -4,7 +4,6 @@ namespace App\Services\Calendar\GoogleCalendar\Actions\Events;
 
 use App\Data\EventData;
 use App\Models\Calendar;
-use App\Models\Connector;
 use App\Models\Event;
 use App\Services\Calendar\GoogleCalendar\Data\GoogleEventData;
 use App\Services\Calendar\GoogleCalendar\Enums\Status;
@@ -12,7 +11,7 @@ use Illuminate\Support\Facades\Cache;
 
 class SaveEvent
 {
-    public function execute(Connector $connector, Calendar $calendar, GoogleEventData $googleEventData): void
+    public function execute(Calendar $calendar, GoogleEventData $googleEventData): void
     {
         /** @phpstan-ignore method.notFound */
         $event = $calendar->events()
@@ -22,18 +21,18 @@ class SaveEvent
             ->first();
 
         Cache::lock(sprintf('calendar-sync-%s-%s', $calendar->id, $event?->id), 10)
-            ->block(5, function () use ($googleEventData, $calendar, $connector, $event): void {
+            ->block(5, function () use ($googleEventData, $calendar, $event): void {
                 if ($googleEventData->status === Status::CANCELLED) {
                     $event?->delete();
 
                     return;
                 }
 
-                $this->saveEvent($connector, $calendar, $googleEventData, $event);
+                $this->saveEvent($calendar, $googleEventData, $event);
             });
     }
 
-    private function saveEvent(Connector $connector, Calendar $calendar, GoogleEventData $googleEventData, ?Event $event): void
+    private function saveEvent(Calendar $calendar, GoogleEventData $googleEventData, ?Event $event): void
     {
         $creatorConnector = $calendar->connectors()
             ->where('external_id', $googleEventData->creatorId)
@@ -43,7 +42,6 @@ class SaveEvent
             $calendar->events()->create([
                 ...EventData::from($googleEventData)->all(),
                 'created_by_connector_id' => $creatorConnector?->id,
-                'last_modified_by_connector_id' => $connector->id,
             ]);
 
             return;
@@ -53,9 +51,6 @@ class SaveEvent
             return;
         }
 
-        $event->update([
-            ...EventData::from($googleEventData)->all(),
-            'last_modified_by_connector_id' => $connector->id,
-        ]);
+        $event->update(EventData::from($googleEventData)->all());
     }
 }

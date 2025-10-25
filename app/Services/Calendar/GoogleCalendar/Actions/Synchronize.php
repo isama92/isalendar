@@ -20,12 +20,9 @@ class Synchronize
             return;
         }
 
-        $connector = $calendar->connectors()
+        if ($calendar->connectors()
             ->whereBelongsTo(Provider::googleCalendar())
-            ->enabled()
-            ->first();
-
-        if (! $connector) {
+            ->doesntExist()) {
             return;
         }
 
@@ -35,13 +32,11 @@ class Synchronize
         Bus::batch([
             [
                 new ActionJob(ImportEvents::class, [
-                    $connector,
                     $calendar,
                     $fetchWindowStart,
                     $fetchWindowEnd,
                 ]),
                 new ActionJob(ExportEvents::class, [
-                    $connector,
                     $calendar,
                     $fetchWindowStart,
                     $fetchWindowEnd,

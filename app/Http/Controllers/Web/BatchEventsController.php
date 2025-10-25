@@ -48,7 +48,6 @@ class BatchEventsController extends Controller
                     'timezone' => $validatedData['timezone'] ?? null,
                     'description' => $validatedData['description'] ?? null,
                     'created_by_connector_id' => $calendar->connector->id,
-                    'last_modified_by_connector_id' => $calendar->connector->id,
                 ]));
 
         return redirect()->route('events.index')

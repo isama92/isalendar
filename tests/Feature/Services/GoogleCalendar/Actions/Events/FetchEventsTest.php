@@ -11,6 +11,7 @@ use Google\Service\Calendar\EventDateTime;
 use Google\Service\Calendar\Events;
 use Illuminate\Support\Collection;
 
+use function Pest\Laravel\mock;
 use function Pest\Laravel\partialMock;
 use function Tests\Helpers\calendarFactory;
 
@@ -62,17 +63,16 @@ it('fetches events from Google and returns GoogleEventData', function (): void {
         ->once()
         ->andReturn($list);
 
-    partialMock(GetAuthClient::class)
+    mock(GetAuthClient::class)
         ->shouldReceive('execute')
         ->once()
-        ->with($connector)
+        ->with(Mockery::on(fn ($arg): bool => $arg->id === $connector->id))
         ->andReturn($googleClientMock);
 
     $result = app(FetchEvents::class)->execute(
-        $connector,
         $calendar,
         now()->toImmutable(),
-        now()->toImmutable()
+        now()->toImmutable(),
     );
 
     expect($result)
@@ -118,17 +118,16 @@ it('returns an empty collection when Google returns no event items', function ()
         ->once()
         ->andReturn($list);
 
-    partialMock(GetAuthClient::class)
+    mock(GetAuthClient::class)
         ->shouldReceive('execute')
         ->once()
-        ->with($connector)
+        ->with(Mockery::on(fn ($arg): bool => $arg->id === $connector->id))
         ->andReturn($googleClientMock);
 
     $result = app(FetchEvents::class)->execute(
-        $connector,
         $calendar,
         now()->toImmutable(),
-        now()->toImmutable()
+        now()->toImmutable(),
     );
 
     expect($result)

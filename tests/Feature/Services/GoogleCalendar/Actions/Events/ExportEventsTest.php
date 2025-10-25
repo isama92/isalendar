@@ -23,7 +23,6 @@ it('calls PushEvent for each event in the time window', function (): void {
         ]);
 
     $calendar = $eventsInWindow->first()->calendar;
-    $connector = $calendar->connectors->sole();
 
     // Create 1 event outside the window (should not be exported)
     eventFactory()
@@ -35,14 +34,14 @@ it('calls PushEvent for each event in the time window', function (): void {
 
     $pushEventMock = partialMock(PushEvent::class);
 
-    $eventsInWindow->each(function (Event $event) use ($pushEventMock, $connector): void {
+    $eventsInWindow->each(function (Event $event) use ($pushEventMock): void {
         $pushEventMock->shouldReceive('execute')
             ->once()
-            ->with($connector, Mockery::on(fn ($arg): bool => $arg->id === $event->id))
+            ->with(Mockery::on(fn ($arg): bool => $arg->id === $event->id))
             ->andReturnUndefined();
     });
 
-    app(ExportEvents::class)->execute($connector, $calendar, $fetchWindowStart, $fetchWindowEnd);
+    app(ExportEvents::class)->execute($calendar, $fetchWindowStart, $fetchWindowEnd);
 
     expect(true)->toBeTrue();
 });
@@ -52,12 +51,11 @@ it('handles calendars with no events', function (): void {
     $fetchWindowEnd = now()->addWeeks(2)->endOfDay()->toImmutable();
 
     $calendar = calendarFactory()->create();
-    $connector = $calendar->connectors->sole();
 
     $pushEventMock = partialMock(PushEvent::class);
     $pushEventMock->shouldNotReceive('execute');
 
-    app(ExportEvents::class)->execute($connector, $calendar, $fetchWindowStart, $fetchWindowEnd);
+    app(ExportEvents::class)->execute($calendar, $fetchWindowStart, $fetchWindowEnd);
 
     expect(true)->toBeTrue();
 });
@@ -76,18 +74,16 @@ it('calls DeleteEvent for events marked for deletion and not PushEvent', functio
         'marked_for_deletion_at' => now(),
     ]);
 
-    $connector = $markedEvent->calendar->connectors->sole();
-
     $deleteEventMock = partialMock(DeleteEvent::class);
     $deleteEventMock->shouldReceive('execute')
         ->once()
-        ->with($connector, Mockery::on(fn ($arg): bool => $arg->id === $markedEvent->id))
+        ->with(Mockery::on(fn ($arg): bool => $arg->id === $markedEvent->id))
         ->andReturnUndefined();
 
     $pushEventMock = partialMock(PushEvent::class);
     $pushEventMock->shouldNotReceive('execute');
 
-    app(ExportEvents::class)->execute($connector, $markedEvent->calendar, $fetchWindowStart, $fetchWindowEnd);
+    app(ExportEvents::class)->execute($markedEvent->calendar, $fetchWindowStart, $fetchWindowEnd);
 
     expect(true)->toBeTrue();
 });

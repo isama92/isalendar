@@ -27,7 +27,6 @@ class EventFactory extends Factory
 
                 return $connector->id;
             },
-            'last_modified_by_connector_id' => fn (array $attributes) => $attributes['created_by_connector_id'],
             'external_id' => fake()->uuid(),
             'title' => fake()->sentence(3),
             'timezone' => fn (array $attributes) => $attributes['all_day'] ? null : fake()->timezone(),

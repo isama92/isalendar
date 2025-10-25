@@ -64,7 +64,6 @@ class EventsController extends Controller
         $event = $calendar->events()->create([
             ...$validatedData,
             'created_by_connector_id' => $calendar->connector->id,
-            'last_modified_by_connector_id' => $calendar->connector->id,
         ]);
 
         $redirectTo = $request->input('redirect_to', 'index');
@@ -94,10 +93,7 @@ class EventsController extends Controller
 
     public function update(UpdateEventRequest $request, Event $event): RedirectResponse
     {
-        $event->update([
-            ...$request->validated(),
-            'last_modified_by_connector_id' => $event->calendar->connector->id,
-        ]);
+        $event->update($request->validated());
 
         $redirectTo = $request->input('redirect_to', 'show');
 

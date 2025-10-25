@@ -2,6 +2,8 @@
 
 namespace App\Services\Calendar\GoogleCalendar\Actions\Events;
 
+use App\Actions\GetEventConnector;
+use App\Exceptions\CouldNotGetEventConnectorException;
 use App\Models\Connector;
 use App\Models\Event;
 use App\Services\Calendar\GoogleCalendar\Actions\Auth\GetAuthClient;
@@ -16,13 +18,17 @@ class PushEvent
 {
     use QueueableAction;
 
-    public function __construct(private readonly GetAuthClient $getAuthClient) {}
+    public function __construct(
+        private readonly GetEventConnector $getEventConnector,
+        private readonly GetAuthClient $getAuthClient,
+    ) {}
 
-    public function execute(Connector $connector, Event $event): void
+    public function execute(Event $event): void
     {
-        $connectorToUse = $this->getConnectorForEvent($event);
+        $connector = $this->getEventConnector->execute($event);
+        throw_unless($connector instanceof Connector, new CouldNotGetEventConnectorException($event));
 
-        $googleClient = $this->getAuthClient->execute($connectorToUse);
+        $googleClient = $this->getAuthClient->execute($connector);
 
         $savedEvent = $this->pushEvent(
             new CalendarService($googleClient),
@@ -31,24 +37,6 @@ class PushEvent
         );
 
         $event->update(['external_id' => $savedEvent->getId()]);
-    }
-
-    private function getConnectorForEvent(Event $event): Connector
-    {
-        // Try to use the last modifier's connector
-        if ($event->lastModifiedBy && $event->lastModifiedBy->enabled) {
-            return $event->lastModifiedBy;
-        }
-
-        // Fallback to creator's connector
-        if ($event->createdBy && $event->createdBy->enabled) {
-            return $event->createdBy;
-        }
-
-        // Final fallback: any enabled connector for this calendar
-        return $event->calendar->connectors()
-            ->enabled()
-            ->firstOrFail();
     }
 
     private function getGoogleEvent(Event $event): GoogleEvent

@@ -30,10 +30,10 @@ it('deletes event from Google Calendar and soft deletes locally', function (): v
     partialMock(GetAuthClient::class)
         ->shouldReceive('execute')
         ->once()
-        ->with($connector)
+        ->with(Mockery::on(fn ($arg): bool => $arg->id === $connector->id))
         ->andReturn($googleClientMock);
 
-    app(DeleteEvent::class)->execute($connector, $event);
+    app(DeleteEvent::class)->execute($event);
 
     assertSoftDeleted('events', ['id' => $event->id]);
 });
@@ -43,8 +43,7 @@ it('throws exception when event has no external_id', function (): void {
         'external_id' => null,
         'title' => 'Local Only Event',
     ]);
-    $connector = $event->calendar->connectors->sole();
 
-    expect(fn () => app(DeleteEvent::class)->execute($connector, $event))
+    expect(fn () => app(DeleteEvent::class)->execute($event))
         ->toThrow(RuntimeException::class, 'Cannot delete an API event without an external_id');
 });

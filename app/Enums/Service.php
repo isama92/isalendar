@@ -2,7 +2,7 @@
 
 namespace App\Enums;
 
-use App\Exceptions\UnexpectedProvider;
+use App\Exceptions\UnexpectedProviderException;
 use App\Services\Calendar\GoogleCalendar\Auth\AccessToken as GoogleCalendarAccessToken;
 
 enum Service: string
@@ -89,7 +89,7 @@ enum Service: string
         return match ($id) {
             self::GOOGLE_CALENDAR->id() => self::GOOGLE_CALENDAR,
             self::MICROSOFT_OUTLOOK->id() => self::MICROSOFT_OUTLOOK,
-            default => throw new UnexpectedProvider($id),
+            default => throw new UnexpectedProviderException($id),
         };
     }
 }

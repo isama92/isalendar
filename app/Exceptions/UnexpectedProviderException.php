@@ -4,7 +4,7 @@ namespace App\Exceptions;
 
 use Exception;
 
-class UnexpectedProvider extends Exception
+class UnexpectedProviderException extends Exception
 {
     public function __construct(?int $providerId)
     {

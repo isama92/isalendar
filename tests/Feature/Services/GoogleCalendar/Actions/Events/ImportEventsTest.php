@@ -50,22 +50,22 @@ it('calls FetchEvents and then calls SaveEvent for each event', function (): voi
     partialMock(FetchEvents::class)
         ->shouldReceive('execute')
         ->once()
-        ->with($connector, $calendar, $fetchWindowStart, $fetchWindowEnd)
+        ->with($calendar, $fetchWindowStart, $fetchWindowEnd)
         ->andReturn($eventsDataCollection);
 
     $saveEventMock = partialMock(SaveEvent::class);
     $saveEventMock->shouldReceive('execute')
         ->once()
-        ->with($connector, $calendar, $eventsDataCollection->get(0))
+        ->with($calendar, $eventsDataCollection->get(0))
         ->ordered('saveEventGroup')
         ->andReturnUndefined();
     $saveEventMock->shouldReceive('execute')
         ->once()
-        ->with($connector, $calendar, $eventsDataCollection->get(1))
+        ->with($calendar, $eventsDataCollection->get(1))
         ->ordered('saveEventGroup')
         ->andReturnUndefined();
 
-    app(ImportEvents::class)->execute($connector, $calendar, $fetchWindowStart, $fetchWindowEnd);
+    app(ImportEvents::class)->execute($calendar, $fetchWindowStart, $fetchWindowEnd);
 
     expect(true)->toBeTrue();
 });
