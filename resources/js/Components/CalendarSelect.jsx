@@ -31,7 +31,7 @@ const CalendarSelect = ({
                             : 'border-gray-300 text-gray-900 dark:border-gray-600 dark:text-gray-100'
                     )}
                 >
-                    <span className="flex items-center gap-2 truncate">
+                    <span className="flex min-h-5 items-center gap-2 truncate">
                         {!value || (allowAll && value === 'all') ? (
                             <span className="text-gray-900 dark:text-gray-100">{allText}</span>
                         ) : (
