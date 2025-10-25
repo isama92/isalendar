@@ -16,7 +16,7 @@ trait ToEvent
             timezone: $googleEventData->timezone,
             startsAt: Carbon::parse($googleEventData->startDateTime ?? $googleEventData->startDate),
             endsAt: Carbon::parse($googleEventData->endDateTime ?? $googleEventData->endDate),
-            description: $googleEventData->description,
+            description: $googleEventData->sanitizedDescription(),
         );
     }
 }

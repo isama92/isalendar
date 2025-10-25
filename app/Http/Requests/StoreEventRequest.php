@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use App\Concerns\NormalizesEventTimestamps;
+use App\Concerns\SanitizesHtml;
 use App\Models\Event;
 use App\Rules\CalendarBelongsToUser;
 use Illuminate\Foundation\Http\FormRequest;
@@ -10,6 +11,7 @@ use Illuminate\Foundation\Http\FormRequest;
 class StoreEventRequest extends FormRequest
 {
     use NormalizesEventTimestamps;
+    use SanitizesHtml;
 
     public function authorize(): bool
     {
@@ -20,13 +22,12 @@ class StoreEventRequest extends FormRequest
     {
         $allDay = $this->boolean('all_day');
         $tz = $allDay ? null : $this->input('timezone');
-        $description = $this->input('description');
 
         $this->merge([
             'timezone' => $tz,
             'starts_at' => $this->normalizeEventTimestamp($this->input('starts_at'), $allDay, $tz),
             'ends_at' => $this->normalizeEventTimestamp($this->input('ends_at'), $allDay, $tz),
-            'description' => is_string($description) ? strip_tags($description, '<p><br><a><strong><em><ul><ol><li><b><i><u>') : $description,
+            'description' => $this->sanitizeHtml($this->input('description')),
         ]);
     }
 

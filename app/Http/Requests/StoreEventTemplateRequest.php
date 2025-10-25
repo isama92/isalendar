@@ -2,12 +2,15 @@
 
 namespace App\Http\Requests;
 
+use App\Concerns\SanitizesHtml;
 use App\Models\EventTemplate;
 use App\Rules\CalendarBelongsToUser;
 use Illuminate\Foundation\Http\FormRequest;
 
 class StoreEventTemplateRequest extends FormRequest
 {
+    use SanitizesHtml;
+
     public function authorize(): bool
     {
         return $this->user()->can('create', EventTemplate::class);
@@ -17,11 +20,10 @@ class StoreEventTemplateRequest extends FormRequest
     {
         $allDay = $this->boolean('event_all_day');
         $tz = $allDay ? null : $this->input('event_timezone');
-        $description = $this->input('event_description');
 
         $this->merge([
             'event_timezone' => $tz,
-            'event_description' => is_string($description) ? strip_tags($description, '<p><br><a><strong><em><ul><ol><li><b><i><u>') : $description,
+            'event_description' => $this->sanitizeHtml($this->input('event_description')),
         ]);
     }
 

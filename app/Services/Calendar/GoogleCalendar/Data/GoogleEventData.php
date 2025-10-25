@@ -2,6 +2,7 @@
 
 namespace App\Services\Calendar\GoogleCalendar\Data;
 
+use App\Concerns\SanitizesHtml;
 use App\Services\Calendar\GoogleCalendar\Enums\Status;
 use Carbon\Carbon;
 use Google\Service\Calendar\Event as GoogleEvent;
@@ -12,6 +13,8 @@ use Spatie\LaravelData\Data;
  */
 class GoogleEventData extends Data
 {
+    use SanitizesHtml;
+
     public function __construct(
         public string $id,
         public Status $status,
@@ -40,7 +43,12 @@ class GoogleEventData extends Data
             startDate: $startObj->getDate(),
             endDateTime: $endObj->getDateTime(),
             endDate: $endObj->getDate(),
-            description: strip_tags($googleEvent->getDescription(), '<p><br><a><strong><em><ul><ol><li><b><i><u>'),
+            description: $googleEvent->getDescription(),
         );
+    }
+
+    public function sanitizedDescription(): ?string
+    {
+        return $this->sanitizeHtml($this->description);
     }
 }
