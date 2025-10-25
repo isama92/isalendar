@@ -10,7 +10,6 @@ uses()->group('gcalendar', 'gcalendar.sync');
 
 it('dispatches import and export jobs for calendar and sets synchronized_at', function (): void {
     $calendar = calendarFactory()->create();
-    $connector = $calendar->connectors->sole();
 
     $finallyCallback = null;
 
@@ -44,7 +43,7 @@ it('dispatches import and export jobs for calendar and sets synchronized_at', fu
     expect($finallyCallback)->toBeCallable();
     $finallyCallback();
 
-    expect($connector->refresh()->synchronized_at)->not->toBeNull();
+    expect($calendar->refresh()->synchronized_at)->not->toBeNull();
 });
 
 it('does not dispatch jobs when calendar is disabled', function (): void {

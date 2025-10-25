@@ -39,17 +39,20 @@ class Calendar extends Model
         'name',
         'description',
         'enabled',
+        'synchronized_at',
     ];
 
     /**
      * @return array{
-     *     enabled: 'boolean'
+     *     enabled: 'boolean',
+     *     synchronized_at: 'datetime'
      * }
      */
     protected function casts(): array
     {
         return [
             'enabled' => 'boolean',
+            'synchronized_at' => 'datetime',
         ];
     }
 

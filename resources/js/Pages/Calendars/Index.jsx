@@ -1,6 +1,7 @@
 import Modal from '@/Components/Modal';
 import Paginator from '@/Components/Tables/Paginator';
 import Table from '@/Components/Tables/Table';
+import { formatDateTime } from '@/utils/date.js';
 import {
     ArrowPathIcon,
     CalendarIcon,
@@ -54,17 +55,12 @@ const Index = ({ calendars, providers }) => {
             },
             {
                 header: __('calendars.events_count'),
-                id: 'events_count',
-                accessorFn: row => row.events_count,
+                accessorKey: 'events_count',
             },
             {
                 header: __('calendars.synchronized_at'),
-                id: 'synchronized_at',
-                accessorFn: row => row.connector.synchronized_at,
-                cell: info => {
-                    const value = info.getValue();
-                    return value ? new Date(value).toLocaleString() : __('calendars.never_synchronized');
-                },
+                accessorKey: 'synchronized_at',
+                cell: info => (info.getValue() ? formatDateTime(info.getValue()) : __('calendars.never_synchronized')),
                 filterFn: (row, id, value) => {
                     if (value === 'all') return true;
                     const syncedAt = row.getValue(id);

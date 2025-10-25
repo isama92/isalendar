@@ -49,8 +49,8 @@ class Synchronize
             ],
         ])
             ->name(sprintf('Synchronize Calendar (%s)', $calendar->id))
-            ->finally(function () use ($connector): void {
-                $connector->update(['synchronized_at' => now()]);
+            ->finally(function () use ($calendar): void {
+                $calendar->update(['synchronized_at' => now()]);
             })
             ->dispatch();
     }

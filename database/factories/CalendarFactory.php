@@ -16,6 +16,7 @@ class CalendarFactory extends Factory
             'name' => fake()->sentence(3),
             'description' => fake()->paragraph(),
             'enabled' => true,
+            'synchronized_at' => null,
         ];
     }
 
@@ -23,6 +24,13 @@ class CalendarFactory extends Factory
     {
         return $this->state(fn (array $attributes): array => [
             'enabled' => false,
+        ]);
+    }
+
+    public function synchronized(): static
+    {
+        return $this->state(fn (array $attributes): array => [
+            'synchronized_at' => now(),
         ]);
     }
 }
