@@ -5,11 +5,13 @@ namespace Tests\Helpers;
 use App\Models\Calendar;
 use App\Models\Connector;
 use App\Models\Event;
+use App\Models\EventTemplate;
 use App\Models\Provider;
 use App\Models\User;
 use Database\Factories\CalendarFactory;
 use Database\Factories\ConnectorFactory;
 use Database\Factories\EventFactory;
+use Database\Factories\EventTemplateFactory;
 
 function connectorFactory(?int $times = null): ConnectorFactory
 {
@@ -30,5 +32,13 @@ function eventFactory(?int $times = null): EventFactory
 {
     return Event::factory()
         ->when(! is_null($times))->count($times)
+        ->for(calendarFactory());
+}
+
+function eventTemplateFactory(?int $times = null): EventTemplateFactory
+{
+    return EventTemplate::factory()
+        ->when(! is_null($times))->count($times)
+        ->when(test()->user instanceof User)->for(test()->user)
         ->for(calendarFactory());
 }

@@ -5,6 +5,7 @@ use App\Http\Controllers\Web\CalendarsController;
 use App\Http\Controllers\Web\CalendarSynchronizationController;
 use App\Http\Controllers\Web\DashboardController;
 use App\Http\Controllers\Web\EventsController;
+use App\Http\Controllers\Web\EventTemplatesController;
 use App\Http\Controllers\Web\ProfileController;
 use App\Http\Controllers\Web\ProfilePhotoController;
 use App\Http\Controllers\Web\ProvidersController;
@@ -70,6 +71,25 @@ Route::middleware('auth')->group(function (): void {
             Route::put('/{event}', [EventsController::class, 'update'])
                 ->name('update');
             Route::delete('/{event}', [EventsController::class, 'destroy'])
+                ->name('destroy');
+        });
+
+    Route::prefix('/event-templates')
+        ->name('event-templates.')
+        ->group(function (): void {
+            Route::get('/', [EventTemplatesController::class, 'index'])
+                ->name('index');
+            Route::get('/create', [EventTemplatesController::class, 'create'])
+                ->name('create');
+            Route::post('/', [EventTemplatesController::class, 'store'])
+                ->name('store');
+            Route::get('/{event_template}', [EventTemplatesController::class, 'show'])
+                ->name('show');
+            Route::get('/{event_template}/edit', [EventTemplatesController::class, 'edit'])
+                ->name('edit');
+            Route::put('/{event_template}', [EventTemplatesController::class, 'update'])
+                ->name('update');
+            Route::delete('/{event_template}', [EventTemplatesController::class, 'destroy'])
                 ->name('destroy');
         });
 

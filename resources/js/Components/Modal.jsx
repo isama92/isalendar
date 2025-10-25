@@ -52,7 +52,7 @@ const Modal = ({ open, onClose, title, message, onConfirm, confirmText, cancelTe
                             <button
                                 type="button"
                                 onClick={onConfirm}
-                                className={`inline-flex w-full justify-center rounded-md px-3 py-2 text-sm font-semibold text-white shadow-xs sm:ml-3 sm:w-auto ${styles.button}`}
+                                className={`inline-flex w-full cursor-pointer justify-center rounded-md px-3 py-2 text-sm font-semibold text-white shadow-xs sm:ml-3 sm:w-auto ${styles.button}`}
                             >
                                 {confirmText}
                             </button>
@@ -60,7 +60,7 @@ const Modal = ({ open, onClose, title, message, onConfirm, confirmText, cancelTe
                                 type="button"
                                 data-autofocus
                                 onClick={onClose}
-                                className="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-xs inset-ring-1 inset-ring-gray-300 hover:bg-gray-50 sm:mt-0 sm:w-auto dark:bg-gray-700 dark:text-gray-100 dark:inset-ring-gray-600 dark:hover:bg-gray-600"
+                                className="mt-3 inline-flex w-full cursor-pointer justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-xs inset-ring-1 inset-ring-gray-300 hover:bg-gray-50 sm:mt-0 sm:w-auto dark:bg-gray-700 dark:text-gray-100 dark:inset-ring-gray-600 dark:hover:bg-gray-600"
                             >
                                 {cancelText}
                             </button>

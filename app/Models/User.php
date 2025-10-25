@@ -88,6 +88,14 @@ class User extends Authenticatable implements MustVerifyEmail
     }
 
     /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany<\App\Models\EventTemplate, $this>
+     */
+    public function eventTemplates(): HasMany
+    {
+        return $this->hasMany(EventTemplate::class);
+    }
+
+    /**
      * @return \Illuminate\Database\Eloquent\Casts\Attribute<string, null>
      */
     protected function photoPath(): Attribute

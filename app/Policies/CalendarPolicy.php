@@ -14,7 +14,9 @@ class CalendarPolicy
 
     public function view(User $user, Calendar $calendar): bool
     {
-        return $calendar->connectors()->whereBelongsTo($user)->exists();
+        return $calendar->connectors()
+            ->whereBelongsTo($user)
+            ->exists();
     }
 
     public function create(User $user): bool

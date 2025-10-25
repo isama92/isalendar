@@ -148,8 +148,8 @@ OIDC_BUTTON_LABEL="Login with Authelia"
   - Use Saloon to make requests
   - Implement rate limit retries
   - Implement pagination
-- event templates
 - set correct created by and last updated by when importing connector from remote
+- ends_at should not be nullable in db
 
 ## License
 

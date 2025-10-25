@@ -1,4 +1,10 @@
-import { CalendarIcon, ChartPieIcon, DocumentIcon, UserGroupIcon } from '@heroicons/react/24/outline';
+import {
+    CalendarIcon,
+    ChartPieIcon,
+    DocumentDuplicateIcon,
+    DocumentIcon,
+    UserGroupIcon,
+} from '@heroicons/react/24/outline';
 
 /**
  * Get the navigation items for the application sidebar
@@ -29,6 +35,13 @@ export const getNavigationItems = (currentRoute, connectorEnabled, isSuperAdmin)
             href: route('events.index'),
             current: currentRoute === 'events.index',
             icon: DocumentIcon,
+            visible: connectorEnabled,
+        },
+        {
+            name: __('event-templates.event_templates'),
+            href: route('event-templates.index'),
+            current: currentRoute === 'event-templates.index',
+            icon: DocumentDuplicateIcon,
             visible: connectorEnabled,
         },
         {
