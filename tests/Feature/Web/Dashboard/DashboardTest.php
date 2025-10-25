@@ -47,10 +47,10 @@ it('shows correct event counts', function (): void {
     // Create events for different time periods
     eventFactory(4)
         ->state(new Sequence(
-            ['starts_at' => $today->addHours(10)],
-            ['starts_at' => $tomorrow->addHours(10)],
-            ['starts_at' => $thisWeekStart->addDays(3)],
-            ['starts_at' => $nextWeekStart->addDays(2)],
+            ['starts_at' => $today->addHours(10), 'ends_at' => $today->addHours(11)],
+            ['starts_at' => $tomorrow->addHours(10), 'ends_at' => $tomorrow->addHours(11)],
+            ['starts_at' => $thisWeekStart->addDays(3), 'ends_at' => $thisWeekStart->addDays(3)->addHours(1)],
+            ['starts_at' => $nextWeekStart->addDays(2), 'ends_at' => $nextWeekStart->addDays(2)->addHours(1)],
         ))
         ->create();
 
@@ -71,15 +71,15 @@ it('shows correct all-day event counts', function (): void {
     actingAsUser();
     $calendar = calendarFactory()->create();
 
-    $today = Carbon::now()->startOfDay();
-    $tomorrow = Carbon::now()->addDay()->startOfDay();
+    $today = Carbon::now()->startOfDay()->toImmutable();
+    $tomorrow = $today->addDay();
 
     // Create all-day events
     eventFactory(2)
         ->for($calendar)
         ->state(new Sequence(
-            ['all_day' => true, 'starts_at' => $today, 'ends_at' => null],
-            ['all_day' => true, 'starts_at' => $tomorrow, 'ends_at' => null],
+            ['all_day' => true, 'starts_at' => $today, 'ends_at' => $today->addDay()],
+            ['all_day' => true, 'starts_at' => $tomorrow, 'ends_at' => $tomorrow->addDay()],
         ))
         ->create();
 
@@ -139,13 +139,13 @@ it('calculates average events per day of week correctly', function (): void {
     // Create multiple events on different days of the week
     // Sunday = 0, Monday = 1, ..., Saturday = 6
     $sunday = $today->startOfWeek()->subDay();
-    eventFactory(3)->create(['starts_at' => $sunday->addHours(10)]);
+    eventFactory(3)->create(['starts_at' => $sunday->addHours(10), 'ends_at' => $sunday->addHours(11)]);
 
     $monday = $today->startOfWeek();
-    eventFactory(5)->create(['starts_at' => $monday->addHours(10)]);
+    eventFactory(5)->create(['starts_at' => $monday->addHours(10), 'ends_at' => $monday->addHours(11)]);
 
     $wednesday = $today->startOfWeek()->addDays(2);
-    eventFactory(2)->create(['starts_at' => $wednesday->addHours(10)]);
+    eventFactory(2)->create(['starts_at' => $wednesday->addHours(10), 'ends_at' => $wednesday->addHours(11)]);
 
     get(route('dashboard'))
         ->assertSuccessful()

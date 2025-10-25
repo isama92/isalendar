@@ -15,7 +15,7 @@ class GetOrderedTimezones
 
         return collect(timezone_identifiers_list())
             ->map(function (string $tz) use ($now): array {
-                $datetime = $now->copy()->setTimezone($tz);
+                $datetime = $now->setTimezone($tz);
                 $offset = $datetime->format('P');
                 $offsetSeconds = $datetime->getOffset();
 

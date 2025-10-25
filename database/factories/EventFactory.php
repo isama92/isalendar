@@ -37,8 +37,15 @@ class EventFactory extends Factory
 
                 return $attributes['all_day'] ? $date->startOfDay() : $date;
             },
-            'ends_at' => fn (array $attributes) => $attributes['all_day'] ? null : fake()
-                ->dateTimeBetween($attributes['starts_at'], $attributes['starts_at']->format('Y-m-d H:i:s').' +16 hours'),
+            'ends_at' => function (array $attributes) {
+                $startsAt = $attributes['starts_at']->toImmutable();
+
+                if ($attributes['all_day']) {
+                    return $startsAt->addDays(fake()->numberBetween(1, 3));
+                }
+
+                return fake()->dateTimeBetween($startsAt, $startsAt->format('Y-m-d H:i:s').' +16 hours');
+            },
             'description' => fake()->paragraph(),
         ];
     }
