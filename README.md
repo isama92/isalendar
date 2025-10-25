@@ -149,7 +149,6 @@ OIDC_BUTTON_LABEL="Login with Authelia"
   - Implement rate limit retries
   - Implement pagination
 - set correct created by and last updated by when importing connector from remote
-- ends_at should not be nullable in db
 
 ## License
 

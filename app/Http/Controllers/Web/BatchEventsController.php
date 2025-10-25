@@ -60,7 +60,7 @@ class BatchEventsController extends Controller
      */
     private function getCalendarsForSelect(): Collection
     {
-        return Calendar::forCurrentUser(true)
+        return Calendar::forCurrentUser()
             ->select('id', 'name')
             ->get();
     }
