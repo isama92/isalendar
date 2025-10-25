@@ -148,7 +148,6 @@ OIDC_BUTTON_LABEL="Login with Authelia"
   - Use Saloon to make requests
   - Implement rate limit retries
   - Implement pagination
-- command to force delete a calendar
 - event templates
 - use "action panel" for the "you don't have a calendar yet, click here to create it" thing
 - set correct created by and last updated by when importing connector from remote
