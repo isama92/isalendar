@@ -54,12 +54,12 @@ it('calls FetchEvents and then calls SaveEvent for each event', function (): voi
     $saveEventMock = partialMock(SaveEvent::class);
     $saveEventMock->shouldReceive('execute')
         ->once()
-        ->with($eventsDataCollection->get(0), $calendar)
+        ->with($connector, $calendar, $eventsDataCollection->get(0))
         ->ordered('saveEventGroup')
         ->andReturnUndefined();
     $saveEventMock->shouldReceive('execute')
         ->once()
-        ->with($eventsDataCollection->get(1), $calendar)
+        ->with($connector, $calendar, $eventsDataCollection->get(1))
         ->ordered('saveEventGroup')
         ->andReturnUndefined();
 

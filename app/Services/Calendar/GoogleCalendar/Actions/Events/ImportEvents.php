@@ -25,6 +25,6 @@ class ImportEvents
     ): void {
         $this->fetchEvents->execute($connector, $calendar, $fetchWindowStart, $fetchWindowEnd)
             ->each(fn (GoogleEventData $googleEventData) => $this->saveEvent
-                ->execute($googleEventData, $calendar));
+                ->execute($connector, $calendar, $googleEventData));
     }
 }

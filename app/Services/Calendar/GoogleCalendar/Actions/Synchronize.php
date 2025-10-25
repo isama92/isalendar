@@ -4,7 +4,7 @@ namespace App\Services\Calendar\GoogleCalendar\Actions;
 
 use App\Jobs\ActionJob;
 use App\Models\Calendar;
-use App\Models\Connector;
+use App\Models\Provider;
 use App\Services\Calendar\GoogleCalendar\Actions\Events\ExportEvents;
 use App\Services\Calendar\GoogleCalendar\Actions\Events\ImportEvents;
 use Illuminate\Support\Facades\Bus;
@@ -14,41 +14,44 @@ class Synchronize
 {
     use QueueableAction;
 
-    public function execute(Connector $connector): void
+    public function execute(Calendar $calendar): void
     {
-        $fetchWindowStart = now()->subWeek()->startOfDay()->toImmutable();
-        $fetchWindowEnd = now()->addWeeks(2)->endOfDay()->toImmutable();
-
-        if ($connector->calendars()->enabled()->doesntExist()) {
+        if (! $calendar->enabled) {
             return;
         }
 
-        $enabledCalendars = $connector->calendars()
+        $connector = $calendar->connectors()
+            ->whereBelongsTo(Provider::googleCalendar())
             ->enabled()
-            ->get();
+            ->first();
 
-        Bus::chain([
-            Bus::batch(
-                $enabledCalendars
-                    ->map(fn (Calendar $calendar): ActionJob => new ActionJob(ImportEvents::class, [
-                        $connector,
-                        $calendar,
-                        $fetchWindowStart,
-                        $fetchWindowEnd,
-                    ]))
-            )->name(sprintf('Import Google Calendar events (%s)', $connector->id)),
-            Bus::batch(
-                $enabledCalendars
-                    ->map(fn (Calendar $calendar): ActionJob => new ActionJob(ExportEvents::class, [
-                        $connector,
-                        $calendar,
-                        $fetchWindowStart,
-                        $fetchWindowEnd,
-                    ]))
-            )->name(sprintf('Export Google Calendar events (%s)', $connector->id))
-                ->finally(function () use ($connector): void {
-                    $connector->update(['synchronized_at' => now()]);
-                }),
-        ])->dispatch();
+        if (! $connector) {
+            return;
+        }
+
+        $fetchWindowStart = now()->subWeek()->startOfDay()->toImmutable();
+        $fetchWindowEnd = now()->addWeeks(2)->endOfDay()->toImmutable();
+
+        Bus::batch([
+            [
+                new ActionJob(ImportEvents::class, [
+                    $connector,
+                    $calendar,
+                    $fetchWindowStart,
+                    $fetchWindowEnd,
+                ]),
+                new ActionJob(ExportEvents::class, [
+                    $connector,
+                    $calendar,
+                    $fetchWindowStart,
+                    $fetchWindowEnd,
+                ]),
+            ],
+        ])
+            ->name(sprintf('Synchronize Calendar (%s)', $calendar->id))
+            ->finally(function () use ($connector): void {
+                $connector->update(['synchronized_at' => now()]);
+            })
+            ->dispatch();
     }
 }

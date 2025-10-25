@@ -19,7 +19,7 @@ it('creates a new event on Google Calendar when external_id is null', function (
         'all_day' => false,
         'timezone' => 'Europe/Amsterdam',
     ]);
-    $connector = $event->calendar->connectors->sole();
+    $connector = $event->lastModifiedBy;
 
     $googleClientMock = partialMock(GoogleClient::class);
     $googleClientMock->shouldReceive('getUniverseDomain')
@@ -52,7 +52,7 @@ it('updates an existing event on Google Calendar when external_id exists', funct
         'all_day' => false,
         'timezone' => 'Europe/Amsterdam',
     ]);
-    $connector = $event->calendar->connectors->sole();
+    $connector = $event->lastModifiedBy;
 
     $googleClientMock = partialMock(GoogleClient::class);
     $googleClientMock->shouldReceive('getUniverseDomain')
@@ -85,7 +85,7 @@ it('handles all-day events correctly', function (): void {
         'all_day' => true,
         'timezone' => null,
     ]);
-    $connector = $event->calendar->connectors->sole();
+    $connector = $event->lastModifiedBy;
 
     $googleClientMock = partialMock(GoogleClient::class);
     $googleClientMock->shouldReceive('getUniverseDomain')

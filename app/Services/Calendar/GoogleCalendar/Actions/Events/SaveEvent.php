@@ -4,13 +4,15 @@ namespace App\Services\Calendar\GoogleCalendar\Actions\Events;
 
 use App\Data\EventData;
 use App\Models\Calendar;
+use App\Models\Connector;
 use App\Models\Event;
 use App\Services\Calendar\GoogleCalendar\Data\GoogleEventData;
 use App\Services\Calendar\GoogleCalendar\Enums\Status;
+use Illuminate\Support\Facades\Cache;
 
 class SaveEvent
 {
-    public function execute(GoogleEventData $googleEventData, Calendar $calendar): void
+    public function execute(Connector $connector, Calendar $calendar, GoogleEventData $googleEventData): void
     {
         /** @phpstan-ignore method.notFound */
         $event = $calendar->events()
@@ -19,21 +21,28 @@ class SaveEvent
             ->where('external_id', $googleEventData->id)
             ->first();
 
-        if ($googleEventData->status === Status::CANCELLED) {
-            $event?->delete();
+        Cache::lock(sprintf('calendar-sync-%s-%s', $calendar->id, $event?->id), 10)
+            ->block(5, function () use ($googleEventData, $calendar, $connector, $event): void {
+                if ($googleEventData->status === Status::CANCELLED) {
+                    $event?->delete();
 
-            return;
-        }
+                    return;
+                }
 
-        $this->saveEvent($googleEventData, $calendar, $event);
+                $this->saveEvent($connector, $calendar, $googleEventData, $event);
+            });
     }
 
-    private function saveEvent(GoogleEventData $googleEventData, Calendar $calendar, ?Event $event): void
+    private function saveEvent(Connector $connector, Calendar $calendar, GoogleEventData $googleEventData, ?Event $event): void
     {
+        // TODO: get right connector based on who created/updated event remotely
+
         if (! $event instanceof Event) {
-            $calendar->events()->create(
-                EventData::from($googleEventData)->all()
-            );
+            $calendar->events()->create([
+                ...EventData::from($googleEventData)->all(),
+                'created_by_connector_id' => $connector->id,
+                'last_modified_by_connector_id' => $connector->id,
+            ]);
 
             return;
         }
@@ -42,8 +51,9 @@ class SaveEvent
             return;
         }
 
-        $event->update(
-            EventData::from($googleEventData)->all()
-        );
+        $event->update([
+            ...EventData::from($googleEventData)->all(),
+            'last_modified_by_connector_id' => $connector->id,
+        ]);
     }
 }

@@ -12,6 +12,7 @@ uses()->group('gcalendar', 'gcalendar.events');
 
 it('creates an event', function (): void {
     $calendar = calendarFactory()->create();
+    $connector = $calendar->connectors()->first();
     $googleEventData = GoogleEventData::from([
         'id' => 'ev',
         'status' => Status::CONFIRMED,
@@ -25,7 +26,7 @@ it('creates an event', function (): void {
         'description' => 'an event',
     ]);
 
-    app(SaveEvent::class)->execute($googleEventData, $calendar);
+    app(SaveEvent::class)->execute($connector, $calendar, $googleEventData);
 
     expect(Event::sole())
         ->calendar_id->toBe($calendar->id)
@@ -50,6 +51,7 @@ it('updates an event when remote updatedAt is after local updated_at', function 
         'updated_at' => now()->subHour(),
     ]);
 
+    $connector = $oldEvent->calendar->connectors()->first();
     $googleEventData = GoogleEventData::from([
         'id' => 'ev',
         'status' => Status::CONFIRMED,
@@ -63,7 +65,7 @@ it('updates an event when remote updatedAt is after local updated_at', function 
         'description' => 'an event',
     ]);
 
-    app(SaveEvent::class)->execute($googleEventData, $oldEvent->calendar);
+    app(SaveEvent::class)->execute($connector, $oldEvent->calendar, $googleEventData);
 
     expect($oldEvent->refresh())
         ->calendar_id->toBe($oldEvent->calendar->id)
@@ -89,6 +91,7 @@ it('does not update an event when remote updatedAt is before local updated_at', 
             'updated_at' => now(),
         ]);
 
+    $connector = $oldEvent->calendar->connectors()->first();
     $googleEventData = GoogleEventData::from([
         'id' => 'ev',
         'status' => Status::CONFIRMED,
@@ -102,7 +105,7 @@ it('does not update an event when remote updatedAt is before local updated_at', 
         'description' => 'a new event description',
     ]);
 
-    app(SaveEvent::class)->execute($googleEventData, $oldEvent->calendar);
+    app(SaveEvent::class)->execute($connector, $oldEvent->calendar, $googleEventData);
 
     expect($oldEvent->refresh())
         ->calendar_id->toBe($oldEvent->calendar->id)
@@ -117,6 +120,7 @@ it('does not update an event when remote updatedAt is before local updated_at', 
 
 it('does not save a cancelled event', function (): void {
     $calendar = calendarFactory()->create();
+    $connector = $calendar->connectors()->first();
     $googleEventData = GoogleEventData::from([
         'id' => 'ev',
         'status' => Status::CANCELLED,
@@ -130,7 +134,7 @@ it('does not save a cancelled event', function (): void {
         'description' => 'an event',
     ]);
 
-    app(SaveEvent::class)->execute($googleEventData, $calendar);
+    app(SaveEvent::class)->execute($connector, $calendar, $googleEventData);
 
     expect(Event::count())->toBe(0);
 });
@@ -147,6 +151,7 @@ it('deletes an existing cancelled event', function (): void {
             'description' => 'an old event',
         ]);
 
+    $connector = $oldEvent->calendar->connectors()->first();
     $googleEventData = GoogleEventData::from([
         'id' => 'ev',
         'status' => Status::CANCELLED,
@@ -160,7 +165,7 @@ it('deletes an existing cancelled event', function (): void {
         'description' => 'an event',
     ]);
 
-    app(SaveEvent::class)->execute($googleEventData, $oldEvent->calendar);
+    app(SaveEvent::class)->execute($connector, $oldEvent->calendar, $googleEventData);
 
     expect($oldEvent->refresh())
         ->deleted_at->not()->toBeNull();

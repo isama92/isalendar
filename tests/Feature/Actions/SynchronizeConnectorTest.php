@@ -6,6 +6,7 @@ use App\Services\Calendar\GoogleCalendar\Actions\Synchronize as GoogleCalendarSy
 use Illuminate\Support\Facades\Queue;
 use Spatie\QueueableAction\Testing\QueueableActionFake;
 
+use function Tests\Helpers\calendarFactory;
 use function Tests\Helpers\connectorFactory;
 
 uses()->group('actions');
@@ -13,11 +14,15 @@ uses()->group('actions');
 it('synchronizes Google Calendar connector', function (): void {
     Queue::fake();
 
+    // Create connector with 2 enabled calendars
     $connector = connectorFactory()->create();
+    calendarFactory(connector: $connector)->create();
+    calendarFactory(connector: $connector)->create();
 
     app(SynchronizeConnector::class)->execute($connector);
 
-    QueueableActionFake::assertPushedTimes(GoogleCalendarSynchronize::class);
+    // Should push Synchronize action twice (once per calendar)
+    QueueableActionFake::assertPushedTimes(GoogleCalendarSynchronize::class, 2);
 });
 
 it('does not synchronize Microsoft Outlook connector', function (): void {

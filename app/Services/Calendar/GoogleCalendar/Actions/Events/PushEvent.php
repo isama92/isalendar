@@ -20,7 +20,9 @@ class PushEvent
 
     public function execute(Connector $connector, Event $event): void
     {
-        $googleClient = $this->getAuthClient->execute($connector);
+        $connectorToUse = $this->getConnectorForEvent($event);
+
+        $googleClient = $this->getAuthClient->execute($connectorToUse);
 
         $savedEvent = $this->pushEvent(
             new CalendarService($googleClient),
@@ -29,6 +31,24 @@ class PushEvent
         );
 
         $event->update(['external_id' => $savedEvent->getId()]);
+    }
+
+    private function getConnectorForEvent(Event $event): Connector
+    {
+        // Try to use the last modifier's connector
+        if ($event->lastModifiedBy && $event->lastModifiedBy->enabled) {
+            return $event->lastModifiedBy;
+        }
+
+        // Fallback to creator's connector
+        if ($event->createdBy && $event->createdBy->enabled) {
+            return $event->createdBy;
+        }
+
+        // Final fallback: any enabled connector for this calendar
+        return $event->calendar->connectors()
+            ->enabled()
+            ->firstOrFail();
     }
 
     private function getGoogleEvent(Event $event): GoogleEvent

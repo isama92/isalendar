@@ -19,8 +19,10 @@ class SynchronizeConnector
             return;
         }
 
-        app($synchronizeAction)
-            ->onQueue()
-            ->execute($connector);
+        $connector->calendars()
+            ->enabled()
+            ->each(fn ($calendar) => app($synchronizeAction)
+                ->onQueue()
+                ->execute($calendar));
     }
 }

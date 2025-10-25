@@ -10,6 +10,7 @@ use Spatie\QueueableAction\Testing\QueueableActionFake;
 
 use function Pest\Laravel\put;
 use function Pest\Laravel\withoutMiddleware;
+use function Tests\Helpers\calendarFactory;
 use function Tests\Helpers\connectorFactory;
 
 uses()->group('web', 'connectors');
@@ -22,6 +23,7 @@ it('synchronizes connector successfully', function (): void {
     actingAsUser();
 
     $connector = connectorFactory()->create();
+    calendarFactory(connector: $connector)->create();
 
     put(route('connectors.synchronize', $connector))
         ->assertRedirect(route('calendars.index'))
@@ -65,6 +67,7 @@ it('does not rate limit without the middleware', function (): void {
     actingAsUser();
 
     $connector = connectorFactory()->create();
+    calendarFactory(connector: $connector)->create();
 
     withoutMiddleware(ThrottleRequests::class)
         ->put(route('connectors.synchronize', $connector))
@@ -103,6 +106,7 @@ it('allows synchronization after rate limit period', function (): void {
     $user = actingAsUser();
 
     $connector = connectorFactory()->create();
+    calendarFactory(connector: $connector)->create();
 
     put(route('connectors.synchronize', $connector))
         ->assertRedirect(route('calendars.index'));

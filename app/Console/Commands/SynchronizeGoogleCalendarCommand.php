@@ -2,7 +2,8 @@
 
 namespace App\Console\Commands;
 
-use App\Models\Connector;
+use App\Builders\ConnectorBuilder;
+use App\Models\Calendar;
 use App\Models\Provider;
 use App\Services\Calendar\GoogleCalendar\Actions\Synchronize;
 use Illuminate\Console\Command;
@@ -15,13 +16,16 @@ class SynchronizeGoogleCalendarCommand extends Command
 
     public function handle(Synchronize $synchronize): int
     {
-        Connector::query()
-            ->whereBelongsTo(Provider::googleCalendar())
+        Calendar::query()
             ->enabled()
+            /** @phpstan-ignore argument.type */
+            ->whereHas('connectors', fn (ConnectorBuilder $query) => $query
+                ->whereBelongsTo(Provider::googleCalendar())
+                ->enabled())
             ->lazyById()
-            ->each(fn (Connector $connector) => $synchronize
+            ->each(fn (Calendar $calendar) => $synchronize
                 ->onQueue()
-                ->execute($connector));
+                ->execute($calendar));
 
         return self::SUCCESS;
     }

@@ -26,6 +26,8 @@ class Event extends Model
 
     protected $fillable = [
         'calendar_id',
+        'created_by_connector_id',
+        'last_modified_by_connector_id',
         'external_id',
         'title',
         'all_day',
@@ -60,5 +62,21 @@ class Event extends Model
     public function calendar(): BelongsTo
     {
         return $this->belongsTo(Calendar::class);
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo<\App\Models\Connector, $this>
+     */
+    public function createdBy(): BelongsTo
+    {
+        return $this->belongsTo(Connector::class, 'created_by_connector_id');
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo<\App\Models\Connector, $this>
+     */
+    public function lastModifiedBy(): BelongsTo
+    {
+        return $this->belongsTo(Connector::class, 'last_modified_by_connector_id');
     }
 }

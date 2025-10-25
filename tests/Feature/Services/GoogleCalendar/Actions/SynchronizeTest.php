@@ -8,48 +8,37 @@ use function Tests\Helpers\calendarFactory;
 
 uses()->group('gcalendar', 'gcalendar.sync');
 
-it('dispatches import and export batches for enabled calendars and sets synchronized_at', function (): void {
-    // 3 enabled, 2 disabled calendars
-    $connector = calendarFactory(3)->create()
-        ->first()->connectors->sole();
+it('dispatches import and export jobs for calendar and sets synchronized_at', function (): void {
+    $calendar = calendarFactory()->create();
+    $connector = $calendar->connectors->sole();
 
-    calendarFactory(2)->disabled()->create();
-
-    $batchCount = 0;
     $finallyCallback = null;
 
-    Bus::shouldReceive('batch')
-        ->twice()
-        ->andReturnUsing(function ($jobs) use (&$batchCount, &$finallyCallback) {
-            $batchCount++;
-            $batch = Mockery::mock(PendingBatch::class);
-            $batch->shouldReceive('name')->andReturnSelf();
-
-            // Only the second batch (export) should have finally
-            if ($batchCount === 2) {
-                $batch->shouldReceive('finally')
-                    ->once()
-                    ->andReturnUsing(function ($callback) use ($batch, &$finallyCallback) {
-                        $finallyCallback = $callback;
-
-                        return $batch;
-                    });
-            }
-
-            return $batch;
-        });
-
-    $pendingChain = Mockery::mock();
-    $pendingChain->shouldReceive('dispatch')->once()->andReturnUndefined();
-
-    Bus::shouldReceive('chain')
+    $pendingBatch = Mockery::mock(PendingBatch::class);
+    $pendingBatch->shouldReceive('name')
         ->once()
-        ->with(Mockery::on(fn ($arg): bool => is_array($arg) && count($arg) === 2))
-        ->andReturn($pendingChain);
+        ->with(Mockery::pattern('/^Synchronize Calendar/'))
+        ->andReturnSelf();
+    $pendingBatch->shouldReceive('finally')
+        ->once()
+        ->andReturnUsing(function ($callback) use ($pendingBatch, &$finallyCallback) {
+            $finallyCallback = $callback;
 
-    app(Synchronize::class)->execute($connector);
+            return $pendingBatch;
+        });
+    $pendingBatch->shouldReceive('dispatch')->once()->andReturnUndefined();
 
-    expect($batchCount)->toBe(2);
+    Bus::shouldReceive('batch')
+        ->once()
+        ->with(Mockery::on(fn ($arg): bool =>
+            // Verify it's an array containing one nested array with 2 jobs
+            is_array($arg) &&
+            count($arg) === 1 &&
+            is_array($arg[0]) &&
+            count($arg[0]) === 2))
+        ->andReturn($pendingBatch);
+
+    app(Synchronize::class)->execute($calendar);
 
     // Execute the finally callback to simulate batch completion
     expect($finallyCallback)->toBeCallable();
@@ -58,13 +47,23 @@ it('dispatches import and export batches for enabled calendars and sets synchron
     expect($connector->refresh()->synchronized_at)->not->toBeNull();
 });
 
-it('does not dispatch an empty batch when there are no enabled calendars', function (): void {
+it('does not dispatch jobs when calendar is disabled', function (): void {
     Bus::fake();
 
-    $connector = calendarFactory(2)->create()
-        ->first()->connectors->sole();
+    $calendar = calendarFactory()->disabled()->create();
 
-    app(Synchronize::class)->execute($connector);
+    app(Synchronize::class)->execute($calendar);
 
-    Bus::assertNothingBatched();
+    Bus::assertNothingDispatched();
+});
+
+it('does not dispatch jobs when calendar has no enabled connectors', function (): void {
+    Bus::fake();
+
+    $calendar = calendarFactory()->create();
+    $calendar->connectors()->update(['enabled' => false]);
+
+    app(Synchronize::class)->execute($calendar);
+
+    Bus::assertNothingDispatched();
 });

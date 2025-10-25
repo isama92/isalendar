@@ -3,6 +3,7 @@
 namespace Database\Factories;
 
 use App\Models\Calendar;
+use App\Models\Connector;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -15,6 +16,18 @@ class EventFactory extends Factory
     {
         return [
             'calendar_id' => Calendar::factory(),
+            'created_by_connector_id' => function (array $attributes) {
+                $calendar = Calendar::find($attributes['calendar_id']);
+                $connector = $calendar->connectors()->first();
+
+                if (! $connector) {
+                    $connector = Connector::factory()->create();
+                    $calendar->connectors()->attach($connector);
+                }
+
+                return $connector->id;
+            },
+            'last_modified_by_connector_id' => fn (array $attributes) => $attributes['created_by_connector_id'],
             'external_id' => fake()->uuid(),
             'title' => fake()->sentence(3),
             'timezone' => fn (array $attributes) => $attributes['all_day'] ? null : fake()->timezone(),
