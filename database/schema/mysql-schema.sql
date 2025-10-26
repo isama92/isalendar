@@ -27,6 +27,7 @@ CREATE TABLE `calendars` (
   `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `description` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
   `enabled` tinyint(1) NOT NULL DEFAULT '1',
+  `synchronized_at` timestamp NULL DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   `deleted_at` timestamp NULL DEFAULT NULL,
@@ -56,19 +57,44 @@ CREATE TABLE `connectors` (
   CONSTRAINT `connectors_user_id_foreign` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
+DROP TABLE IF EXISTS `event_templates`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `event_templates` (
+  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+  `user_id` bigint unsigned NOT NULL,
+  `calendar_id` bigint unsigned NOT NULL,
+  `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `event_title` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `event_all_day` tinyint(1) NOT NULL DEFAULT '0',
+  `event_timezone` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `event_description` text COLLATE utf8mb4_unicode_ci,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  `deleted_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `event_templates_user_id_foreign` (`user_id`),
+  KEY `event_templates_calendar_id_foreign` (`calendar_id`),
+  KEY `event_templates_name_index` (`name`),
+  CONSTRAINT `event_templates_calendar_id_foreign` FOREIGN KEY (`calendar_id`) REFERENCES `calendars` (`id`),
+  CONSTRAINT `event_templates_user_id_foreign` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `events`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `events` (
   `id` bigint unsigned NOT NULL AUTO_INCREMENT,
   `calendar_id` bigint unsigned NOT NULL,
+  `created_by_connector_id` bigint unsigned NOT NULL,
   `external_id` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `title` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `all_day` tinyint(1) NOT NULL DEFAULT '0',
-  `timezone` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `timezone` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `starts_at` datetime NOT NULL,
-  `ends_at` datetime DEFAULT NULL,
+  `ends_at` datetime NOT NULL,
   `description` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
+  `marked_for_deletion_at` timestamp NULL DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   `deleted_at` timestamp NULL DEFAULT NULL,
@@ -76,7 +102,9 @@ CREATE TABLE `events` (
   KEY `events_external_id_index` (`external_id`),
   KEY `events_title_index` (`title`),
   KEY `events_calendar_id_foreign` (`calendar_id`),
-  CONSTRAINT `events_calendar_id_foreign` FOREIGN KEY (`calendar_id`) REFERENCES `calendars` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT
+  KEY `events_created_by_connector_id_foreign` (`created_by_connector_id`),
+  CONSTRAINT `events_calendar_id_foreign` FOREIGN KEY (`calendar_id`) REFERENCES `calendars` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
+  CONSTRAINT `events_created_by_connector_id_foreign` FOREIGN KEY (`created_by_connector_id`) REFERENCES `connectors` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `failed_jobs`;
@@ -243,7 +271,7 @@ DROP TABLE IF EXISTS `user_settings`;
 CREATE TABLE `user_settings` (
   `id` bigint unsigned NOT NULL AUTO_INCREMENT,
   `user_id` bigint unsigned NOT NULL,
-  `default_timezone` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `default_timezone` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   `deleted_at` timestamp NULL DEFAULT NULL,
@@ -294,3 +322,10 @@ INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (15,'2025_10_10_211
 INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (16,'2025_10_11_131926_make_users_soft_deletable',6);
 INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (17,'2025_10_11_133756_create_user_settings_table',6);
 INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (18,'2025_10_12_174441_add_timezone_to_events_table',6);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (19,'2025_10_14_232015_add_synchronized_at_to_connectors_table',7);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (20,'2025_10_18_222127_add_marked_for_deletion_at_to_events_table',7);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (21,'2025_10_25_103026_add_connector_tracking_to_events_table',7);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (22,'2025_10_25_121557_move_synchronized_at_from_connectors_to_calendars',8);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (23,'2025_10_25_152729_create_event_templates_table',9);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (24,'2025_10_25_164814_make_ends_at_non_nullable_in_events_table',10);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (25,'2025_10_25_193915_remove_last_modified_by_connector_id_from_events_table',11);
