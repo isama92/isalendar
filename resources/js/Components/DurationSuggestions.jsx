@@ -2,7 +2,7 @@ import { calculateEndsAtFromDuration, formatSuggestedEndsAt } from '@/Pages/Even
 import { DATE_FORMAT, subtractDays } from '@/utils/date';
 import axios from 'axios';
 import { debounce } from 'es-toolkit';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 /**
  * Display duration suggestions as clickable buttons
@@ -11,6 +11,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 const DurationSuggestions = ({ title, startsAt, isAllDay, onSelect, isEditing = false }) => {
     const [suggestions, setSuggestions] = useState([]);
     const [error, setError] = useState(false);
+    const isFirstRender = useRef(true);
 
     /**
      * Fetch duration suggestions from the API
@@ -37,17 +38,22 @@ const DurationSuggestions = ({ title, startsAt, isAllDay, onSelect, isEditing = 
 
     const debouncedFetchSuggestions = useMemo(() => debounce(fetchSuggestions, 1000), [fetchSuggestions]);
 
-    // Fetch suggestions when title or all_day changes (debounced)
+    // Fetch suggestions when title or all_day changes
     useEffect(() => {
-        debouncedFetchSuggestions(title, isAllDay);
-    }, [title, isAllDay, debouncedFetchSuggestions]);
-
-    // Fetch suggestions immediately on mount for editing
-    useEffect(() => {
-        if (isEditing && title && title.length >= 2) {
+        // On first render with editing mode and valid title, fetch immediately
+        if (isFirstRender.current && isEditing && title && title.length >= 2) {
+            isFirstRender.current = false;
             fetchSuggestions(title, isAllDay);
+            return;
         }
-    }, [isEditing, title, isAllDay, fetchSuggestions]);
+
+        // Mark first render as complete
+        isFirstRender.current = false;
+
+        // For all other cases, use debounced fetch
+        debouncedFetchSuggestions(title, isAllDay);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [title, isAllDay]);
 
     if (!startsAt) {
         return null;
