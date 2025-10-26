@@ -1,6 +1,7 @@
 import CalendarSelect from '@/Components/CalendarSelect';
 import Checkbox from '@/Components/Checkbox';
 import DateTimePicker from '@/Components/DateTimePicker';
+import EventTemplateSelectModal from '@/Components/EventTemplateSelectModal';
 import RichTextEditor from '@/Components/RichTextEditor';
 import TimezoneSelect from '@/Components/TimezoneSelect';
 import { formatWithFormatAndTimezone, subtractDays } from '@/utils/date';
@@ -8,6 +9,7 @@ import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react';
 import { ChevronDownIcon } from '@heroicons/react/20/solid';
 import { useForm } from '@inertiajs/react';
 import clsx from 'clsx';
+import { useState } from 'react';
 import {
     calculateDefaultEndsAt,
     formatEndsAtForSubmission,
@@ -16,8 +18,9 @@ import {
     shouldClearEndsAt,
 } from './eventFormHelpers';
 
-const Form = ({ currentUser, calendars, timezones, event = null }) => {
+const Form = ({ currentUser, calendars, timezones, eventTemplates = [], event = null }) => {
     const isEditing = !!event;
+    const [templateModalOpen, setTemplateModalOpen] = useState(false);
 
     const convertUtcToEventTimezone = (utcDate, timezone, allDay) => {
         if (!utcDate) return '';
@@ -56,6 +59,18 @@ const Form = ({ currentUser, calendars, timezones, event = null }) => {
         }
     };
 
+    const handleTemplateSelect = template => {
+        setData({
+            ...data,
+            calendar_id: template.calendar_id || '',
+            title: template.event_title || '',
+            all_day: template.event_all_day || false,
+            timezone: template.event_timezone || currentUser.settings.default_timezone,
+            description: template.event_description || '',
+        });
+        setTemplateModalOpen(false);
+    };
+
     const handleSubmit = (e, redirectTo = null) => {
         e.preventDefault();
 
@@ -90,12 +105,22 @@ const Form = ({ currentUser, calendars, timezones, event = null }) => {
             <form className="space-y-6">
                 <div className="space-y-12 sm:space-y-16">
                     {/* header */}
-                    <div>
+                    <div className="flex items-center justify-between">
                         <h2 className="text-base/7 font-semibold text-gray-900 dark:text-white">
                             {isEditing
                                 ? __('actions.named.edit', { name: __('events.event') })
                                 : __('actions.named.create', { name: __('events.event') })}
                         </h2>
+                        {!isEditing && (
+                            <button
+                                type="button"
+                                onClick={() => setTemplateModalOpen(true)}
+                                disabled={eventTemplates.length === 0}
+                                className="inline-flex cursor-pointer items-center gap-x-2 rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-xs inset-ring-1 inset-ring-gray-300 hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-gray-700 dark:text-gray-100 dark:inset-ring-gray-600 dark:hover:bg-gray-600"
+                            >
+                                {__('events.use_event_template')}
+                            </button>
+                        )}
                     </div>
 
                     {/* field */}
@@ -377,6 +402,13 @@ const Form = ({ currentUser, calendars, timezones, event = null }) => {
                     </div>
                 </div>
             </form>
+
+            <EventTemplateSelectModal
+                open={templateModalOpen}
+                onClose={() => setTemplateModalOpen(false)}
+                eventTemplates={eventTemplates}
+                onConfirm={handleTemplateSelect}
+            />
         </div>
     );
 };

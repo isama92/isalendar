@@ -35,4 +35,9 @@ return [
     'minutes' => 'Minuti',
     'select_time' => 'Seleziona orario',
     'select_date' => 'Seleziona data',
+    'use_event_template' => 'Usa Modello Evento',
+    'select_template' => 'Seleziona Modello',
+    'template_preview' => 'Anteprima Modello',
+    'no_templates_available' => 'Nessun modello disponibile',
+    'apply_template' => 'Applica Modello',
 ];

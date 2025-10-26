@@ -1,6 +1,7 @@
 import CalendarSelect from '@/Components/CalendarSelect';
 import Checkbox from '@/Components/Checkbox';
 import DateTimePicker from '@/Components/DateTimePicker';
+import EventTemplateSelectModal from '@/Components/EventTemplateSelectModal';
 import ProgressSteps from '@/Components/ProgressSteps';
 import RichTextEditor from '@/Components/RichTextEditor';
 import TimezoneSelect from '@/Components/TimezoneSelect';
@@ -17,10 +18,11 @@ import {
     shouldClearEndsAt,
 } from './eventFormHelpers';
 
-const CreateBatch = ({ currentUser, calendars, timezones }) => {
+const CreateBatch = ({ currentUser, calendars, timezones, eventTemplates = [] }) => {
     const [currentStep, setCurrentStep] = useState(1);
     const [processing, setProcessing] = useState(false);
     const [errors, setErrors] = useState({});
+    const [templateModalOpen, setTemplateModalOpen] = useState(false);
 
     // Step 1 data: Common event details
     const [calendarId, setCalendarId] = useState('');
@@ -62,6 +64,15 @@ const CreateBatch = ({ currentUser, calendars, timezones }) => {
         }
 
         setDateEntries(newEntries);
+    };
+
+    const handleTemplateSelect = template => {
+        setCalendarId(template.calendar_id || '');
+        setTitle(template.event_title || '');
+        setAllDay(template.event_all_day || false);
+        setTimezone(template.event_timezone || currentUser?.settings?.default_timezone || '');
+        setDescription(template.event_description || '');
+        setTemplateModalOpen(false);
     };
 
     const validateStep1 = () => {
@@ -143,11 +154,26 @@ const CreateBatch = ({ currentUser, calendars, timezones }) => {
 
             <div className="mx-auto mt-8 max-w-5xl px-4 sm:px-6 lg:px-8">
                 <div className="mx-auto max-w-2xl rounded-lg bg-white p-6 shadow dark:bg-gray-800">
-                    <h2 className="mb-6 text-2xl font-semibold text-gray-900 dark:text-gray-100">
-                        {currentStep === 1 ? __('events.batch_event_details') : __('events.batch_event_dates')}
-                    </h2>
+                    <div className="flex items-center justify-between">
+                        <h2 className="text-base/7 font-semibold text-gray-900 dark:text-gray-100">
+                            {currentStep === 1 ? __('events.batch_event_details') : __('events.batch_event_dates')}
+                        </h2>
+                        {currentStep === 1 && (
+                            <button
+                                type="button"
+                                onClick={() => setTemplateModalOpen(true)}
+                                disabled={eventTemplates.length === 0}
+                                className="inline-flex cursor-pointer items-center gap-x-2 rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-xs inset-ring-1 inset-ring-gray-300 hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-gray-700 dark:text-gray-100 dark:inset-ring-gray-600 dark:hover:bg-gray-600"
+                            >
+                                {__('events.use_event_template')}
+                            </button>
+                        )}
+                    </div>
 
-                    <form onSubmit={handleSubmit} className="space-y-6">
+                    <form
+                        onSubmit={handleSubmit}
+                        className="mt-10 space-y-6 border-t border-gray-900/10 pt-10 dark:border-white/10"
+                    >
                         {currentStep === 1 ? (
                             <>
                                 {/* Calendar */}
@@ -424,6 +450,13 @@ const CreateBatch = ({ currentUser, calendars, timezones }) => {
                     </form>
                 </div>
             </div>
+
+            <EventTemplateSelectModal
+                open={templateModalOpen}
+                onClose={() => setTemplateModalOpen(false)}
+                eventTemplates={eventTemplates}
+                onConfirm={handleTemplateSelect}
+            />
         </>
     );
 };

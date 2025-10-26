@@ -78,7 +78,7 @@ const Show = ({ eventTemplate }) => {
                             {__('event-templates.event_all_day')}
                         </dt>
                         <dd className="mt-1 text-sm/6 text-gray-700 sm:mt-2 dark:text-gray-400">
-                            {eventTemplate.event_all_day ? __('common.yes') : __('common.no')}
+                            {eventTemplate.event_all_day ? __('actions.yes') : __('actions.no')}
                         </dd>
                     </div>
                     {!eventTemplate.event_all_day && eventTemplate.event_timezone && (

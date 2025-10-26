@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreBatchEventRequest;
 use App\Models\Calendar;
 use App\Models\Event;
+use App\Models\EventTemplate;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
@@ -25,6 +26,7 @@ class BatchEventsController extends Controller
         return Inertia::render('Events/CreateBatch', [
             'calendars' => $this->getCalendarsForSelect(),
             'timezones' => $getOrderedTimezones->execute(),
+            'eventTemplates' => $this->getEventTemplatesForSelect(),
         ]);
     }
 
@@ -61,6 +63,17 @@ class BatchEventsController extends Controller
     {
         return Calendar::forCurrentUser()
             ->select('id', 'name')
+            ->get();
+    }
+
+    /**
+     * @return \Illuminate\Support\Collection<int, \App\Models\EventTemplate>
+     */
+    private function getEventTemplatesForSelect(): Collection
+    {
+        return EventTemplate::query()
+            ->forCurrentUser()
+            ->with('calendar:id,name')
             ->get();
     }
 }

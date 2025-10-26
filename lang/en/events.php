@@ -35,4 +35,9 @@ return [
     'minutes' => 'Minutes',
     'select_time' => 'Select time',
     'select_date' => 'Select date',
+    'use_event_template' => 'Use Event Template',
+    'select_template' => 'Select Template',
+    'template_preview' => 'Template Preview',
+    'no_templates_available' => 'No templates available',
+    'apply_template' => 'Apply Template',
 ];

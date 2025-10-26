@@ -8,6 +8,7 @@ use App\Http\Requests\StoreEventRequest;
 use App\Http\Requests\UpdateEventRequest;
 use App\Models\Calendar;
 use App\Models\Event;
+use App\Models\EventTemplate;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
@@ -51,6 +52,7 @@ class EventsController extends Controller
         return Inertia::render('Events/Form', [
             'calendars' => $this->getCalendarsForSelect(),
             'timezones' => $getOrderedTimezones->execute(),
+            'eventTemplates' => $this->getEventTemplatesForSelect(),
         ]);
     }
 
@@ -135,6 +137,17 @@ class EventsController extends Controller
     {
         return Calendar::forCurrentUser()
             ->select('id', 'name')
+            ->get();
+    }
+
+    /**
+     * @return \Illuminate\Support\Collection<int, \App\Models\EventTemplate>
+     */
+    private function getEventTemplatesForSelect(): Collection
+    {
+        return EventTemplate::query()
+            ->forCurrentUser()
+            ->with('calendar:id,name')
             ->get();
     }
 }

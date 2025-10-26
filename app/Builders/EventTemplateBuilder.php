@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Auth;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Builder<\App\Models\Event>
+ * @extends \Illuminate\Database\Eloquent\Builder<\App\Models\EventTemplate>
  */
 class EventTemplateBuilder extends Builder
 {
