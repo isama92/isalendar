@@ -17,7 +17,7 @@ class GoogleEventData extends Data
 
     public function __construct(
         public string $id,
-        public string $creatorId,
+        public ?string $creatorId,
         public Status $status,
         public Carbon $updatedAt,
         public ?string $summary,

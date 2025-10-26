@@ -70,6 +70,7 @@ it('fetches events from Google and returns GoogleEventData', function (): void {
         ->andReturn($googleClientMock);
 
     $result = app(FetchEvents::class)->execute(
+        $connector,
         $calendar,
         now()->toImmutable(),
         now()->toImmutable(),
@@ -125,6 +126,7 @@ it('returns an empty collection when Google returns no event items', function ()
         ->andReturn($googleClientMock);
 
     $result = app(FetchEvents::class)->execute(
+        $connector,
         $calendar,
         now()->toImmutable(),
         now()->toImmutable(),

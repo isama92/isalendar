@@ -27,7 +27,7 @@ it('creates an event', function (): void {
         'description' => 'an event',
     ]);
 
-    app(SaveEvent::class)->execute($calendar, $googleEventData);
+    app(SaveEvent::class)->execute($connector, $calendar, $googleEventData);
 
     expect(Event::sole())
         ->calendar_id->toBe($calendar->id)
@@ -70,7 +70,7 @@ it('updates an event when remote updatedAt is after local updated_at', function 
         'description' => 'an event',
     ]);
 
-    app(SaveEvent::class)->execute($oldEvent->calendar, $googleEventData);
+    app(SaveEvent::class)->execute($connector, $oldEvent->calendar, $googleEventData);
 
     expect($oldEvent->refresh())
         ->calendar_id->toBe($oldEvent->calendar->id)
@@ -112,7 +112,7 @@ it('does not update an event when remote updatedAt is before local updated_at', 
         'description' => 'a new event description',
     ]);
 
-    app(SaveEvent::class)->execute($oldEvent->calendar, $googleEventData);
+    app(SaveEvent::class)->execute($connector, $oldEvent->calendar, $googleEventData);
 
     expect($oldEvent->refresh())
         ->calendar_id->toBe($oldEvent->calendar->id)
@@ -142,7 +142,7 @@ it('does not save a cancelled event', function (): void {
         'description' => 'an event',
     ]);
 
-    app(SaveEvent::class)->execute($calendar, $googleEventData);
+    app(SaveEvent::class)->execute($connector, $calendar, $googleEventData);
 
     expect(Event::count())->toBe(0);
 });
@@ -174,13 +174,13 @@ it('deletes an existing cancelled event', function (): void {
         'description' => 'an event',
     ]);
 
-    app(SaveEvent::class)->execute($oldEvent->calendar, $googleEventData);
+    app(SaveEvent::class)->execute($connector, $oldEvent->calendar, $googleEventData);
 
     expect($oldEvent->refresh())
         ->deleted_at->not()->toBeNull();
 });
 
-it('sets created_by_connector_id to null when creator does not exist in database', function (): void {
+it('sets created_by_connector_id to connector when creator does not exist in database', function (): void {
     $calendar = calendarFactory()->create();
     $connector = $calendar->connectors()->first();
     $googleEventData = GoogleEventData::from([
@@ -197,8 +197,31 @@ it('sets created_by_connector_id to null when creator does not exist in database
         'description' => 'an event',
     ]);
 
-    app(SaveEvent::class)->execute($calendar, $googleEventData);
+    app(SaveEvent::class)->execute($connector, $calendar, $googleEventData);
 
     expect(Event::sole())
-        ->created_by_connector_id->toBeNull();
+        ->created_by_connector_id->toBe($connector->id);
+});
+
+it('sets created_by_connector_id to connector when creatorId is null', function (): void {
+    $calendar = calendarFactory()->create();
+    $connector = $calendar->connectors()->first();
+    $googleEventData = GoogleEventData::from([
+        'id' => 'ev',
+        'creatorId' => null,
+        'status' => Status::CONFIRMED,
+        'updatedAt' => now(),
+        'summary' => 'Event without creator',
+        'timezone' => 'Europe/Amsterdam',
+        'startDateTime' => now()->toDateTimeString(),
+        'startDate' => null,
+        'endDateTime' => now()->addMinute()->toDateTimeString(),
+        'endDate' => null,
+        'description' => 'an event',
+    ]);
+
+    app(SaveEvent::class)->execute($connector, $calendar, $googleEventData);
+
+    expect(Event::sole())
+        ->created_by_connector_id->toBe($connector->id);
 });

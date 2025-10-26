@@ -21,8 +21,10 @@ class ImportEvents
         CarbonImmutable $fetchWindowStart,
         CarbonImmutable $fetchWindowEnd,
     ): void {
-        $this->fetchEvents->execute($calendar, $fetchWindowStart, $fetchWindowEnd)
+        $connector = $calendar->connectors()->firstOrFail();
+
+        $this->fetchEvents->execute($connector, $calendar, $fetchWindowStart, $fetchWindowEnd)
             ->each(fn (GoogleEventData $googleEventData) => $this->saveEvent
-                ->execute($calendar, $googleEventData));
+                ->execute($connector, $calendar, $googleEventData));
     }
 }

@@ -3,6 +3,7 @@
 namespace App\Services\Calendar\GoogleCalendar\Actions\Events;
 
 use App\Models\Calendar;
+use App\Models\Connector;
 use App\Services\Calendar\GoogleCalendar\Actions\Auth\GetAuthClient;
 use App\Services\Calendar\GoogleCalendar\Data\GoogleEventData;
 use Carbon\CarbonImmutable;
@@ -18,12 +19,11 @@ class FetchEvents
      * @return \Illuminate\Support\Collection<int, \App\Services\Calendar\GoogleCalendar\Data\GoogleEventData>
      */
     public function execute(
+        Connector $connector,
         Calendar $calendar,
         CarbonImmutable $fetchWindowStart,
         CarbonImmutable $fetchWindowEnd,
     ): Collection {
-        $connector = $calendar->connectors()->firstOrFail();
-
         $googleClient = $this->getAuthClient->execute($connector);
 
         $service = new CalendarService($googleClient);

@@ -6,6 +6,7 @@ use App\Services\Calendar\GoogleCalendar\Actions\Events\SaveEvent;
 use App\Services\Calendar\GoogleCalendar\Data\GoogleEventData;
 use App\Services\Calendar\GoogleCalendar\Enums\Status;
 
+use function Pest\Laravel\mock;
 use function Pest\Laravel\partialMock;
 use function Tests\Helpers\calendarFactory;
 
@@ -47,21 +48,21 @@ it('calls FetchEvents and then calls SaveEvent for each event', function (): voi
         ]),
     ]);
 
-    partialMock(FetchEvents::class)
+    mock(FetchEvents::class)
         ->shouldReceive('execute')
         ->once()
-        ->with($calendar, $fetchWindowStart, $fetchWindowEnd)
+        ->with(Mockery::on(fn ($arg): bool => $arg->id === $connector->id), $calendar, $fetchWindowStart, $fetchWindowEnd)
         ->andReturn($eventsDataCollection);
 
     $saveEventMock = partialMock(SaveEvent::class);
     $saveEventMock->shouldReceive('execute')
         ->once()
-        ->with($calendar, $eventsDataCollection->get(0))
+        ->with(Mockery::on(fn ($arg): bool => $arg->id === $connector->id), $calendar, $eventsDataCollection->get(0))
         ->ordered('saveEventGroup')
         ->andReturnUndefined();
     $saveEventMock->shouldReceive('execute')
         ->once()
-        ->with($calendar, $eventsDataCollection->get(1))
+        ->with(Mockery::on(fn ($arg): bool => $arg->id === $connector->id), $calendar, $eventsDataCollection->get(1))
         ->ordered('saveEventGroup')
         ->andReturnUndefined();
 
