@@ -8,6 +8,9 @@ uses()->group('actions');
 it('returns flat list of timezones with offsets in labels', function (): void {
     $result = app(GetOrderedTimezones::class)->execute();
     $amsterdamOption = $result->firstWhere('value', 'Europe/Amsterdam');
+    $timezone = now()->setTimezone('Europe/Amsterdam')->getTimezone();
+    $region = $timezone->toRegionName();
+    $offset = $timezone->toOffsetName();
 
     expect($result)
         ->toBeInstanceOf(Collection::class)
@@ -16,8 +19,8 @@ it('returns flat list of timezones with offsets in labels', function (): void {
         ->toHaveKeys(['value', 'label'])
         ->and($amsterdamOption)->toBeArray()
         ->toHaveKeys(['value', 'label'])
-        ->and($amsterdamOption['value'])->toBe('Europe/Amsterdam')
-        ->and($amsterdamOption['label'])->toBe('(+02:00) Europe/Amsterdam');
+        ->and($amsterdamOption['value'])->toBe($region)
+        ->and($amsterdamOption['label'])->toBe(sprintf('(%s) %s', $offset, $region));
 });
 
 it('sorts timezones globally by offset', function (): void {

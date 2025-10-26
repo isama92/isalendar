@@ -149,6 +149,9 @@ OIDC_BUTTON_LABEL="Login with Authelia"
   - Implement rate limit retries
   - Implement pagination
 - calendar view
+- creator can be null?
+- implement event templates in event forms
+- use range datepicker in events index filters
 
 ## License
 

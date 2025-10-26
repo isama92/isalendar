@@ -1,14 +1,20 @@
 import CalendarSelect from '@/Components/CalendarSelect';
 import Checkbox from '@/Components/Checkbox';
+import DateTimePicker from '@/Components/DateTimePicker';
 import RichTextEditor from '@/Components/RichTextEditor';
 import TimezoneSelect from '@/Components/TimezoneSelect';
-import { addDays, formatWithFormat, formatWithFormatAndTimezone, subtractDays } from '@/utils/date';
+import { formatWithFormatAndTimezone, subtractDays } from '@/utils/date';
 import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react';
 import { ChevronDownIcon } from '@heroicons/react/20/solid';
 import { useForm } from '@inertiajs/react';
 import clsx from 'clsx';
-import DatePicker from 'react-datepicker';
-import 'react-datepicker/dist/react-datepicker.css';
+import {
+    calculateDefaultEndsAt,
+    formatEndsAtForSubmission,
+    formatStartsAtForSubmission,
+    getEndsAtMinDate,
+    shouldClearEndsAt,
+} from './eventFormHelpers';
 
 const Form = ({ currentUser, calendars, timezones, event = null }) => {
     const isEditing = !!event;
@@ -33,6 +39,23 @@ const Form = ({ currentUser, calendars, timezones, event = null }) => {
         description: event?.description || '',
     });
 
+    const handleStartsAtChange = value => {
+        setData('starts_at', value);
+
+        if (!value) {
+            return;
+        }
+
+        if (!data.ends_at) {
+            setData('ends_at', calculateDefaultEndsAt(value, data.all_day));
+            return;
+        }
+
+        if (shouldClearEndsAt(value, data.ends_at)) {
+            setData('ends_at', calculateDefaultEndsAt(value, data.all_day));
+        }
+    };
+
     const handleSubmit = (e, redirectTo = null) => {
         e.preventDefault();
 
@@ -42,7 +65,8 @@ const Form = ({ currentUser, calendars, timezones, event = null }) => {
         transform(() => {
             return {
                 ...data,
-                ends_at: data.all_day && data.ends_at ? addDays(data.ends_at, 1, 'YYYY-MM-DD') : data.ends_at,
+                starts_at: formatStartsAtForSubmission(data.starts_at, data.all_day),
+                ends_at: formatEndsAtForSubmission(data.ends_at, data.all_day),
                 redirect_to: actualRedirect,
             };
         });
@@ -160,32 +184,15 @@ const Form = ({ currentUser, calendars, timezones, event = null }) => {
                         {__('events.starts_at')}
                     </label>
                     <div className="mt-2 sm:col-span-2 sm:mt-0">
-                        <DatePicker
+                        <DateTimePicker
                             id="starts_at"
                             name="starts_at"
-                            selected={data.starts_at ? new Date(data.starts_at) : null}
-                            onChange={date =>
-                                setData(
-                                    'starts_at',
-                                    date
-                                        ? formatWithFormat(date, data.all_day ? 'YYYY-MM-DD' : 'YYYY-MM-DD HH:mm:ss')
-                                        : ''
-                                )
-                            }
-                            showTimeSelect={!data.all_day}
-                            timeFormat="HH:mm"
-                            timeIntervals={15}
-                            dateFormat={data.all_day ? 'dd/MM/yyyy' : 'dd/MM/yyyy HH:mm'}
-                            calendarStartDay={1}
-                            aria-invalid={!!errors.starts_at}
-                            aria-describedby={errors.starts_at ? 'starts_at-error' : ''}
-                            wrapperClassName="w-full"
-                            className={clsx(
-                                'block w-full rounded-md bg-white px-3 py-1.5 outline-1 -outline-offset-1 focus:outline-2 focus:-outline-offset-2 sm:max-w-md sm:text-sm/6 dark:bg-white/5',
-                                errors.starts_at
-                                    ? 'text-red-900 outline-red-300 placeholder:text-red-300 focus:outline-red-600 dark:text-red-400 dark:outline-red-500/50 dark:placeholder:text-red-400/70 dark:focus:outline-red-400'
-                                    : 'text-base text-gray-900 outline-gray-300 placeholder:text-gray-400 focus:outline-indigo-600 dark:text-white dark:outline-white/10 dark:placeholder:text-gray-500 dark:focus:outline-indigo-500'
-                            )}
+                            minuteInterval={5}
+                            value={data.starts_at}
+                            onChange={handleStartsAtChange}
+                            allDay={data.all_day}
+                            error={errors.starts_at}
+                            className="sm:max-w-md"
                         />
                         {errors.starts_at && (
                             <p
@@ -208,32 +215,16 @@ const Form = ({ currentUser, calendars, timezones, event = null }) => {
                         {__('events.ends_at')}
                     </label>
                     <div className="mt-2 sm:col-span-2 sm:mt-0">
-                        <DatePicker
+                        <DateTimePicker
                             id="ends_at"
                             name="ends_at"
-                            selected={data.ends_at ? new Date(data.ends_at) : null}
-                            onChange={date =>
-                                setData(
-                                    'ends_at',
-                                    date
-                                        ? formatWithFormat(date, data.all_day ? 'YYYY-MM-DD' : 'YYYY-MM-DD HH:mm:ss')
-                                        : ''
-                                )
-                            }
-                            showTimeSelect={!data.all_day}
-                            timeFormat="HH:mm"
-                            timeIntervals={15}
-                            dateFormat={data.all_day ? 'dd/MM/yyyy' : 'dd/MM/yyyy HH:mm'}
-                            calendarStartDay={1}
-                            aria-invalid={!!errors.ends_at}
-                            aria-describedby={errors.ends_at ? 'ends_at-error' : ''}
-                            wrapperClassName="w-full"
-                            className={clsx(
-                                'block w-full rounded-md bg-white px-3 py-1.5 outline-1 -outline-offset-1 focus:outline-2 focus:-outline-offset-2 sm:max-w-md sm:text-sm/6 dark:bg-white/5',
-                                errors.ends_at
-                                    ? 'text-red-900 outline-red-300 placeholder:text-red-300 focus:outline-red-600 dark:text-red-400 dark:outline-red-500/50 dark:placeholder:text-red-400/70 dark:focus:outline-red-400'
-                                    : 'text-base text-gray-900 outline-gray-300 placeholder:text-gray-400 focus:outline-indigo-600 dark:text-white dark:outline-white/10 dark:placeholder:text-gray-500 dark:focus:outline-indigo-500'
-                            )}
+                            minuteInterval={5}
+                            value={data.ends_at}
+                            onChange={value => setData('ends_at', value)}
+                            allDay={data.all_day}
+                            error={errors.ends_at}
+                            className="sm:max-w-md"
+                            minDate={getEndsAtMinDate(data.starts_at)}
                         />
                         {errors.ends_at && (
                             <p id="ends_at-error" role="alert" className="mt-2 text-sm text-red-600 dark:text-red-400">

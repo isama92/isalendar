@@ -1,16 +1,21 @@
 import CalendarSelect from '@/Components/CalendarSelect';
 import Checkbox from '@/Components/Checkbox';
+import DateTimePicker from '@/Components/DateTimePicker';
 import ProgressSteps from '@/Components/ProgressSteps';
 import RichTextEditor from '@/Components/RichTextEditor';
 import TimezoneSelect from '@/Components/TimezoneSelect';
 import { getBatchEventSetupSteps } from '@/utils/batchEventSetupSteps';
-import { addDays, formatWithFormat } from '@/utils/date';
 import { MinusCircleIcon, PlusCircleIcon } from '@heroicons/react/20/solid';
 import { router } from '@inertiajs/react';
 import clsx from 'clsx';
 import { useState } from 'react';
-import DatePicker from 'react-datepicker';
-import 'react-datepicker/dist/react-datepicker.css';
+import {
+    calculateDefaultEndsAt,
+    formatEndsAtForSubmission,
+    formatStartsAtForSubmission,
+    getEndsAtMinDate,
+    shouldClearEndsAt,
+} from './eventFormHelpers';
 
 const CreateBatch = ({ currentUser, calendars, timezones }) => {
     const [currentStep, setCurrentStep] = useState(1);
@@ -37,9 +42,25 @@ const CreateBatch = ({ currentUser, calendars, timezones }) => {
         }
     };
 
+    const updateEndsAtForEntry = (entry, startsAt) => {
+        if (!entry.ends_at) {
+            entry.ends_at = calculateDefaultEndsAt(startsAt, allDay);
+            return;
+        }
+
+        if (shouldClearEndsAt(startsAt, entry.ends_at)) {
+            entry.ends_at = calculateDefaultEndsAt(startsAt, allDay);
+        }
+    };
+
     const handleDateEntryChange = (index, field, value) => {
         const newEntries = [...dateEntries];
         newEntries[index][field] = value;
+
+        if (field === 'starts_at' && value) {
+            updateEndsAtForEntry(newEntries[index], value);
+        }
+
         setDateEntries(newEntries);
     };
 
@@ -85,14 +106,8 @@ const CreateBatch = ({ currentUser, calendars, timezones }) => {
         setProcessing(true);
 
         const formattedDates = dateEntries.map(entry => ({
-            starts_at: entry.starts_at
-                ? formatWithFormat(new Date(entry.starts_at), allDay ? 'YYYY-MM-DD' : 'YYYY-MM-DD HH:mm:ss')
-                : '',
-            ends_at: entry.ends_at
-                ? allDay
-                    ? addDays(entry.ends_at, 1, 'YYYY-MM-DD')
-                    : formatWithFormat(new Date(entry.ends_at), 'YYYY-MM-DD HH:mm:ss')
-                : '',
+            starts_at: formatStartsAtForSubmission(entry.starts_at, allDay),
+            ends_at: formatEndsAtForSubmission(entry.ends_at, allDay),
         }));
 
         router.post(
@@ -290,44 +305,16 @@ const CreateBatch = ({ currentUser, calendars, timezones }) => {
                                                         {__('events.starts_at')}
                                                     </label>
                                                     <div className="mt-2">
-                                                        <DatePicker
+                                                        <DateTimePicker
                                                             id={`starts_at_${index}`}
                                                             name={`starts_at_${index}`}
-                                                            selected={
-                                                                entry.starts_at ? new Date(entry.starts_at) : null
+                                                            minuteInterval={5}
+                                                            value={entry.starts_at}
+                                                            onChange={value =>
+                                                                handleDateEntryChange(index, 'starts_at', value)
                                                             }
-                                                            onChange={date =>
-                                                                handleDateEntryChange(
-                                                                    index,
-                                                                    'starts_at',
-                                                                    date
-                                                                        ? formatWithFormat(
-                                                                              date,
-                                                                              allDay
-                                                                                  ? 'YYYY-MM-DD'
-                                                                                  : 'YYYY-MM-DD HH:mm:ss'
-                                                                          )
-                                                                        : ''
-                                                                )
-                                                            }
-                                                            showTimeSelect={!allDay}
-                                                            timeFormat="HH:mm"
-                                                            timeIntervals={15}
-                                                            dateFormat={allDay ? 'dd/MM/yyyy' : 'dd/MM/yyyy HH:mm'}
-                                                            calendarStartDay={1}
-                                                            aria-invalid={!!errors[`dates.${index}.starts_at`]}
-                                                            aria-describedby={
-                                                                errors[`dates.${index}.starts_at`]
-                                                                    ? `starts_at_${index}-error`
-                                                                    : ''
-                                                            }
-                                                            wrapperClassName="w-full"
-                                                            className={clsx(
-                                                                'block w-full rounded-md bg-white px-3 py-1.5 outline-1 -outline-offset-1 focus:outline-2 focus:-outline-offset-2 sm:text-sm/6 dark:bg-white/5',
-                                                                errors[`dates.${index}.starts_at`]
-                                                                    ? 'text-red-900 outline-red-300 placeholder:text-red-300 focus:outline-red-600 dark:text-red-400 dark:outline-red-500/50 dark:placeholder:text-red-400/70 dark:focus:outline-red-400'
-                                                                    : 'text-base text-gray-900 outline-gray-300 placeholder:text-gray-400 focus:outline-indigo-600 dark:text-white dark:outline-white/10 dark:placeholder:text-gray-500 dark:focus:outline-indigo-500'
-                                                            )}
+                                                            allDay={allDay}
+                                                            error={errors[`dates.${index}.starts_at`]}
                                                         />
                                                         {errors[`dates.${index}.starts_at`] && (
                                                             <p
@@ -350,42 +337,17 @@ const CreateBatch = ({ currentUser, calendars, timezones }) => {
                                                         {__('events.ends_at')}
                                                     </label>
                                                     <div className="mt-2">
-                                                        <DatePicker
+                                                        <DateTimePicker
                                                             id={`ends_at_${index}`}
                                                             name={`ends_at_${index}`}
-                                                            selected={entry.ends_at ? new Date(entry.ends_at) : null}
-                                                            onChange={date =>
-                                                                handleDateEntryChange(
-                                                                    index,
-                                                                    'ends_at',
-                                                                    date
-                                                                        ? formatWithFormat(
-                                                                              date,
-                                                                              allDay
-                                                                                  ? 'YYYY-MM-DD'
-                                                                                  : 'YYYY-MM-DD HH:mm:ss'
-                                                                          )
-                                                                        : ''
-                                                                )
+                                                            minuteInterval={5}
+                                                            value={entry.ends_at}
+                                                            onChange={value =>
+                                                                handleDateEntryChange(index, 'ends_at', value)
                                                             }
-                                                            showTimeSelect={!allDay}
-                                                            timeFormat="HH:mm"
-                                                            timeIntervals={15}
-                                                            dateFormat={allDay ? 'dd/MM/yyyy' : 'dd/MM/yyyy HH:mm'}
-                                                            calendarStartDay={1}
-                                                            aria-invalid={!!errors[`dates.${index}.ends_at`]}
-                                                            aria-describedby={
-                                                                errors[`dates.${index}.ends_at`]
-                                                                    ? `ends_at_${index}-error`
-                                                                    : ''
-                                                            }
-                                                            wrapperClassName="w-full"
-                                                            className={clsx(
-                                                                'block w-full rounded-md bg-white px-3 py-1.5 outline-1 -outline-offset-1 focus:outline-2 focus:-outline-offset-2 sm:text-sm/6 dark:bg-white/5',
-                                                                errors[`dates.${index}.ends_at`]
-                                                                    ? 'text-red-900 outline-red-300 placeholder:text-red-300 focus:outline-red-600 dark:text-red-400 dark:outline-red-500/50 dark:placeholder:text-red-400/70 dark:focus:outline-red-400'
-                                                                    : 'text-base text-gray-900 outline-gray-300 placeholder:text-gray-400 focus:outline-indigo-600 dark:text-white dark:outline-white/10 dark:placeholder:text-gray-500 dark:focus:outline-indigo-500'
-                                                            )}
+                                                            allDay={allDay}
+                                                            error={errors[`dates.${index}.ends_at`]}
+                                                            minDate={getEndsAtMinDate(entry.starts_at)}
                                                         />
                                                         {errors[`dates.${index}.ends_at`] && (
                                                             <p

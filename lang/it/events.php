@@ -29,4 +29,10 @@ return [
     'batch_event_details' => 'Dettagli Evento',
     'batch_event_dates' => 'Date Evento',
     'batch_created' => ':count eventi creati con successo!',
+    'hour' => 'Ora',
+    'hours' => 'Ore',
+    'minute' => 'Minuto',
+    'minutes' => 'Minuti',
+    'select_time' => 'Seleziona orario',
+    'select_date' => 'Seleziona data',
 ];

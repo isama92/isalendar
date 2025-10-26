@@ -46,3 +46,23 @@
         --color-text-muted: 156 163 175;
     }
 }
+
+.rdp-root .rdp-selected .rdp-day_button {
+    border-color: rgb(99 102 241) !important;
+}
+
+.rdp-root .rdp-chevron {
+    fill: rgb(17 24 39);
+}
+
+.dark .rdp-root .rdp-chevron {
+    fill: rgb(255 255 255);
+}
+
+.rdp-root .rdp-month_caption {
+    padding-left: 0.75rem;
+}
+
+.rdp-root .rdp-today {
+    color: rgb(99 102 241) !important;
+}

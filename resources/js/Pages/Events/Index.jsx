@@ -1,4 +1,5 @@
 import CalendarSelect from '@/Components/CalendarSelect';
+import DatePicker from '@/Components/DatePicker';
 import EventDateTime from '@/Components/EventDateTime';
 import Modal from '@/Components/Modal';
 import ProviderLogo from '@/Components/ProviderLogo';
@@ -24,8 +25,6 @@ import {
 } from '@tanstack/react-table';
 import dayjs from 'dayjs';
 import { useMemo, useState } from 'react';
-import DatePicker from 'react-datepicker';
-import 'react-datepicker/dist/react-datepicker.css';
 
 const Index = ({ events, calendars }) => {
     const [sorting, setSorting] = useState([]);
@@ -79,7 +78,7 @@ const Index = ({ events, calendars }) => {
                     if (!value) return true;
                     const timezone = row.original.timezone;
                     return timezone
-                        ? formatWithFormatAndTimezone(row.getValue(id), 'YYYY-MM-DD', timezone) === value
+                        ? formatWithFormatAndTimezone(row.getValue(id), timezone, 'YYYY-MM-DD') === value
                         : formatWithFormat(row.getValue(id), 'YYYY-MM-DD') === value;
                 },
             },
@@ -98,7 +97,7 @@ const Index = ({ events, calendars }) => {
                     if (!value) return true;
                     const timezone = row.original.timezone;
                     return timezone
-                        ? formatWithFormatAndTimezone(row.getValue(id), 'YYYY-MM-DD', timezone) === value
+                        ? formatWithFormatAndTimezone(row.getValue(id), timezone, 'YYYY-MM-DD') === value
                         : formatWithFormat(row.getValue(id), 'YYYY-MM-DD') === value;
                 },
             },
@@ -226,7 +225,7 @@ const Index = ({ events, calendars }) => {
                     allText={__('actions.named.all', { name: __('calendars.calendar') })}
                 />
                 <DatePicker
-                    selected={
+                    value={
                         table.getColumn('starts_at')?.getFilterValue()
                             ? dayjs(table.getColumn('starts_at')?.getFilterValue()).toDate()
                             : null
@@ -234,15 +233,11 @@ const Index = ({ events, calendars }) => {
                     onChange={date =>
                         table.getColumn('starts_at')?.setFilterValue(date ? formatWithFormat(date, 'YYYY-MM-DD') : '')
                     }
-                    dateFormat="dd/MM/yyyy"
-                    placeholderText={__('actions.named.filter_by', { name: __('events.starts_at') })}
-                    isClearable
-                    calendarStartDay={1}
-                    withPortal
-                    className="w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 focus:outline-none dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100"
+                    placeholder={__('actions.named.filter_by', { name: __('events.starts_at') })}
+                    className="w-full"
                 />
                 <DatePicker
-                    selected={
+                    value={
                         table.getColumn('ends_at')?.getFilterValue()
                             ? dayjs(table.getColumn('ends_at')?.getFilterValue()).toDate()
                             : null
@@ -250,12 +245,8 @@ const Index = ({ events, calendars }) => {
                     onChange={date =>
                         table.getColumn('ends_at')?.setFilterValue(date ? formatWithFormat(date, 'YYYY-MM-DD') : '')
                     }
-                    dateFormat="dd/MM/yyyy"
-                    placeholderText={__('actions.named.filter_by', { name: __('events.ends_at') })}
-                    isClearable
-                    calendarStartDay={1}
-                    withPortal
-                    className="w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 focus:outline-none dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100"
+                    placeholder={__('actions.named.filter_by', { name: __('events.ends_at') })}
+                    className="w-full"
                 />
             </div>
 
