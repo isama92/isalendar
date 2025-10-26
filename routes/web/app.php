@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Web\BatchEventsController;
+use App\Http\Controllers\Web\CalendarEventController;
 use App\Http\Controllers\Web\CalendarsController;
 use App\Http\Controllers\Web\CalendarSynchronizationController;
 use App\Http\Controllers\Web\DashboardController;
@@ -56,6 +57,8 @@ Route::middleware('auth')->group(function (): void {
         ->group(function (): void {
             Route::get('/', [EventsController::class, 'index'])
                 ->name('index');
+            Route::get('/calendar', CalendarEventController::class)
+                ->name('calendar');
             Route::get('/create', [EventsController::class, 'create'])
                 ->name('create');
             Route::post('/', [EventsController::class, 'store'])

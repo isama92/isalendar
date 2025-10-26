@@ -7,6 +7,7 @@ import Paginator from '@/Components/Tables/Paginator';
 import Table from '@/Components/Tables/Table';
 import { formatWithFormat, formatWithFormatAndTimezone, getTimezoneOffset } from '@/utils/date';
 import {
+    CalendarIcon,
     CheckIcon,
     DocumentIcon,
     EyeIcon,
@@ -189,7 +190,14 @@ const Index = ({ events, calendars }) => {
                 <div className="sm:flex-auto">
                     <h1 className="text-base font-semibold text-gray-900 dark:text-white">{__('events.events')}</h1>
                 </div>
-                <div className="mt-4 sm:mt-0 sm:ml-16 sm:flex-none">
+                <div className="mt-4 flex gap-3 sm:mt-0 sm:ml-16 sm:flex-none">
+                    <Link
+                        href={route('events.calendar')}
+                        className="inline-flex items-center gap-x-1.5 rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-xs inset-ring inset-ring-gray-300 hover:bg-gray-50 dark:bg-white/10 dark:text-white dark:shadow-none dark:inset-ring-white/5 dark:hover:bg-white/20"
+                    >
+                        <CalendarIcon aria-hidden="true" className="-ml-0.5 size-5" />
+                        {__('events.calendar')}
+                    </Link>
                     <Link
                         href={route('events.create')}
                         className="inline-flex items-center gap-x-1.5 rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-xs hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 dark:bg-indigo-500 dark:hover:bg-indigo-400 dark:focus-visible:outline-indigo-500"

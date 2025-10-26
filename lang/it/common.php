@@ -6,4 +6,7 @@ return [
     'active_only' => 'Solo Attivi',
     'deleted_only' => 'Solo Eliminati',
     'optional' => 'Opzionale',
+    'open_menu' => 'Apri menu',
+    'more' => 'altri',
+    'view' => 'Visualizza',
 ];

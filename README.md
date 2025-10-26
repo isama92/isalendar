@@ -148,8 +148,8 @@ OIDC_BUTTON_LABEL="Login with Authelia"
   - Use Saloon to make requests
   - Implement rate limit retries
   - Implement pagination
-- calendar view
 - use range datepicker in events index filters
+- the export is slow, investigate what is the problem
 
 ## License
 
