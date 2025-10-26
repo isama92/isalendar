@@ -35,6 +35,8 @@ const DatePicker = ({
     return (
         <div className={clsx('relative', className)}>
             <div
+                role="button"
+                tabIndex={disabled ? -1 : 0}
                 className={clsx(
                     'flex items-center gap-2 border px-3 py-2 text-sm',
                     roundedClass,
@@ -44,6 +46,12 @@ const DatePicker = ({
                     disabled ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'
                 )}
                 onClick={() => !disabled && setIsCalendarOpen(!isCalendarOpen)}
+                onKeyDown={e => {
+                    if (!disabled && (e.key === 'Enter' || e.key === ' ')) {
+                        e.preventDefault();
+                        setIsCalendarOpen(!isCalendarOpen);
+                    }
+                }}
             >
                 <CalendarIcon className="h-5 w-5 shrink-0 text-gray-400 dark:text-gray-500" />
                 <input
@@ -61,7 +69,18 @@ const DatePicker = ({
             {/* Calendar Popup */}
             {isCalendarOpen && !disabled && (
                 <>
-                    <div className="fixed inset-0 z-10" onClick={() => setIsCalendarOpen(false)} />
+                    <div
+                        className="fixed inset-0 z-10"
+                        onClick={() => setIsCalendarOpen(false)}
+                        onKeyDown={e => {
+                            if (e.key === 'Escape') {
+                                setIsCalendarOpen(false);
+                            }
+                        }}
+                        role="button"
+                        tabIndex={-1}
+                        aria-label="Close calendar"
+                    />
                     <div className="absolute top-full z-20 mt-1 rounded-lg border border-gray-200 bg-white shadow-lg dark:border-gray-700 dark:bg-gray-800">
                         <DayPicker
                             mode="single"

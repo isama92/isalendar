@@ -69,7 +69,7 @@ const Calendar = ({ currentUser, events }) => {
                 calendarName: event.calendar?.name,
             };
         });
-    }, [events]);
+    }, [events, currentUser.settings.default_timezone]);
 
     const handlePrevious = () => {
         setCurrentDate(prev => prev.subtract(1, view === VIEW_MONTH ? 'month' : 'week'));

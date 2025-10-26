@@ -24,7 +24,7 @@ const Create = ({ providers }) => {
                     </h2>
 
                     <div>
-                        <ul role="list" className="divide-y divide-gray-100 dark:divide-white/5">
+                        <ul className="divide-y divide-gray-100 dark:divide-white/5">
                             {providers.map(provider => (
                                 <li key={provider.id} className="flex items-center justify-between gap-x-6 py-5">
                                     <div className="flex min-w-0 items-center gap-x-4">

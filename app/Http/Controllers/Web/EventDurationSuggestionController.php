@@ -9,6 +9,9 @@ use Illuminate\Support\Facades\DB;
 
 class EventDurationSuggestionController extends Controller
 {
+    /**
+     * @return array<int, int>
+     */
     public function __invoke(EventDurationSuggestionRequest $request): array
     {
         $title = $request->input('title');

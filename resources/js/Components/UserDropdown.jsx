@@ -18,7 +18,18 @@ const UserDropdown = () => {
 
             {dropdownOpen && (
                 <>
-                    <div className="fixed inset-0 z-10" onClick={() => setDropdownOpen(false)} />
+                    <div
+                        className="fixed inset-0 z-10"
+                        onClick={() => setDropdownOpen(false)}
+                        onKeyDown={e => {
+                            if (e.key === 'Escape') {
+                                setDropdownOpen(false);
+                            }
+                        }}
+                        role="button"
+                        tabIndex={-1}
+                        aria-label="Close dropdown"
+                    />
                     <div className="absolute right-0 z-20 mt-2 w-48 rounded-md border border-gray-200 bg-white shadow-lg dark:border-gray-700 dark:bg-gray-800">
                         <Link
                             href={route('profile.edit')}

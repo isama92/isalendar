@@ -23,7 +23,7 @@ const Create = ({ connectorRouteKey, provider, calendars }) => {
                     </h2>
 
                     <div>
-                        <ul role="list" className="divide-y divide-gray-100 dark:divide-white/5">
+                        <ul className="divide-y divide-gray-100 dark:divide-white/5">
                             {calendars.map(calendar => (
                                 <li
                                     key={calendar.external_id}

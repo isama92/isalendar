@@ -25,10 +25,7 @@ const ProgressSteps = ({ steps, currentStep }) => {
 
     return (
         <nav aria-label="Progress" className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
-            <ol
-                role="list"
-                className="overflow-hidden rounded-md lg:flex lg:rounded-none lg:border lg:border-gray-200 dark:lg:border-white/15"
-            >
+            <ol className="overflow-hidden rounded-md lg:flex lg:rounded-none lg:border lg:border-gray-200 dark:lg:border-white/15">
                 {stepsWithStatus.map((step, stepIdx) => (
                     <li key={step.id} className="relative overflow-hidden lg:flex-1">
                         <div

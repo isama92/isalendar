@@ -47,7 +47,7 @@ const DurationSuggestions = ({ title, startsAt, isAllDay, onSelect, isEditing = 
         if (isEditing && title && title.length >= 2) {
             fetchSuggestions(title, isAllDay);
         }
-    }, []);
+    }, [isEditing, title, isAllDay, fetchSuggestions]);
 
     if (!startsAt) {
         return null;

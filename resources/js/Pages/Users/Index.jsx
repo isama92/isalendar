@@ -152,7 +152,7 @@ const Index = ({ users, roles, currentUser }) => {
                 enableSorting: false,
             },
         ],
-        []
+        [roles, currentUser.id]
     );
 
     const table = useReactTable({

@@ -105,6 +105,8 @@ const TimePicker = ({
     return (
         <div className={clsx('relative', className)}>
             <div
+                role="button"
+                tabIndex={disabled ? -1 : 0}
                 className={clsx(
                     'flex items-center gap-2 border px-3 py-2 text-sm',
                     roundedClass,
@@ -114,6 +116,12 @@ const TimePicker = ({
                     disabled ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'
                 )}
                 onClick={() => !disabled && setIsOpen(!isOpen)}
+                onKeyDown={e => {
+                    if (!disabled && (e.key === 'Enter' || e.key === ' ')) {
+                        e.preventDefault();
+                        setIsOpen(!isOpen);
+                    }
+                }}
             >
                 <ClockIcon className="h-5 w-5 shrink-0 text-gray-400 dark:text-gray-500" />
                 <input
@@ -131,7 +139,18 @@ const TimePicker = ({
             {/* Dropdown */}
             {isOpen && !disabled && (
                 <>
-                    <div className="fixed inset-0 z-10" onClick={handleCancel} />
+                    <div
+                        className="fixed inset-0 z-10"
+                        onClick={handleCancel}
+                        onKeyDown={e => {
+                            if (e.key === 'Escape') {
+                                handleCancel();
+                            }
+                        }}
+                        role="button"
+                        tabIndex={-1}
+                        aria-label="Close time picker"
+                    />
                     <div className="absolute top-full z-20 mt-1 w-64 rounded-lg border border-gray-200 bg-white shadow-lg ltr:right-0 rtl:left-0 dark:border-gray-700 dark:bg-gray-800">
                         {/* Scrollable columns */}
                         <div className="flex gap-2 border-b border-gray-200 p-4 dark:border-gray-700">
