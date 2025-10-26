@@ -1,3 +1,4 @@
+import { DATE_FORMAT } from '@/utils/date';
 import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react';
 import {
     ChevronDownIcon,
@@ -36,7 +37,7 @@ const Calendar = ({ currentUser, events }) => {
     useEffect(() => {
         const params = new URLSearchParams();
         params.set('view', view);
-        params.set('date', currentDate.format('YYYY-MM-DD'));
+        params.set('date', currentDate.format(DATE_FORMAT));
 
         router.visit(`${window.location.pathname}?${params.toString()}`, {
             preserveScroll: true,

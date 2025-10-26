@@ -7,7 +7,7 @@ use function Tests\Helpers\calendarFactory;
 use function Tests\Helpers\connectorFactory;
 use function Tests\Helpers\eventFactory;
 
-uses()->group('events', 'calendar');
+uses()->group('web', 'events');
 
 it('renders the calendar page for authenticated users', function (): void {
     actingAsUser();

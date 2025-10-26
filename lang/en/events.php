@@ -54,4 +54,6 @@ return [
     'previous_week' => 'Previous week',
     'next_week' => 'Next week',
     'table' => 'Table',
+    'suggestions' => 'Suggestions',
+    'suggestions_error' => 'Unable to load duration suggestions',
 ];

@@ -1,17 +1,21 @@
 import CalendarSelect from '@/Components/CalendarSelect';
 import Checkbox from '@/Components/Checkbox';
 import DateTimePicker from '@/Components/DateTimePicker';
+import DurationSuggestions from '@/Components/DurationSuggestions';
 import EventTemplateSelectModal from '@/Components/EventTemplateSelectModal';
 import RichTextEditor from '@/Components/RichTextEditor';
 import TimezoneSelect from '@/Components/TimezoneSelect';
-import { formatWithFormatAndTimezone, subtractDays } from '@/utils/date';
+import { DATE_FORMAT, subtractDays } from '@/utils/date';
 import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react';
 import { ChevronDownIcon } from '@heroicons/react/20/solid';
 import { useForm } from '@inertiajs/react';
 import clsx from 'clsx';
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 import {
+    adjustAllDayEndDateForDisplay,
     calculateDefaultEndsAt,
+    calculateEndsAtFromDuration,
+    convertUtcToEventTimezone,
     formatEndsAtForSubmission,
     formatStartsAtForSubmission,
     getEndsAtMinDate,
@@ -22,12 +26,6 @@ const Form = ({ currentUser, calendars, timezones, eventTemplates = [], event = 
     const isEditing = !!event;
     const [templateModalOpen, setTemplateModalOpen] = useState(false);
 
-    const convertUtcToEventTimezone = (utcDate, timezone, allDay) => {
-        if (!utcDate) return '';
-        if (allDay) return utcDate;
-        return formatWithFormatAndTimezone(utcDate, timezone, 'YYYY-MM-DD HH:mm:ss');
-    };
-
     const { data, setData, post, put, processing, transform, errors, reset } = useForm({
         calendar_id: event?.calendar?.id || '',
         title: event?.title || '',
@@ -35,70 +33,109 @@ const Form = ({ currentUser, calendars, timezones, eventTemplates = [], event = 
         starts_at: event ? convertUtcToEventTimezone(event.starts_at, event.timezone, event.all_day) : '',
         ends_at: event
             ? event.all_day
-                ? subtractDays(event.ends_at, 1, 'YYYY-MM-DD')
+                ? adjustAllDayEndDateForDisplay(event.ends_at)
                 : convertUtcToEventTimezone(event.ends_at, event.timezone, event.all_day)
             : '',
         timezone: event?.timezone || currentUser.settings.default_timezone,
         description: event?.description || '',
     });
 
-    const handleStartsAtChange = value => {
-        setData('starts_at', value);
+    /**
+     * Handle changes to the start date/time
+     */
+    const handleStartsAtChange = useCallback(
+        value => {
+            setData('starts_at', value);
 
-        if (!value) {
-            return;
-        }
+            if (!value) {
+                return;
+            }
 
-        if (!data.ends_at) {
-            setData('ends_at', calculateDefaultEndsAt(value, data.all_day));
-            return;
-        }
+            if (!data.ends_at || shouldClearEndsAt(value, data.ends_at)) {
+                setData('ends_at', calculateDefaultEndsAt(value, data.all_day));
+            }
+        },
+        [data.all_day, data.ends_at, setData]
+    );
 
-        if (shouldClearEndsAt(value, data.ends_at)) {
-            setData('ends_at', calculateDefaultEndsAt(value, data.all_day));
-        }
-    };
-
-    const handleTemplateSelect = template => {
-        setData({
-            ...data,
-            calendar_id: template.calendar_id || '',
-            title: template.event_title || '',
-            all_day: template.event_all_day || false,
-            timezone: template.event_timezone || currentUser.settings.default_timezone,
-            description: template.event_description || '',
-        });
-        setTemplateModalOpen(false);
-    };
-
-    const handleSubmit = (e, redirectTo = null) => {
-        e.preventDefault();
-
-        const defaultRedirect = isEditing ? 'show' : 'new';
-        const actualRedirect = redirectTo || defaultRedirect;
-
-        transform(() => {
-            return {
+    /**
+     * Handle template selection
+     */
+    const handleTemplateSelect = useCallback(
+        template => {
+            setData({
                 ...data,
-                starts_at: formatStartsAtForSubmission(data.starts_at, data.all_day),
-                ends_at: formatEndsAtForSubmission(data.ends_at, data.all_day),
-                redirect_to: actualRedirect,
-            };
-        });
+                calendar_id: template.calendar_id || '',
+                title: template.event_title || '',
+                all_day: template.event_all_day || false,
+                timezone: template.event_timezone || currentUser.settings.default_timezone,
+                description: template.event_description || '',
+            });
+            setTemplateModalOpen(false);
+        },
+        [currentUser.settings.default_timezone, data, setData]
+    );
 
-        if (isEditing) {
-            put(route('events.update', event.id));
-            return;
-        }
+    /**
+     * Handle clicking a duration suggestion
+     */
+    const handleSuggestionClick = useCallback(
+        durationMinutes => {
+            if (!data.starts_at) {
+                return;
+            }
 
-        post(route('events.store'), {
-            onSuccess: () => {
-                if (actualRedirect === 'new') {
-                    reset();
-                }
-            },
-        });
-    };
+            let calculatedEndsAt = calculateEndsAtFromDuration(data.starts_at, durationMinutes, data.all_day);
+
+            // For all-day events, subtract 1 day to match frontend display (DB stores exclusive end date)
+            if (data.all_day && calculatedEndsAt) {
+                calculatedEndsAt = subtractDays(calculatedEndsAt, 1, DATE_FORMAT);
+            }
+
+            setData('ends_at', calculatedEndsAt);
+        },
+        [data.all_day, data.starts_at, setData]
+    );
+
+    /**
+     * Prepare form data for submission
+     */
+    const prepareSubmissionData = useCallback(
+        redirectTo => ({
+            ...data,
+            starts_at: formatStartsAtForSubmission(data.starts_at, data.all_day),
+            ends_at: formatEndsAtForSubmission(data.ends_at, data.all_day),
+            redirect_to: redirectTo,
+        }),
+        [data]
+    );
+
+    /**
+     * Handle form submission
+     */
+    const handleSubmit = useCallback(
+        (e, redirectTo = null) => {
+            e.preventDefault();
+
+            const defaultRedirect = isEditing ? 'show' : 'new';
+            const actualRedirect = redirectTo || defaultRedirect;
+
+            transform(() => prepareSubmissionData(actualRedirect));
+
+            if (isEditing) {
+                put(route('events.update', event.id));
+            } else {
+                post(route('events.store'), {
+                    onSuccess: () => {
+                        if (actualRedirect === 'new') {
+                            reset();
+                        }
+                    },
+                });
+            }
+        },
+        [isEditing, event, prepareSubmissionData, transform, put, post, reset]
+    );
 
     return (
         <div className="rounded-lg bg-white p-6 shadow dark:bg-gray-800">
@@ -256,6 +293,13 @@ const Form = ({ currentUser, calendars, timezones, eventTemplates = [], event = 
                                 {errors.ends_at}
                             </p>
                         )}
+                        <DurationSuggestions
+                            title={data.title}
+                            startsAt={data.starts_at}
+                            isAllDay={data.all_day}
+                            onSelect={handleSuggestionClick}
+                            isEditing={isEditing}
+                        />
                     </div>
                 </div>
 

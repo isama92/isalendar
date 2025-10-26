@@ -54,4 +54,6 @@ return [
     'previous_week' => 'Settimana precedente',
     'next_week' => 'Settimana successiva',
     'table' => 'Tabella',
+    'suggestions' => 'Suggerimenti',
+    'suggestions_error' => 'Impossibile caricare i suggerimenti di durata',
 ];

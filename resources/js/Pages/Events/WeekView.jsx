@@ -1,3 +1,4 @@
+import { DATE_FORMAT } from '@/utils/date';
 import { Link } from '@inertiajs/react';
 import clsx from 'clsx';
 import dayjs from 'dayjs';
@@ -91,7 +92,7 @@ const WeekView = ({ date, events }) => {
         for (let i = 0; i < 7; i++) {
             const day = startOfWeek.add(i, 'day');
             days.push({
-                date: day.format('YYYY-MM-DD'),
+                date: day.format(DATE_FORMAT),
                 dayName: day.format('ddd'),
                 dayNumber: day.format('D'),
                 isToday: day.isSame(dayjs(), 'day'),
@@ -115,7 +116,7 @@ const WeekView = ({ date, events }) => {
 
         filteredEvents.forEach(event => {
             // Calculate which day of the week by comparing date strings
-            const eventDateStr = event.startsAt.format('YYYY-MM-DD');
+            const eventDateStr = event.startsAt.format(DATE_FORMAT);
             const dayIndex = weekDays.findIndex(day => day.date === eventDateStr);
             const gridColumn = dayIndex >= 0 ? dayIndex + 1 : 1;
 

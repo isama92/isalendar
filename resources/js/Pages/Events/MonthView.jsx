@@ -1,3 +1,4 @@
+import { DATE_FORMAT } from '@/utils/date';
 import { ClockIcon } from '@heroicons/react/20/solid';
 import { Link } from '@inertiajs/react';
 import dayjs from 'dayjs';
@@ -33,7 +34,7 @@ const MonthView = ({ date, events }) => {
             });
 
             days.push({
-                date: day.format('YYYY-MM-DD'),
+                date: day.format(DATE_FORMAT),
                 isCurrentMonth: day.month() === date.month(),
                 isToday: day.isSame(dayjs(), 'day'),
                 isSelected: false,

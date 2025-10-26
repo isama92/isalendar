@@ -1,5 +1,6 @@
 import DatePicker from '@/Components/DatePicker';
 import TimePicker from '@/Components/TimePicker';
+import { DATE_FORMAT } from '@/utils/date';
 import dayjs from 'dayjs';
 
 const DateTimePicker = ({
@@ -36,7 +37,7 @@ const DateTimePicker = ({
             return;
         }
 
-        const dateStr = dayjs(newDate).format('YYYY-MM-DD');
+        const dateStr = dayjs(newDate).format(DATE_FORMAT);
 
         if (allDay) {
             onChange(dateStr);
@@ -50,7 +51,7 @@ const DateTimePicker = ({
     const handleTimeChange = newTime => {
         // If no date is selected, use today's date
         const currentDate = date || new Date();
-        const dateStr = dayjs(currentDate).format('YYYY-MM-DD');
+        const dateStr = dayjs(currentDate).format(DATE_FORMAT);
         const timeStr = newTime || '00:00';
         onChange(`${dateStr} ${timeStr}:00`);
     };

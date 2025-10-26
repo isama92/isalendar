@@ -5,6 +5,7 @@ use App\Http\Controllers\Web\CalendarEventController;
 use App\Http\Controllers\Web\CalendarsController;
 use App\Http\Controllers\Web\CalendarSynchronizationController;
 use App\Http\Controllers\Web\DashboardController;
+use App\Http\Controllers\Web\EventDurationSuggestionController;
 use App\Http\Controllers\Web\EventsController;
 use App\Http\Controllers\Web\EventTemplatesController;
 use App\Http\Controllers\Web\ProfileController;
@@ -59,6 +60,8 @@ Route::middleware('auth')->group(function (): void {
                 ->name('index');
             Route::get('/calendar', CalendarEventController::class)
                 ->name('calendar');
+            Route::get('/suggest-duration', EventDurationSuggestionController::class)
+                ->name('suggest-duration');
             Route::get('/create', [EventsController::class, 'create'])
                 ->name('create');
             Route::post('/', [EventsController::class, 'store'])

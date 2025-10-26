@@ -1,9 +1,16 @@
-import { formatDate, formatDateTime, formatDateTimeWithTimezone, getUserTimezone, subtractDays } from '@/utils/date';
+import {
+    DATE_FORMAT,
+    formatDate,
+    formatDateTime,
+    formatDateTimeWithTimezone,
+    getUserTimezone,
+    subtractDays,
+} from '@/utils/date';
 import dayjs from 'dayjs';
 
 const EventDateTime = ({ date, timezone: eventTimezone, allDay, isEndDate = false }) => {
     if (allDay) {
-        return isEndDate ? formatDate(subtractDays(date, 1, 'YYYY-MM-DD')) : formatDate(date);
+        return isEndDate ? formatDate(subtractDays(date, 1, DATE_FORMAT)) : formatDate(date);
     }
 
     const userTimezone = getUserTimezone();

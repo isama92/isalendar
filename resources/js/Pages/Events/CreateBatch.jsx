@@ -1,17 +1,20 @@
 import CalendarSelect from '@/Components/CalendarSelect';
 import Checkbox from '@/Components/Checkbox';
 import DateTimePicker from '@/Components/DateTimePicker';
+import DurationSuggestions from '@/Components/DurationSuggestions';
 import EventTemplateSelectModal from '@/Components/EventTemplateSelectModal';
 import ProgressSteps from '@/Components/ProgressSteps';
 import RichTextEditor from '@/Components/RichTextEditor';
 import TimezoneSelect from '@/Components/TimezoneSelect';
 import { getBatchEventSetupSteps } from '@/utils/batchEventSetupSteps';
+import { DATE_FORMAT, subtractDays } from '@/utils/date';
 import { MinusCircleIcon, PlusCircleIcon } from '@heroicons/react/20/solid';
 import { router } from '@inertiajs/react';
 import clsx from 'clsx';
 import { useState } from 'react';
 import {
     calculateDefaultEndsAt,
+    calculateEndsAtFromDuration,
     formatEndsAtForSubmission,
     formatStartsAtForSubmission,
     getEndsAtMinDate,
@@ -64,6 +67,23 @@ const CreateBatch = ({ currentUser, calendars, timezones, eventTemplates = [] })
         }
 
         setDateEntries(newEntries);
+    };
+
+    const handleSuggestionClick = (index, durationMinutes) => {
+        const entry = dateEntries[index];
+
+        if (!entry.starts_at) {
+            return;
+        }
+
+        let calculatedEndsAt = calculateEndsAtFromDuration(entry.starts_at, durationMinutes, allDay);
+
+        // For all-day events, subtract 1 day to match frontend display (DB stores exclusive end date)
+        if (allDay && calculatedEndsAt) {
+            calculatedEndsAt = subtractDays(calculatedEndsAt, 1, DATE_FORMAT);
+        }
+
+        handleDateEntryChange(index, 'ends_at', calculatedEndsAt);
     };
 
     const handleTemplateSelect = template => {
@@ -384,6 +404,15 @@ const CreateBatch = ({ currentUser, calendars, timezones, eventTemplates = [] })
                                                                 {errors[`dates.${index}.ends_at`]}
                                                             </p>
                                                         )}
+                                                        <DurationSuggestions
+                                                            title={title}
+                                                            startsAt={entry.starts_at}
+                                                            isAllDay={allDay}
+                                                            onSelect={durationMinutes =>
+                                                                handleSuggestionClick(index, durationMinutes)
+                                                            }
+                                                            isEditing={false}
+                                                        />
                                                     </div>
                                                 </div>
                                             </div>

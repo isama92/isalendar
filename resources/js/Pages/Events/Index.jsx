@@ -5,7 +5,7 @@ import Modal from '@/Components/Modal';
 import ProviderLogo from '@/Components/ProviderLogo';
 import Paginator from '@/Components/Tables/Paginator';
 import Table from '@/Components/Tables/Table';
-import { formatWithFormat, formatWithFormatAndTimezone, getTimezoneOffset } from '@/utils/date';
+import { DATE_FORMAT, formatWithFormat, formatWithFormatAndTimezone, getTimezoneOffset } from '@/utils/date';
 import {
     CalendarIcon,
     CheckIcon,
@@ -79,8 +79,8 @@ const Index = ({ events, calendars }) => {
                     if (!value) return true;
                     const timezone = row.original.timezone;
                     return timezone
-                        ? formatWithFormatAndTimezone(row.getValue(id), timezone, 'YYYY-MM-DD') === value
-                        : formatWithFormat(row.getValue(id), 'YYYY-MM-DD') === value;
+                        ? formatWithFormatAndTimezone(row.getValue(id), timezone, DATE_FORMAT) === value
+                        : formatWithFormat(row.getValue(id), DATE_FORMAT) === value;
                 },
             },
             {
@@ -98,8 +98,8 @@ const Index = ({ events, calendars }) => {
                     if (!value) return true;
                     const timezone = row.original.timezone;
                     return timezone
-                        ? formatWithFormatAndTimezone(row.getValue(id), timezone, 'YYYY-MM-DD') === value
-                        : formatWithFormat(row.getValue(id), 'YYYY-MM-DD') === value;
+                        ? formatWithFormatAndTimezone(row.getValue(id), timezone, DATE_FORMAT) === value
+                        : formatWithFormat(row.getValue(id), DATE_FORMAT) === value;
                 },
             },
             {
@@ -239,7 +239,7 @@ const Index = ({ events, calendars }) => {
                             : null
                     }
                     onChange={date =>
-                        table.getColumn('starts_at')?.setFilterValue(date ? formatWithFormat(date, 'YYYY-MM-DD') : '')
+                        table.getColumn('starts_at')?.setFilterValue(date ? formatWithFormat(date, DATE_FORMAT) : '')
                     }
                     placeholder={__('actions.named.filter_by', { name: __('events.starts_at') })}
                     className="w-full"
@@ -251,7 +251,7 @@ const Index = ({ events, calendars }) => {
                             : null
                     }
                     onChange={date =>
-                        table.getColumn('ends_at')?.setFilterValue(date ? formatWithFormat(date, 'YYYY-MM-DD') : '')
+                        table.getColumn('ends_at')?.setFilterValue(date ? formatWithFormat(date, DATE_FORMAT) : '')
                     }
                     placeholder={__('actions.named.filter_by', { name: __('events.ends_at') })}
                     className="w-full"

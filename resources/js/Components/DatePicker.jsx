@@ -1,3 +1,4 @@
+import { DISPLAY_DATE_FORMAT } from '@/utils/date';
 import { CalendarIcon } from '@heroicons/react/24/outline';
 import clsx from 'clsx';
 import dayjs from 'dayjs';
@@ -26,7 +27,7 @@ const DatePicker = ({
     };
 
     // Format display date
-    const displayDate = value ? dayjs(value).format('DD/MM/YYYY') : '';
+    const displayDate = value ? dayjs(value).format(DISPLAY_DATE_FORMAT) : '';
 
     // Configure disabled dates
     const disabledDates = minDate ? { before: minDate } : undefined;
