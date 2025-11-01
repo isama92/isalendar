@@ -1,11 +1,20 @@
+export interface SetupStep {
+    name: string;
+    description: string;
+    href?: string;
+}
+
+export interface CalendarSetupOptions {
+    step1Href?: string;
+}
+
 /**
  * Get the steps for the calendar setup process
  *
- * @param {Object} options - Optional configuration
- * @param {string} options.step1Href - Optional href for step 1 (choose provider)
- * @returns {Array} Array of step objects with name and description
+ * @param options - Optional configuration
+ * @returns Array of step objects with name and description
  */
-export const getCalendarSetupSteps = (options = {}) => {
+export const getCalendarSetupSteps = (options: CalendarSetupOptions = {}): SetupStep[] => {
     const { step1Href } = options;
 
     return [

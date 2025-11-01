@@ -1,11 +1,16 @@
+import type { SetupStep } from './calendarSetupSteps';
+
+export interface BatchEventSetupOptions {
+    step1Href?: string;
+}
+
 /**
  * Get the steps for the batch event creation process
  *
- * @param {Object} options - Optional configuration
- * @param {string} options.step1Href - Optional href for step 1 (event details)
- * @returns {Array} Array of step objects with name and description
+ * @param options - Optional configuration
+ * @returns Array of step objects with name and description
  */
-export const getBatchEventSetupSteps = (options = {}) => {
+export const getBatchEventSetupSteps = (options: BatchEventSetupOptions = {}): SetupStep[] => {
     const { step1Href } = options;
 
     return [

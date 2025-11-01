@@ -6,16 +6,34 @@ import {
     DocumentIcon,
     UserGroupIcon,
 } from '@heroicons/react/24/outline';
+import type { ForwardRefExoticComponent, RefAttributes, SVGProps } from 'react';
+
+export interface NavigationItem {
+    name: string;
+    href: string;
+    current: boolean;
+    icon: ForwardRefExoticComponent<
+        Omit<SVGProps<SVGSVGElement>, 'ref'> & {
+            title?: string | undefined;
+            titleId?: string | undefined;
+        } & RefAttributes<SVGSVGElement>
+    >;
+    visible: boolean;
+}
 
 /**
  * Get the navigation items for the application sidebar
  *
- * @param {string} currentRoute - The current route name
- * @param {boolean} connectorEnabled - Whether the user has an enabled connector
- * @param {boolean} isSuperAdmin - Whether the user is a super admin
- * @returns {Array} Array of navigation item objects
+ * @param currentRoute - The current route name
+ * @param connectorEnabled - Whether the user has an enabled connector
+ * @param isSuperAdmin - Whether the user is a super admin
+ * @returns Array of navigation item objects
  */
-export const getNavigationItems = (currentRoute, connectorEnabled, isSuperAdmin) => {
+export const getNavigationItems = (
+    currentRoute: string,
+    connectorEnabled: boolean,
+    isSuperAdmin: boolean
+): NavigationItem[] => {
     return [
         {
             name: __('dashboard.dashboard'),

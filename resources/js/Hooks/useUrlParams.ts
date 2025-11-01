@@ -1,15 +1,23 @@
 import { router } from '@inertiajs/react';
 import { useEffect, useState } from 'react';
 
+export interface UseUrlParamsOptions<T extends Record<string, string>> {
+    defaults?: T;
+    validValues?: Partial<Record<keyof T, string[]>>;
+}
+
+export type SetParamsFunction<T> = (newParams: Partial<T> | ((prevParams: T) => T)) => void;
+
 /**
  * Custom hook for managing URL query parameters
- * @param {Object} options Configuration options
- * @param {Object} options.defaults Default values for parameters
- * @param {Array<string>} options.validValues Optional object with arrays of valid values per param key
- * @returns {[Object, Function]} Current params and setter function
+ * @param options - Configuration options
+ * @returns Current params and setter function
  */
-export const useUrlParams = ({ defaults = {}, validValues = {} } = {}) => {
-    const [params, setParamsState] = useState(() => {
+export const useUrlParams = <T extends Record<string, string>>({
+    defaults = {} as T,
+    validValues = {},
+}: UseUrlParamsOptions<T> = {}): [T, SetParamsFunction<T>] => {
+    const [params, setParamsState] = useState<T>(() => {
         const urlParams = new URLSearchParams(window.location.search);
         const initialParams = { ...defaults };
 
@@ -17,10 +25,11 @@ export const useUrlParams = ({ defaults = {}, validValues = {} } = {}) => {
             const value = urlParams.get(key);
             if (value !== null) {
                 // Validate against allowed values if provided
-                if (validValues[key] && !validValues[key].includes(value)) {
-                    initialParams[key] = defaults[key];
+                const validValuesForKey = validValues[key as keyof T];
+                if (validValuesForKey && !validValuesForKey.includes(value)) {
+                    initialParams[key as keyof T] = defaults[key as keyof T];
                 } else {
-                    initialParams[key] = value;
+                    initialParams[key as keyof T] = value as T[keyof T];
                 }
             }
         });
@@ -30,15 +39,12 @@ export const useUrlParams = ({ defaults = {}, validValues = {} } = {}) => {
 
     /**
      * Update URL parameters
-     * @param {Object|Function} newParams New parameters object or updater function
+     * @param newParams - New parameters object or updater function
      */
-    const setParams = newParams => {
-        setParamsState(prevParams => {
-            const updatedParams =
-                typeof newParams === 'function' ? newParams(prevParams) : { ...prevParams, ...newParams };
-
-            return updatedParams;
-        });
+    const setParams: SetParamsFunction<T> = newParams => {
+        setParamsState(prevParams =>
+            typeof newParams === 'function' ? newParams(prevParams) : { ...prevParams, ...newParams }
+        );
     };
 
     // Sync params to URL when they change

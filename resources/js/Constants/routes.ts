@@ -1,12 +1,5 @@
-/**
- * Application route names
- * Use these constants instead of hardcoded strings to reference routes
- */
 export const ROUTES = {
-    // Dashboard
     DASHBOARD: 'dashboard',
-
-    // Calendars
     CALENDARS: {
         INDEX: 'calendars.index',
         CREATE: 'calendars.create',
@@ -16,8 +9,6 @@ export const ROUTES = {
         UPDATE: 'calendars.update',
         DESTROY: 'calendars.destroy',
     },
-
-    // Events
     EVENTS: {
         INDEX: 'events.index',
         CREATE: 'events.create',
@@ -28,8 +19,6 @@ export const ROUTES = {
         DESTROY: 'events.destroy',
         SUGGEST_DURATION: 'events.suggest-duration',
     },
-
-    // Event Templates
     EVENT_TEMPLATES: {
         INDEX: 'event-templates.index',
         CREATE: 'event-templates.create',
@@ -39,8 +28,6 @@ export const ROUTES = {
         UPDATE: 'event-templates.update',
         DESTROY: 'event-templates.destroy',
     },
-
-    // Users
     USERS: {
         INDEX: 'users.index',
         CREATE: 'users.create',
@@ -50,11 +37,17 @@ export const ROUTES = {
         UPDATE: 'users.update',
         DESTROY: 'users.destroy',
     },
-
-    // Profile
     PROFILE: {
         EDIT: 'profile.edit',
         UPDATE: 'profile.update',
         DESTROY: 'profile.destroy',
     },
-};
+} as const;
+
+export type RouteName =
+    | typeof ROUTES.DASHBOARD
+    | (typeof ROUTES.CALENDARS)[keyof typeof ROUTES.CALENDARS]
+    | (typeof ROUTES.EVENTS)[keyof typeof ROUTES.EVENTS]
+    | (typeof ROUTES.EVENT_TEMPLATES)[keyof typeof ROUTES.EVENT_TEMPLATES]
+    | (typeof ROUTES.USERS)[keyof typeof ROUTES.USERS]
+    | (typeof ROUTES.PROFILE)[keyof typeof ROUTES.PROFILE];

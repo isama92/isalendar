@@ -1,15 +1,29 @@
+import type { PageProps } from '@/types';
 import { usePage } from '@inertiajs/react';
 import { useEffect, useState } from 'react';
+
+export type NotificationType = 'success' | 'error' | 'warning' | 'info';
+
+export interface Notification {
+    type: NotificationType;
+    message: string;
+}
+
+export interface UseNotificationReturn {
+    notification: Notification | null;
+    clearNotification: () => void;
+    showNotification: (type: NotificationType, message: string) => void;
+}
 
 /**
  * Custom hook for handling flash notifications from Laravel
  * Integrates with Laravel's session flash messages passed via Inertia
  *
- * @returns {Object} Notification state and handlers
+ * @returns Notification state and handlers
  */
-export const useNotification = () => {
-    const { flash } = usePage().props;
-    const [notification, setNotification] = useState(null);
+export const useNotification = (): UseNotificationReturn => {
+    const { flash } = usePage<PageProps>().props;
+    const [notification, setNotification] = useState<Notification | null>(null);
 
     useEffect(() => {
         if (flash?.success) {
@@ -38,16 +52,16 @@ export const useNotification = () => {
     /**
      * Clear the current notification
      */
-    const clearNotification = () => {
+    const clearNotification = (): void => {
         setNotification(null);
     };
 
     /**
      * Show a custom notification
-     * @param {string} type Notification type (success, error, warning, info)
-     * @param {string} message Notification message
+     * @param type - Notification type (success, error, warning, info)
+     * @param message - Notification message
      */
-    const showNotification = (type, message) => {
+    const showNotification = (type: NotificationType, message: string): void => {
         setNotification({ type, message });
     };
 

@@ -5,15 +5,19 @@
     "scripts": {
         "build": "vite build",
         "dev": "vite",
-        "lint": "eslint ./resources/**/*.{js,jsx}",
+        "lint": "eslint ./resources/**/*.{js,jsx,ts,tsx}",
         "lint:fix": "npm run lint -- --fix",
-        "prettier": "prettier ./resources/**/*.{js,jsx,css} ./*.{js,mjs} --check --log-level error",
-        "prettier:fix": "prettier ./resources/**/*.{js,jsx,css} ./*.{js,mjs} --write --log-level error",
-        "format": "npm run prettier:fix && npm run lint:fix"
+        "prettier": "prettier ./resources/**/*.{js,jsx,ts,tsx,css} ./*.{js,mjs} --check --log-level error",
+        "prettier:fix": "prettier ./resources/**/*.{js,jsx,ts,tsx,css} ./*.{js,mjs} --write --log-level error",
+        "format": "npm run prettier:fix && npm run lint:fix",
+        "type-check": "tsc --noEmit"
     },
     "devDependencies": {
         "@eslint/js": "^9.37.0",
         "@tailwindcss/vite": "^4.0.0",
+        "@types/node": "^24.9.2",
+        "@types/react": "^19.2.2",
+        "@types/react-dom": "^19.2.2",
         "@vitejs/plugin-react": "^5.1.0",
         "concurrently": "^9.0.1",
         "eslint": "^9.37.0",
@@ -28,6 +32,7 @@
         "prettier-plugin-organize-imports": "^4.3.0",
         "prettier-plugin-tailwindcss": "^0.6.14",
         "tailwindcss": "^4.0.0",
+        "typescript": "^5.9.3",
         "vite": "^7.0.7"
     },
     "dependencies": {
