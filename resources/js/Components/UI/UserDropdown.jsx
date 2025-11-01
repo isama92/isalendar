@@ -1,4 +1,4 @@
-import UserPhoto from '@/Components/UserPhoto';
+import UserPhoto from '@/Components/UI/UserPhoto';
 import { ArrowLeftEndOnRectangleIcon, UserCircleIcon } from '@heroicons/react/20/solid';
 import { Link } from '@inertiajs/react';
 import { useState } from 'react';

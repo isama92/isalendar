@@ -1,4 +1,4 @@
-import Checkbox from '@/Components/Checkbox';
+import Checkbox from '@/Components/Forms/Checkbox';
 import { LockClosedIcon } from '@heroicons/react/24/solid';
 import { Link, useForm } from '@inertiajs/react';
 

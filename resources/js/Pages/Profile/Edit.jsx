@@ -1,5 +1,5 @@
-import TimezoneSelect from '@/Components/TimezoneSelect';
-import UserPhoto from '@/Components/UserPhoto';
+import TimezoneSelect from '@/Components/Forms/TimezoneSelect';
+import UserPhoto from '@/Components/UI/UserPhoto';
 import { useForm } from '@inertiajs/react';
 import { useRef, useState } from 'react';
 

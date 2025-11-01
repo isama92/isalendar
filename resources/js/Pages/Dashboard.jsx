@@ -1,5 +1,5 @@
-import EventsByDayOfWeekChart from '@/Components/EventsByDayOfWeekChart';
-import StatCard from '@/Components/StatCard';
+import EventsByDayOfWeekChart from '@/Components/Charts/EventsByDayOfWeekChart';
+import StatCard from '@/Components/Charts/StatCard';
 import { ExclamationTriangleIcon } from '@heroicons/react/20/solid';
 import { Link } from '@inertiajs/react';
 

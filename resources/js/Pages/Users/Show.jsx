@@ -1,4 +1,4 @@
-import Modal from '@/Components/Modal';
+import Modal from '@/Components/UI/Modal';
 import { formatDateTime } from '@/Utils/date';
 import { ArrowPathIcon, PaperAirplaneIcon, PencilIcon, TrashIcon } from '@heroicons/react/20/solid';
 import { Link, router } from '@inertiajs/react';

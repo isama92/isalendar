@@ -1,10 +1,10 @@
-import CalendarSelect from '@/Components/CalendarSelect';
-import DatePicker from '@/Components/DatePicker';
-import EventDateTime from '@/Components/EventDateTime';
-import Modal from '@/Components/Modal';
-import ProviderLogo from '@/Components/ProviderLogo';
+import CalendarSelect from '@/Components/Forms/CalendarSelect';
+import DatePicker from '@/Components/Forms/DatePicker';
 import Paginator from '@/Components/Tables/Paginator';
 import Table from '@/Components/Tables/Table';
+import EventDateTime from '@/Components/UI/EventDateTime';
+import Modal from '@/Components/UI/Modal';
+import ProviderLogo from '@/Components/UI/ProviderLogo';
 import { DATE_FORMAT, formatWithFormat, formatWithFormatAndTimezone, getTimezoneOffset } from '@/Utils/date';
 import {
     CalendarIcon,

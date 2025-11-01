@@ -1,5 +1,5 @@
-import DatePicker from '@/Components/DatePicker';
-import TimePicker from '@/Components/TimePicker';
+import DatePicker from '@/Components/Forms/DatePicker';
+import TimePicker from '@/Components/Forms/TimePicker';
 import { DATE_FORMAT } from '@/Utils/date';
 import dayjs from 'dayjs';
 

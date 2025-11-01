@@ -1,5 +1,5 @@
-import Modal from '@/Components/Modal';
-import ProviderLogo from '@/Components/ProviderLogo';
+import Modal from '@/Components/UI/Modal';
+import ProviderLogo from '@/Components/UI/ProviderLogo';
 import { PencilIcon, TrashIcon } from '@heroicons/react/20/solid';
 import { Link, router } from '@inertiajs/react';
 import { useState } from 'react';

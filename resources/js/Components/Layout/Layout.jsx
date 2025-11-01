@@ -1,5 +1,5 @@
-import GuestLayout from '@/Components/GuestLayout';
-import UserLayout from '@/Components/UserLayout';
+import GuestLayout from '@/Components/Layout/GuestLayout';
+import UserLayout from '@/Components/Layout/UserLayout';
 import { usePage } from '@inertiajs/react';
 
 const Layout = ({ children }) => {

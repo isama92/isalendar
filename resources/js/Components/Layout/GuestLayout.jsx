@@ -1,7 +1,7 @@
 import LogoDark from '@/../images/logo-dark.png';
 import LogoLight from '@/../images/logo-light.png';
-import LanguageSwitcher from '@/Components/LanguageSwitcher';
-import ThemeSwitcher from '@/Components/ThemeSwitcher';
+import LanguageSwitcher from '@/Components/UI/LanguageSwitcher';
+import ThemeSwitcher from '@/Components/UI/ThemeSwitcher';
 import { usePage } from '@inertiajs/react';
 
 const GuestLayout = ({ children }) => {

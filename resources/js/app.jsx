@@ -1,4 +1,4 @@
-import Layout from '@/Components/Layout';
+import Layout from '@/Components/Layout/Layout';
 import { ThemeProvider } from '@/Contexts/ThemeContext';
 import { __, setGlobalTranslations } from '@/Utils/translate';
 import { createInertiaApp } from '@inertiajs/react';

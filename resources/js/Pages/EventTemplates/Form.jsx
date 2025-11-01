@@ -1,7 +1,7 @@
-import CalendarSelect from '@/Components/CalendarSelect';
-import Checkbox from '@/Components/Checkbox';
-import RichTextEditor from '@/Components/RichTextEditor';
-import TimezoneSelect from '@/Components/TimezoneSelect';
+import CalendarSelect from '@/Components/Forms/CalendarSelect';
+import Checkbox from '@/Components/Forms/Checkbox';
+import RichTextEditor from '@/Components/Forms/RichTextEditor';
+import TimezoneSelect from '@/Components/Forms/TimezoneSelect';
 import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react';
 import { ChevronDownIcon } from '@heroicons/react/20/solid';
 import { useForm } from '@inertiajs/react';

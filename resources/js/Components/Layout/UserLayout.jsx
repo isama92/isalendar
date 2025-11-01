@@ -1,10 +1,10 @@
 import LogoDark from '@/../images/logo-dark.png';
 import LogoLight from '@/../images/logo-light.png';
-import LanguageSwitcher from '@/Components/LanguageSwitcher';
-import Notification from '@/Components/Notification';
-import QuickActions from '@/Components/QuickActions';
-import ThemeSwitcher from '@/Components/ThemeSwitcher';
-import UserDropdown from '@/Components/UserDropdown';
+import LanguageSwitcher from '@/Components/UI/LanguageSwitcher';
+import Notification from '@/Components/UI/Notification';
+import QuickActions from '@/Components/UI/QuickActions';
+import ThemeSwitcher from '@/Components/UI/ThemeSwitcher';
+import UserDropdown from '@/Components/UI/UserDropdown';
 import { getNavigationItems } from '@/Utils/navigation';
 import { Dialog, DialogBackdrop, DialogPanel, TransitionChild } from '@headlessui/react';
 import { Bars3Icon } from '@heroicons/react/20/solid';

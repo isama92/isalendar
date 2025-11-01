@@ -1,8 +1,8 @@
-import CalendarSelect from '@/Components/CalendarSelect';
-import Modal from '@/Components/Modal';
-import ProviderLogo from '@/Components/ProviderLogo';
+import CalendarSelect from '@/Components/Forms/CalendarSelect';
 import Paginator from '@/Components/Tables/Paginator';
 import Table from '@/Components/Tables/Table';
+import Modal from '@/Components/UI/Modal';
+import ProviderLogo from '@/Components/UI/ProviderLogo';
 import {
     CheckIcon,
     DocumentDuplicateIcon,

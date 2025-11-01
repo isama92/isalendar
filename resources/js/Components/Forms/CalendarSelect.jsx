@@ -1,4 +1,4 @@
-import ProviderLogo from '@/Components/ProviderLogo';
+import ProviderLogo from '@/Components/UI/ProviderLogo';
 import { Listbox, ListboxButton, ListboxOption, ListboxOptions } from '@headlessui/react';
 import { CheckIcon, ChevronUpDownIcon } from '@heroicons/react/24/solid';
 import clsx from 'clsx';
