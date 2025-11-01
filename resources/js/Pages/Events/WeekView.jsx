@@ -1,4 +1,4 @@
-import { DATE_FORMAT } from '@/utils/date';
+import { DATE_FORMAT } from '@/Utils/date';
 import { Link } from '@inertiajs/react';
 import clsx from 'clsx';
 import dayjs from 'dayjs';

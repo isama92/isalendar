@@ -1,4 +1,4 @@
-import { DATE_FORMAT } from '@/utils/date';
+import { DATE_FORMAT } from '@/Utils/date';
 import { ClockIcon } from '@heroicons/react/20/solid';
 import { Link } from '@inertiajs/react';
 import dayjs from 'dayjs';

@@ -1,7 +1,7 @@
 import Modal from '@/Components/Modal';
 import Paginator from '@/Components/Tables/Paginator';
 import Table from '@/Components/Tables/Table';
-import { formatDate } from '@/utils/date';
+import { formatDate } from '@/Utils/date';
 import {
     ArrowPathIcon,
     EyeIcon,

@@ -5,7 +5,7 @@ import Modal from '@/Components/Modal';
 import ProviderLogo from '@/Components/ProviderLogo';
 import Paginator from '@/Components/Tables/Paginator';
 import Table from '@/Components/Tables/Table';
-import { DATE_FORMAT, formatWithFormat, formatWithFormatAndTimezone, getTimezoneOffset } from '@/utils/date';
+import { DATE_FORMAT, formatWithFormat, formatWithFormatAndTimezone, getTimezoneOffset } from '@/Utils/date';
 import {
     CalendarIcon,
     CheckIcon,

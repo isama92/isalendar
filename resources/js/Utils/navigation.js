@@ -1,4 +1,4 @@
-import { ROUTES } from '@/constants';
+import { ROUTES } from '@/Constants';
 import {
     CalendarIcon,
     ChartPieIcon,

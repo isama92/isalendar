@@ -1,5 +1,5 @@
-import { ROUTES } from '@/constants';
-import { useCalendarView } from '@/hooks';
+import { ROUTES } from '@/Constants';
+import { useCalendarView } from '@/Hooks';
 import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react';
 import {
     ChevronDownIcon,

@@ -5,7 +5,7 @@ import DurationSuggestions from '@/Components/DurationSuggestions';
 import EventTemplateSelectModal from '@/Components/EventTemplateSelectModal';
 import RichTextEditor from '@/Components/RichTextEditor';
 import TimezoneSelect from '@/Components/TimezoneSelect';
-import { useEventForm } from '@/hooks';
+import { useEventForm } from '@/Hooks';
 import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react';
 import { ChevronDownIcon } from '@heroicons/react/20/solid';
 import clsx from 'clsx';

@@ -1,7 +1,7 @@
 import Modal from '@/Components/Modal';
 import Paginator from '@/Components/Tables/Paginator';
 import Table from '@/Components/Tables/Table';
-import { formatDateTime } from '@/utils/date.js';
+import { formatDateTime } from '@/Utils/date.js';
 import {
     ArrowPathIcon,
     CalendarIcon,

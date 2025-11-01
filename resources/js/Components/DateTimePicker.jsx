@@ -1,6 +1,6 @@
 import DatePicker from '@/Components/DatePicker';
 import TimePicker from '@/Components/TimePicker';
-import { DATE_FORMAT } from '@/utils/date';
+import { DATE_FORMAT } from '@/Utils/date';
 import dayjs from 'dayjs';
 
 const DateTimePicker = ({

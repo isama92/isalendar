@@ -5,7 +5,7 @@ import Notification from '@/Components/Notification';
 import QuickActions from '@/Components/QuickActions';
 import ThemeSwitcher from '@/Components/ThemeSwitcher';
 import UserDropdown from '@/Components/UserDropdown';
-import { getNavigationItems } from '@/utils/navigation';
+import { getNavigationItems } from '@/Utils/navigation';
 import { Dialog, DialogBackdrop, DialogPanel, TransitionChild } from '@headlessui/react';
 import { Bars3Icon } from '@heroicons/react/20/solid';
 import { XMarkIcon } from '@heroicons/react/24/outline';

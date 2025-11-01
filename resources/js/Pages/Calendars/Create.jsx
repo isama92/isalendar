@@ -1,6 +1,6 @@
 import ProgressSteps from '@/Components/ProgressSteps';
 import ProviderLogo from '@/Components/ProviderLogo';
-import { getCalendarSetupSteps } from '@/utils/calendarSetupSteps';
+import { getCalendarSetupSteps } from '@/Utils/calendarSetupSteps';
 import { router } from '@inertiajs/react';
 import { useState } from 'react';
 

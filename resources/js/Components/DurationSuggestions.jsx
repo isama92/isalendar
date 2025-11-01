@@ -1,6 +1,6 @@
-import { ROUTES } from '@/constants';
+import { ROUTES } from '@/Constants';
 import { calculateEndsAtFromDuration, formatSuggestedEndsAt } from '@/Pages/Events/eventFormHelpers';
-import { DATE_FORMAT, subtractDays } from '@/utils/date';
+import { DATE_FORMAT, subtractDays } from '@/Utils/date';
 import axios from 'axios';
 import { debounce } from 'es-toolkit';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';

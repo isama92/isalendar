@@ -1,4 +1,4 @@
-import { DISPLAY_DATE_FORMAT } from '@/utils/date';
+import { DISPLAY_DATE_FORMAT } from '@/Utils/date';
 import { CalendarIcon } from '@heroicons/react/24/outline';
 import clsx from 'clsx';
 import dayjs from 'dayjs';

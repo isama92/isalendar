@@ -1,7 +1,7 @@
 import EventDateTime from '@/Components/EventDateTime';
 import Modal from '@/Components/Modal';
 import ProviderLogo from '@/Components/ProviderLogo';
-import { getTimezoneOffset } from '@/utils/date';
+import { getTimezoneOffset } from '@/Utils/date';
 import { PencilIcon, TrashIcon } from '@heroicons/react/20/solid';
 import { Link, router } from '@inertiajs/react';
 import { useState } from 'react';

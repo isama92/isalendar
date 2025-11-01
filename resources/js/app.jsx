@@ -1,6 +1,6 @@
 import Layout from '@/Components/Layout';
 import { ThemeProvider } from '@/Contexts/ThemeContext';
-import { __, setGlobalTranslations } from '@/utils/translate';
+import { __, setGlobalTranslations } from '@/Utils/translate';
 import { createInertiaApp } from '@inertiajs/react';
 import axios from 'axios';
 import dayjs from 'dayjs';

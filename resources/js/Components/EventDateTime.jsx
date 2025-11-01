@@ -5,7 +5,7 @@ import {
     formatDateTimeWithTimezone,
     getUserTimezone,
     subtractDays,
-} from '@/utils/date';
+} from '@/Utils/date';
 import dayjs from 'dayjs';
 
 const EventDateTime = ({ date, timezone: eventTimezone, allDay, isEndDate = false }) => {
