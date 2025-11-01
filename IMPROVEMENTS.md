@@ -27,35 +27,6 @@ The codebase is **well-structured** with good separation of concerns, modern Rea
 
 ---
 
-### 2. Custom Hooks - Extract Reusable Logic
-
-**Issues Found**:
-
-a. **Repeated form logic** in `Form.jsx` components
-b. **Window/URL manipulation** repeated in `Calendar.jsx`
-c. **Notification logic** could be a hook
-d. **Theme logic** exists in context but could be enhanced
-
-**Recommended Hooks to Create**:
-
-```javascript
-// hooks/useUrlParams.js
-export const useUrlParams = () => { /* ... */ }
-
-// hooks/useNotification.js
-export const useNotification = () => { /* ... */ }
-
-// hooks/useEventForm.js
-export const useEventForm = (event, currentUser) => { /* ... */ }
-
-// hooks/useCalendarView.js
-export const useCalendarView = (initialView, initialDate) => { /* ... */ }
-```
-
-**Location**: Create `resources/js/hooks/` directory
-
----
-
 ### 3. Constants Management
 
 **Issue**: Magic strings and numbers scattered throughout code

@@ -5,137 +5,32 @@ import DurationSuggestions from '@/Components/DurationSuggestions';
 import EventTemplateSelectModal from '@/Components/EventTemplateSelectModal';
 import RichTextEditor from '@/Components/RichTextEditor';
 import TimezoneSelect from '@/Components/TimezoneSelect';
-import { DATE_FORMAT, subtractDays } from '@/utils/date';
+import { useEventForm } from '@/hooks';
 import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react';
 import { ChevronDownIcon } from '@heroicons/react/20/solid';
-import { useForm } from '@inertiajs/react';
 import clsx from 'clsx';
-import { useCallback, useState } from 'react';
-import {
-    adjustAllDayEndDateForDisplay,
-    calculateDefaultEndsAt,
-    calculateEndsAtFromDuration,
-    convertUtcToEventTimezone,
-    formatEndsAtForSubmission,
-    formatStartsAtForSubmission,
-    getEndsAtMinDate,
-    shouldClearEndsAt,
-} from './eventFormHelpers';
+import { useState } from 'react';
+import { getEndsAtMinDate } from './eventFormHelpers';
 
 const Form = ({ currentUser, calendars, timezones, eventTemplates = [], event = null }) => {
-    const isEditing = !!event;
     const [templateModalOpen, setTemplateModalOpen] = useState(false);
 
-    const { data, setData, post, put, processing, transform, errors, reset } = useForm({
-        calendar_id: event?.calendar?.id || '',
-        title: event?.title || '',
-        all_day: event?.all_day || false,
-        starts_at: event ? convertUtcToEventTimezone(event.starts_at, event.timezone, event.all_day) : '',
-        ends_at: event
-            ? event.all_day
-                ? adjustAllDayEndDateForDisplay(event.ends_at)
-                : convertUtcToEventTimezone(event.ends_at, event.timezone, event.all_day)
-            : '',
-        timezone: event?.timezone || currentUser.settings.default_timezone,
-        description: event?.description || '',
-    });
+    const {
+        data,
+        setData,
+        processing,
+        errors,
+        isEditing,
+        handleStartsAtChange,
+        handleTemplateSelect,
+        handleSuggestionClick,
+        handleSubmit,
+    } = useEventForm({ event, currentUser });
 
-    /**
-     * Handle changes to the start date/time
-     */
-    const handleStartsAtChange = useCallback(
-        value => {
-            setData('starts_at', value);
-
-            if (!value) {
-                return;
-            }
-
-            if (!data.ends_at || shouldClearEndsAt(value, data.ends_at)) {
-                setData('ends_at', calculateDefaultEndsAt(value, data.all_day));
-            }
-        },
-        [data.all_day, data.ends_at, setData]
-    );
-
-    /**
-     * Handle template selection
-     */
-    const handleTemplateSelect = useCallback(
-        template => {
-            setData({
-                ...data,
-                calendar_id: template.calendar_id || '',
-                title: template.event_title || '',
-                all_day: template.event_all_day || false,
-                timezone: template.event_timezone || currentUser.settings.default_timezone,
-                description: template.event_description || '',
-            });
-            setTemplateModalOpen(false);
-        },
-        [currentUser.settings.default_timezone, data, setData]
-    );
-
-    /**
-     * Handle clicking a duration suggestion
-     */
-    const handleSuggestionClick = useCallback(
-        durationMinutes => {
-            if (!data.starts_at) {
-                return;
-            }
-
-            let calculatedEndsAt = calculateEndsAtFromDuration(data.starts_at, durationMinutes, data.all_day);
-
-            // For all-day events, subtract 1 day to match frontend display (DB stores exclusive end date)
-            if (data.all_day && calculatedEndsAt) {
-                calculatedEndsAt = subtractDays(calculatedEndsAt, 1, DATE_FORMAT);
-            }
-
-            setData('ends_at', calculatedEndsAt);
-        },
-        [data.all_day, data.starts_at, setData]
-    );
-
-    /**
-     * Prepare form data for submission
-     */
-    const prepareSubmissionData = useCallback(
-        redirectTo => ({
-            ...data,
-            starts_at: formatStartsAtForSubmission(data.starts_at, data.all_day),
-            ends_at: formatEndsAtForSubmission(data.ends_at, data.all_day),
-            redirect_to: redirectTo,
-        }),
-        [data]
-    );
-
-    /**
-     * Handle form submission
-     */
-    const handleSubmit = useCallback(
-        (e, redirectTo = null) => {
-            e.preventDefault();
-
-            const defaultRedirect = isEditing ? 'show' : 'new';
-            const actualRedirect = redirectTo || defaultRedirect;
-
-            transform(() => prepareSubmissionData(actualRedirect));
-
-            if (isEditing) {
-                put(route('events.update', event.id));
-            } else {
-                post(route('events.store'), {
-                    onSuccess: () => {
-                        if (actualRedirect === 'new') {
-                            reset();
-                        }
-                    },
-                });
-            }
-        },
-        [isEditing, event, prepareSubmissionData, transform, put, post, reset]
-    );
+    const onTemplateSelect = template => {
+        handleTemplateSelect(template);
+        setTemplateModalOpen(false);
+    };
 
     return (
         <div className="rounded-lg bg-white p-6 shadow dark:bg-gray-800">
@@ -451,7 +346,7 @@ const Form = ({ currentUser, calendars, timezones, eventTemplates = [], event = 
                 open={templateModalOpen}
                 onClose={() => setTemplateModalOpen(false)}
                 eventTemplates={eventTemplates}
-                onConfirm={handleTemplateSelect}
+                onConfirm={onTemplateSelect}
             />
         </div>
     );

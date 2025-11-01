@@ -1,4 +1,4 @@
-import { DATE_FORMAT } from '@/utils/date';
+import { useCalendarView } from '@/hooks';
 import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react';
 import {
     ChevronDownIcon,
@@ -8,12 +8,12 @@ import {
     PlusIcon,
 } from '@heroicons/react/20/solid';
 import { TableCellsIcon } from '@heroicons/react/24/solid';
-import { Link, router } from '@inertiajs/react';
+import { Link } from '@inertiajs/react';
 import dayjs from 'dayjs';
 import isBetween from 'dayjs/plugin/isBetween';
 import timezone from 'dayjs/plugin/timezone';
 import utc from 'dayjs/plugin/utc';
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo } from 'react';
 import MonthView from './MonthView';
 import WeekView from './WeekView';
 
@@ -21,30 +21,18 @@ dayjs.extend(utc);
 dayjs.extend(timezone);
 dayjs.extend(isBetween);
 
-const VIEW_MONTH = 'month';
-const VIEW_WEEK = 'week';
-
 const Calendar = ({ currentUser, events }) => {
-    // Read query parameters from URL
-    const urlParams = new URLSearchParams(window.location.search);
-    const viewParam = urlParams.get('view') || VIEW_MONTH;
-    const dateParam = urlParams.get('date');
-
-    const [currentDate, setCurrentDate] = useState(dateParam ? dayjs(dateParam) : dayjs());
-    const [view, setView] = useState([VIEW_MONTH, VIEW_WEEK].includes(viewParam) ? viewParam : VIEW_MONTH);
-
-    // Update URL when view or date changes
-    useEffect(() => {
-        const params = new URLSearchParams();
-        params.set('view', view);
-        params.set('date', currentDate.format(DATE_FORMAT));
-
-        router.visit(`${window.location.pathname}?${params.toString()}`, {
-            preserveScroll: true,
-            preserveState: true,
-            replace: true,
-        });
-    }, [view, currentDate]);
+    const {
+        currentDate,
+        view,
+        viewTitle,
+        handlePrevious,
+        handleNext,
+        handleToday,
+        handleViewChange,
+        VIEW_MONTH,
+        VIEW_WEEK,
+    } = useCalendarView();
 
     // Transform events data
     const transformedEvents = useMemo(() => {
@@ -71,31 +59,11 @@ const Calendar = ({ currentUser, events }) => {
         });
     }, [events, currentUser.settings.default_timezone]);
 
-    const handlePrevious = () => {
-        setCurrentDate(prev => prev.subtract(1, view === VIEW_MONTH ? 'month' : 'week'));
-    };
-
-    const handleNext = () => {
-        setCurrentDate(prev => prev.add(1, view === VIEW_MONTH ? 'month' : 'week'));
-    };
-
-    const handleToday = () => {
-        setCurrentDate(dayjs());
-    };
-
-    const handleViewChange = newView => {
-        setView(newView);
-    };
-
     return (
         <div className="lg:flex lg:h-full lg:flex-col">
             <header className="flex items-center justify-between border-b border-gray-200 px-6 py-4 lg:flex-none dark:border-white/10 dark:bg-gray-800/50">
                 <h1 className="text-base font-semibold text-gray-900 capitalize dark:text-white">
-                    <time dateTime={currentDate.format('YYYY-MM')}>
-                        {view === VIEW_MONTH
-                            ? currentDate.format('MMMM YYYY')
-                            : `${currentDate.startOf('week').format('MMM D')} - ${currentDate.endOf('week').format('MMM D, YYYY')}`}
-                    </time>
+                    <time dateTime={currentDate.format('YYYY-MM')}>{viewTitle}</time>
                 </h1>
                 <div className="flex items-center">
                     <div className="relative flex items-center rounded-md bg-white shadow-xs outline -outline-offset-1 outline-gray-300 md:items-stretch dark:bg-white/10 dark:shadow-none dark:outline-white/5">
