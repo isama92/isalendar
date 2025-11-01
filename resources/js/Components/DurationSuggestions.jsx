@@ -1,3 +1,4 @@
+import { ROUTES } from '@/constants';
 import { calculateEndsAtFromDuration, formatSuggestedEndsAt } from '@/Pages/Events/eventFormHelpers';
 import { DATE_FORMAT, subtractDays } from '@/utils/date';
 import axios from 'axios';
@@ -24,7 +25,7 @@ const DurationSuggestions = ({ title, startsAt, isAllDay, onSelect, isEditing = 
         }
 
         try {
-            const response = await axios.get(route('events.suggest-duration'), {
+            const response = await axios.get(route(ROUTES.EVENTS.SUGGEST_DURATION), {
                 params: { title: eventTitle, all_day: allDay ? 1 : 0 },
             });
             setSuggestions(response.data || []);

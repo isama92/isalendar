@@ -1,3 +1,4 @@
+import { ROUTES } from '@/constants';
 import {
     CalendarIcon,
     ChartPieIcon,
@@ -18,36 +19,36 @@ export const getNavigationItems = (currentRoute, connectorEnabled, isSuperAdmin)
     return [
         {
             name: __('dashboard.dashboard'),
-            href: route('dashboard'),
-            current: currentRoute === 'dashboard',
+            href: route(ROUTES.DASHBOARD),
+            current: currentRoute === ROUTES.DASHBOARD,
             icon: ChartPieIcon,
             visible: true,
         },
         {
             name: __('calendars.calendars'),
-            href: route('calendars.index'),
-            current: currentRoute === 'calendars.index',
+            href: route(ROUTES.CALENDARS.INDEX),
+            current: currentRoute === ROUTES.CALENDARS.INDEX,
             icon: CalendarIcon,
             visible: true,
         },
         {
             name: __('events.events'),
-            href: route('events.index'),
-            current: currentRoute === 'events.index',
+            href: route(ROUTES.EVENTS.INDEX),
+            current: currentRoute === ROUTES.EVENTS.INDEX,
             icon: DocumentIcon,
             visible: connectorEnabled,
         },
         {
             name: __('event-templates.event_templates'),
-            href: route('event-templates.index'),
-            current: currentRoute === 'event-templates.index',
+            href: route(ROUTES.EVENT_TEMPLATES.INDEX),
+            current: currentRoute === ROUTES.EVENT_TEMPLATES.INDEX,
             icon: DocumentDuplicateIcon,
             visible: connectorEnabled,
         },
         {
             name: __('users.users'),
-            href: route('users.index'),
-            current: currentRoute === 'users.index',
+            href: route(ROUTES.USERS.INDEX),
+            current: currentRoute === ROUTES.USERS.INDEX,
             icon: UserGroupIcon,
             visible: isSuperAdmin,
         },

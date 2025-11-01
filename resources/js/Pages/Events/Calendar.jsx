@@ -1,3 +1,4 @@
+import { ROUTES } from '@/constants';
 import { useCalendarView } from '@/hooks';
 import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react';
 import {
@@ -22,17 +23,8 @@ dayjs.extend(timezone);
 dayjs.extend(isBetween);
 
 const Calendar = ({ currentUser, events }) => {
-    const {
-        currentDate,
-        view,
-        viewTitle,
-        handlePrevious,
-        handleNext,
-        handleToday,
-        handleViewChange,
-        VIEW_MONTH,
-        VIEW_WEEK,
-    } = useCalendarView();
+    const { currentDate, view, viewTitle, handlePrevious, handleNext, handleToday, handleViewChange, CALENDAR_VIEWS } =
+        useCalendarView();
 
     // Transform events data
     const transformedEvents = useMemo(() => {
@@ -50,7 +42,7 @@ const Calendar = ({ currentUser, events }) => {
                 name: event.title,
                 datetime: event.starts_at,
                 time: event.all_day ? '' : startsAt.format('h:mm A'),
-                href: route('events.show', event.id),
+                href: route(ROUTES.EVENTS.SHOW, event.id),
                 allDay: event.all_day,
                 startsAt,
                 endsAt,
@@ -73,7 +65,9 @@ const Calendar = ({ currentUser, events }) => {
                             className="flex h-9 w-12 cursor-pointer items-center justify-center rounded-l-md pr-1 text-gray-400 hover:text-gray-500 focus:relative md:w-9 md:pr-0 md:hover:bg-gray-50 dark:hover:text-white dark:md:hover:bg-white/10"
                         >
                             <span className="sr-only">
-                                {view === VIEW_MONTH ? __('events.previous_month') : __('events.previous_week')}
+                                {view === CALENDAR_VIEWS.MONTH
+                                    ? __('events.previous_month')
+                                    : __('events.previous_week')}
                             </span>
                             <ChevronLeftIcon aria-hidden="true" className="size-5" />
                         </button>
@@ -91,7 +85,7 @@ const Calendar = ({ currentUser, events }) => {
                             className="flex h-9 w-12 cursor-pointer items-center justify-center rounded-r-md pl-1 text-gray-400 hover:text-gray-500 focus:relative md:w-9 md:pl-0 md:hover:bg-gray-50 dark:hover:text-white dark:md:hover:bg-white/10"
                         >
                             <span className="sr-only">
-                                {view === VIEW_MONTH ? __('events.next_month') : __('events.next_week')}
+                                {view === CALENDAR_VIEWS.MONTH ? __('events.next_month') : __('events.next_week')}
                             </span>
                             <ChevronRightIcon aria-hidden="true" className="size-5" />
                         </button>
@@ -102,7 +96,7 @@ const Calendar = ({ currentUser, events }) => {
                                 type="button"
                                 className="flex cursor-pointer items-center gap-x-1.5 rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 capitalize shadow-xs inset-ring inset-ring-gray-300 hover:bg-gray-50 dark:bg-white/10 dark:text-white dark:shadow-none dark:inset-ring-white/5 dark:hover:bg-white/20"
                             >
-                                {view === VIEW_MONTH ? __('events.month_view') : __('events.week_view')}
+                                {view === CALENDAR_VIEWS.MONTH ? __('events.month_view') : __('events.week_view')}
                                 <ChevronDownIcon
                                     aria-hidden="true"
                                     className="-mr-1 size-5 text-gray-400 dark:text-gray-500"
@@ -116,7 +110,7 @@ const Calendar = ({ currentUser, events }) => {
                                 <div className="py-1">
                                     <MenuItem>
                                         <button
-                                            onClick={() => handleViewChange(VIEW_WEEK)}
+                                            onClick={() => handleViewChange(CALENDAR_VIEWS.WEEK)}
                                             className="block w-full cursor-pointer px-4 py-2 text-left text-sm text-gray-700 capitalize data-focus:bg-gray-100 data-focus:text-gray-900 data-focus:outline-hidden dark:text-gray-300 dark:data-focus:bg-white/5 dark:data-focus:text-white"
                                         >
                                             {__('events.week_view')}
@@ -124,7 +118,7 @@ const Calendar = ({ currentUser, events }) => {
                                     </MenuItem>
                                     <MenuItem>
                                         <button
-                                            onClick={() => handleViewChange(VIEW_MONTH)}
+                                            onClick={() => handleViewChange(CALENDAR_VIEWS.MONTH)}
                                             className="block w-full cursor-pointer px-4 py-2 text-left text-sm text-gray-700 capitalize data-focus:bg-gray-100 data-focus:text-gray-900 data-focus:outline-hidden dark:text-gray-300 dark:data-focus:bg-white/5 dark:data-focus:text-white"
                                         >
                                             {__('events.month_view')}
@@ -135,14 +129,14 @@ const Calendar = ({ currentUser, events }) => {
                         </Menu>
                         <div className="ml-6 h-6 w-px bg-gray-300 dark:bg-white/10" />
                         <Link
-                            href={route('events.index')}
+                            href={route(ROUTES.EVENTS.INDEX)}
                             className="ml-6 inline-flex items-center gap-x-1.5 rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-xs inset-ring inset-ring-gray-300 hover:bg-gray-50 dark:bg-white/10 dark:text-white dark:shadow-none dark:inset-ring-white/5 dark:hover:bg-white/20"
                         >
                             <TableCellsIcon aria-hidden="true" className="-ml-0.5 size-5" />
                             {__('events.table')}
                         </Link>
                         <Link
-                            href={route('events.create')}
+                            href={route(ROUTES.EVENTS.CREATE)}
                             className="ml-3 inline-flex items-center gap-x-1.5 rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-xs hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 dark:bg-indigo-500 dark:shadow-none dark:hover:bg-indigo-400 dark:focus-visible:outline-indigo-500"
                         >
                             <PlusIcon aria-hidden="true" className="-ml-0.5 size-5" />
@@ -162,7 +156,7 @@ const Calendar = ({ currentUser, events }) => {
                             <div className="py-1">
                                 <MenuItem>
                                     <Link
-                                        href={route('events.create')}
+                                        href={route(ROUTES.EVENTS.CREATE)}
                                         className="block px-4 py-2 text-sm text-gray-700 data-focus:bg-gray-100 data-focus:text-gray-900 data-focus:outline-hidden dark:text-gray-300 dark:data-focus:bg-white/5 dark:data-focus:text-white"
                                     >
                                         {__('events.create_event')}
@@ -182,7 +176,7 @@ const Calendar = ({ currentUser, events }) => {
                             <div className="py-1">
                                 <MenuItem>
                                     <button
-                                        onClick={() => handleViewChange(VIEW_WEEK)}
+                                        onClick={() => handleViewChange(CALENDAR_VIEWS.WEEK)}
                                         className="block w-full cursor-pointer px-4 py-2 text-left text-sm text-gray-700 data-focus:bg-gray-100 data-focus:text-gray-900 data-focus:outline-hidden dark:text-gray-300 dark:data-focus:bg-white/5 dark:data-focus:text-white"
                                     >
                                         {__('events.week_view')}
@@ -190,7 +184,7 @@ const Calendar = ({ currentUser, events }) => {
                                 </MenuItem>
                                 <MenuItem>
                                     <button
-                                        onClick={() => handleViewChange(VIEW_MONTH)}
+                                        onClick={() => handleViewChange(CALENDAR_VIEWS.MONTH)}
                                         className="block w-full cursor-pointer px-4 py-2 text-left text-sm text-gray-700 data-focus:bg-gray-100 data-focus:text-gray-900 data-focus:outline-hidden dark:text-gray-300 dark:data-focus:bg-white/5 dark:data-focus:text-white"
                                     >
                                         {__('events.month_view')}
@@ -202,7 +196,7 @@ const Calendar = ({ currentUser, events }) => {
                 </div>
             </header>
 
-            {view === VIEW_MONTH ? (
+            {view === CALENDAR_VIEWS.MONTH ? (
                 <MonthView date={currentDate} events={transformedEvents} />
             ) : (
                 <WeekView date={currentDate} events={transformedEvents} />

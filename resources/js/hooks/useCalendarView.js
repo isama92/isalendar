@@ -1,10 +1,8 @@
+import { CALENDAR_VIEWS } from '@/constants';
 import { DATE_FORMAT } from '@/utils/date';
 import dayjs from 'dayjs';
 import { useCallback, useMemo, useState } from 'react';
 import { useUrlParams } from './useUrlParams';
-
-const VIEW_MONTH = 'month';
-const VIEW_WEEK = 'week';
 
 /**
  * Custom hook for managing calendar view state and navigation
@@ -13,14 +11,14 @@ const VIEW_WEEK = 'week';
  * @param {string|dayjs.Dayjs} options.initialDate Initial date
  * @returns {Object} Calendar view state and handlers
  */
-export const useCalendarView = ({ initialView = VIEW_MONTH, initialDate = null } = {}) => {
+export const useCalendarView = ({ initialView = CALENDAR_VIEWS.MONTH, initialDate = null } = {}) => {
     const [urlParams, setUrlParams] = useUrlParams({
         defaults: {
             view: initialView,
             date: initialDate ? dayjs(initialDate).format(DATE_FORMAT) : dayjs().format(DATE_FORMAT),
         },
         validValues: {
-            view: [VIEW_MONTH, VIEW_WEEK],
+            view: [CALENDAR_VIEWS.MONTH, CALENDAR_VIEWS.WEEK],
         },
     });
 
@@ -43,7 +41,7 @@ export const useCalendarView = ({ initialView = VIEW_MONTH, initialDate = null }
      */
     const handlePrevious = useCallback(() => {
         setCurrentDate(prev => {
-            const newDate = prev.subtract(1, view === VIEW_MONTH ? 'month' : 'week');
+            const newDate = prev.subtract(1, view === CALENDAR_VIEWS.MONTH ? 'month' : 'week');
             updateUrlParams(newDate, view);
             return newDate;
         });
@@ -54,7 +52,7 @@ export const useCalendarView = ({ initialView = VIEW_MONTH, initialDate = null }
      */
     const handleNext = useCallback(() => {
         setCurrentDate(prev => {
-            const newDate = prev.add(1, view === VIEW_MONTH ? 'month' : 'week');
+            const newDate = prev.add(1, view === CALENDAR_VIEWS.MONTH ? 'month' : 'week');
             updateUrlParams(newDate, view);
             return newDate;
         });
@@ -75,7 +73,7 @@ export const useCalendarView = ({ initialView = VIEW_MONTH, initialDate = null }
      */
     const handleViewChange = useCallback(
         newView => {
-            if (![VIEW_MONTH, VIEW_WEEK].includes(newView)) {
+            if (![CALENDAR_VIEWS.MONTH, CALENDAR_VIEWS.WEEK].includes(newView)) {
                 return;
             }
             setView(newView);
@@ -88,7 +86,7 @@ export const useCalendarView = ({ initialView = VIEW_MONTH, initialDate = null }
      * Get formatted title for the current view
      */
     const viewTitle = useMemo(() => {
-        if (view === VIEW_MONTH) {
+        if (view === CALENDAR_VIEWS.MONTH) {
             return currentDate.format('MMMM YYYY');
         }
         return `${currentDate.startOf('week').format('MMM D')} - ${currentDate.endOf('week').format('MMM D, YYYY')}`;
@@ -102,7 +100,6 @@ export const useCalendarView = ({ initialView = VIEW_MONTH, initialDate = null }
         handleNext,
         handleToday,
         handleViewChange,
-        VIEW_MONTH,
-        VIEW_WEEK,
+        CALENDAR_VIEWS,
     };
 };
