@@ -3,6 +3,7 @@
 namespace App\Console\Commands;
 
 use App\Actions\SynchronizeCalendar;
+use App\Models\Calendar;
 use App\Models\Connector;
 use Illuminate\Console\Command;
 use Illuminate\Console\ConfirmableTrait;
@@ -45,7 +46,7 @@ class SynchronizeConnectorCommand extends Command implements PromptsForMissingIn
 
         $connector->calendars()
             ->enabled()
-            ->each(fn ($calendar) => $synchronizeCalendar
+            ->each(fn (Calendar $calendar) => $synchronizeCalendar
                 ->execute($calendar));
 
         return self::SUCCESS;

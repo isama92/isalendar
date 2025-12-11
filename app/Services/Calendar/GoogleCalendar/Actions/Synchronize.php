@@ -26,8 +26,8 @@ class Synchronize
             return;
         }
 
-        $fetchWindowStart = now()->subWeek()->startOfDay()->toImmutable();
-        $fetchWindowEnd = now()->addWeeks(2)->endOfDay()->toImmutable();
+        $fetchWindowStart = now()->subMonths(2)->startOfDay()->toImmutable();
+        $fetchWindowEnd = now()->addMonths(2)->endOfDay()->toImmutable();
 
         Bus::batch([
             [
