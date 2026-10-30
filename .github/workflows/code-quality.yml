@@ -27,6 +27,13 @@ jobs:
     timeout-minutes: 10
     if: github.event_name != 'pull_request' || ! github.event.pull_request.draft
 
+    # Larastan resolves facades by booting the app, and there is no .env here. The cache
+    # store would fall back to `database`, which has no tags, so the GeoIP service (it tags
+    # its cache in the constructor) fails to resolve and every GeoIP:: call is reported as
+    # an undefined method.
+    env:
+      CACHE_STORE: array
+
     steps:
       - name: Checkout code
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
