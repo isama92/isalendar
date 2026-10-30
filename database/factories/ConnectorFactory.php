@@ -4,12 +4,13 @@ namespace Database\Factories;
 
 use App\Contracts\AccessToken;
 use App\Enums\Service;
+use App\Models\Connector;
 use App\Models\User;
 use App\Services\Calendar\GoogleCalendar\Auth\AccessToken as GoogleCalendarAccessToken;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Connector>
+ * @extends Factory<Connector>
  */
 class ConnectorFactory extends Factory
 {

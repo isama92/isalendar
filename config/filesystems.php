@@ -21,7 +21,6 @@ return [
         'profile_photos' => [
             'driver' => 'local',
             'root' => storage_path('app/profile_photos'),
-            'serve' => true,
             'throw' => true,
             'report' => false,
         ],

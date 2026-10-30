@@ -7,6 +7,7 @@ use App\Http\Middleware\SetLocale;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
+use Illuminate\Http\Request;
 use Spatie\Csp\AddCspHeaders;
 
 return Application::configure(basePath: dirname(__DIR__))
@@ -21,11 +22,11 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->trustHosts();
         $middleware->trustProxies(
             at: '*',
-            headers: Illuminate\Http\Request::HEADER_X_FORWARDED_FOR |
-                     Illuminate\Http\Request::HEADER_X_FORWARDED_HOST |
-                     Illuminate\Http\Request::HEADER_X_FORWARDED_PORT |
-                     Illuminate\Http\Request::HEADER_X_FORWARDED_PROTO |
-                     Illuminate\Http\Request::HEADER_X_FORWARDED_PREFIX
+            headers: Request::HEADER_X_FORWARDED_FOR |
+                     Request::HEADER_X_FORWARDED_HOST |
+                     Request::HEADER_X_FORWARDED_PORT |
+                     Request::HEADER_X_FORWARDED_PROTO |
+                     Request::HEADER_X_FORWARDED_PREFIX
         );
 
         $middleware->web(

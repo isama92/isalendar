@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Observers\UserObserver;
+use Database\Factories\UserFactory;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Casts\Attribute;
@@ -12,6 +13,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Override;
 use Spatie\Permission\Traits\HasRoles;
 use Staudenmeir\EloquentHasManyDeep\HasManyDeep;
 use Staudenmeir\EloquentHasManyDeep\HasRelationships;
@@ -19,7 +21,7 @@ use Staudenmeir\EloquentHasManyDeep\HasRelationships;
 #[ObservedBy([UserObserver::class])]
 class User extends Authenticatable implements MustVerifyEmail
 {
-    /** @use HasFactory<\Database\Factories\UserFactory> */
+    /** @use HasFactory<UserFactory> */
     use HasFactory;
 
     use HasRoles;
@@ -27,8 +29,10 @@ class User extends Authenticatable implements MustVerifyEmail
     use SoftDeletes;
     use HasRelationships;
 
+    #[Override]
     protected $with = ['settings'];
 
+    #[Override]
     protected $fillable = [
         'first_name',
         'last_name',
@@ -36,6 +40,7 @@ class User extends Authenticatable implements MustVerifyEmail
         'password',
     ];
 
+    #[Override]
     protected $hidden = [
         'password',
         'remember_token',
@@ -56,7 +61,7 @@ class User extends Authenticatable implements MustVerifyEmail
     }
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasOne<\App\Models\UserSetting, $this>
+     * @return HasOne<UserSetting, $this>
      */
     public function settings(): HasOne
     {
@@ -64,7 +69,7 @@ class User extends Authenticatable implements MustVerifyEmail
     }
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany<\App\Models\Connector, $this>
+     * @return HasMany<Connector, $this>
      */
     public function connectors(): HasMany
     {
@@ -75,7 +80,7 @@ class User extends Authenticatable implements MustVerifyEmail
      * if paginating $user->calendars()->distinct('calendars.id')->paginate()
      * use the distinct to get unique records
      *
-     * @return \Staudenmeir\EloquentHasManyDeep\HasManyDeep<\App\Models\Calendar, $this>
+     * @return HasManyDeep<Calendar, $this>
      */
     public function calendars(): HasManyDeep
     {
@@ -88,7 +93,7 @@ class User extends Authenticatable implements MustVerifyEmail
     }
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany<\App\Models\EventTemplate, $this>
+     * @return HasMany<EventTemplate, $this>
      */
     public function eventTemplates(): HasMany
     {
@@ -96,7 +101,7 @@ class User extends Authenticatable implements MustVerifyEmail
     }
 
     /**
-     * @return \Illuminate\Database\Eloquent\Casts\Attribute<string, null>
+     * @return Attribute<string, null>
      */
     protected function photoPath(): Attribute
     {
@@ -106,7 +111,7 @@ class User extends Authenticatable implements MustVerifyEmail
     }
 
     /**
-     * @return \Illuminate\Database\Eloquent\Casts\Attribute<string, null>
+     * @return Attribute<string, null>
      */
     protected function fullName(): Attribute
     {

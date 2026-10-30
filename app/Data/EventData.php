@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Data;
 
 use App\Services\Calendar\GoogleCalendar\Data\Normalizers\ToEvent as FromGoogleCalendar;

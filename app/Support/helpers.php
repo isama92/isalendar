@@ -12,7 +12,7 @@ if (! function_exists('ensure')) {
      * @param  array<array-key, class-string<TEnsureOfType>>|class-string<TEnsureOfType>  $type
      * @return TEnsureOfType
      *
-     * @throws \UnexpectedValueException
+     * @throws UnexpectedValueException
      */
     function ensure(mixed $value, array|string $type): mixed
     {

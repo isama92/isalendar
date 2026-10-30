@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use App\Http\Controllers\Web\SetupController;
 use App\Http\Middleware\RedirectIfSetupComplete;
 use Illuminate\Support\Facades\Route;

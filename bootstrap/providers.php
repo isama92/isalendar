@@ -1,7 +1,11 @@
 <?php
 
+use App\Providers\AppServiceProvider;
+use App\Providers\HorizonServiceProvider;
+use App\Providers\Services\GoogleServiceProvider;
+
 return [
-    App\Providers\AppServiceProvider::class,
-    App\Providers\HorizonServiceProvider::class,
-    App\Providers\Services\GoogleServiceProvider::class,
+    AppServiceProvider::class,
+    HorizonServiceProvider::class,
+    GoogleServiceProvider::class,
 ];

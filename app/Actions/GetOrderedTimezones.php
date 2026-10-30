@@ -7,7 +7,7 @@ use Illuminate\Support\Collection;
 class GetOrderedTimezones
 {
     /**
-     * @return \Illuminate\Support\Collection<int, array{value: string, label: string}>
+     * @return Collection<int, array{value: string, label: string}>
      */
     public function execute(): Collection
     {

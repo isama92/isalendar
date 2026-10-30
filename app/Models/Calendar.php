@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Builders\CalendarBuilder;
 use App\Observers\CalendarObserver;
+use Database\Factories\CalendarFactory;
 use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -11,29 +12,35 @@ use Illuminate\Database\Eloquent\HasBuilder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\Pivot;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Auth;
+use Override;
 use Staudenmeir\EloquentHasManyDeep\HasManyDeep;
 use Staudenmeir\EloquentHasManyDeep\HasRelationships;
 
 #[ObservedBy([CalendarObserver::class])]
 class Calendar extends Model
 {
-    /** @use HasFactory<\Database\Factories\CalendarFactory> */
+    /** @use HasFactory<CalendarFactory> */
     use HasFactory;
 
-    /** @use \Illuminate\Database\Eloquent\HasBuilder<\App\Builders\CalendarBuilder> */
+    /** @use HasBuilder<CalendarBuilder> */
     use HasBuilder;
 
     use SoftDeletes;
     use HasRelationships;
 
+    #[Override]
     protected static string $builder = CalendarBuilder::class;
 
+    #[Override]
     protected $with = ['connectorsForUser'];
 
+    #[Override]
     protected $appends = ['connector', 'provider'];
 
+    #[Override]
     protected $fillable = [
         'external_id',
         'name',
@@ -57,7 +64,7 @@ class Calendar extends Model
     }
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany<\App\Models\Event, $this>
+     * @return HasMany<Event, $this>
      */
     public function events(): HasMany
     {
@@ -65,7 +72,7 @@ class Calendar extends Model
     }
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany<\App\Models\Connector, $this>
+     * @return BelongsToMany<Connector, $this>
      */
     public function connectors(): BelongsToMany
     {
@@ -73,7 +80,7 @@ class Calendar extends Model
     }
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany<\App\Models\Connector, $this, \Illuminate\Database\Eloquent\Relations\Pivot>
+     * @return BelongsToMany<Connector, $this, Pivot>
      */
     public function connectorsForUser(?User $user = null): BelongsToMany
     {
@@ -85,7 +92,7 @@ class Calendar extends Model
     }
 
     /**
-     * @return Attribute<\App\Models\Connector, never>
+     * @return Attribute<Connector, never>
      */
     protected function connector(): Attribute
     {
@@ -97,7 +104,7 @@ class Calendar extends Model
     }
 
     /**
-     * @return \Staudenmeir\EloquentHasManyDeep\HasManyDeep<\App\Models\User, $this>
+     * @return HasManyDeep<User, $this>
      */
     public function users(): HasManyDeep
     {
@@ -110,7 +117,7 @@ class Calendar extends Model
     }
 
     /**
-     * @return Attribute<null|\App\Models\Provider, never>
+     * @return Attribute<null|Provider, never>
      */
     protected function provider(): Attribute
     {

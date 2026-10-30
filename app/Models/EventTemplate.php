@@ -3,24 +3,28 @@
 namespace App\Models;
 
 use App\Builders\EventTemplateBuilder;
+use Database\Factories\EventTemplateFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\HasBuilder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Override;
 
 class EventTemplate extends Model
 {
-    /** @use HasFactory<\Database\Factories\EventTemplateFactory> */
+    /** @use HasFactory<EventTemplateFactory> */
     use HasFactory;
 
-    /** @use \Illuminate\Database\Eloquent\HasBuilder<\App\Builders\EventTemplateBuilder> */
+    /** @use HasBuilder<EventTemplateBuilder> */
     use HasBuilder;
 
     use SoftDeletes;
 
+    #[Override]
     protected static string $builder = EventTemplateBuilder::class;
 
+    #[Override]
     protected $fillable = [
         'calendar_id',
         'name',
@@ -43,7 +47,7 @@ class EventTemplate extends Model
     }
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo<\App\Models\User, $this>
+     * @return BelongsTo<User, $this>
      */
     public function user(): BelongsTo
     {
@@ -51,7 +55,7 @@ class EventTemplate extends Model
     }
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo<\App\Models\Calendar, $this>
+     * @return BelongsTo<Calendar, $this>
      */
     public function calendar(): BelongsTo
     {

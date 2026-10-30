@@ -1,7 +1,6 @@
 <?php
 
 use App\Console\Commands\SynchronizeGoogleCalendarCommand;
-use App\Models\Calendar;
 use App\Models\Connector;
 use App\Models\Provider;
 use App\Services\Calendar\GoogleCalendar\Actions\Synchronize;

@@ -4,26 +4,30 @@ namespace App\Models;
 
 use App\Builders\EventBuilder;
 use App\Models\Scopes\ExcludeMarkedForDeletionScope;
+use Database\Factories\EventFactory;
 use Illuminate\Database\Eloquent\Attributes\ScopedBy;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\HasBuilder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Override;
 
 #[ScopedBy(ExcludeMarkedForDeletionScope::class)]
 class Event extends Model
 {
-    /** @use HasFactory<\Database\Factories\EventFactory> */
+    /** @use HasFactory<EventFactory> */
     use HasFactory;
 
-    /** @use \Illuminate\Database\Eloquent\HasBuilder<\App\Builders\EventBuilder> */
+    /** @use HasBuilder<EventBuilder> */
     use HasBuilder;
 
     use SoftDeletes;
 
+    #[Override]
     protected static string $builder = EventBuilder::class;
 
+    #[Override]
     protected $fillable = [
         'calendar_id',
         'created_by_connector_id',
@@ -56,7 +60,7 @@ class Event extends Model
     }
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo<\App\Models\Calendar, $this>
+     * @return BelongsTo<Calendar, $this>
      */
     public function calendar(): BelongsTo
     {
@@ -64,7 +68,7 @@ class Event extends Model
     }
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo<\App\Models\Connector, $this>
+     * @return BelongsTo<Connector, $this>
      */
     public function createdBy(): BelongsTo
     {

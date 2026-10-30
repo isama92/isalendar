@@ -72,7 +72,7 @@ class CalendarsController extends Controller
         abort_unless($connector->provider->enabled, SymfonyResponse::HTTP_NOT_FOUND);
         abort_unless($connector->user_id === Auth::id(), SymfonyResponse::HTTP_FORBIDDEN);
 
-        /** @var \App\Data\CalendarData $calendarData */
+        /** @var CalendarData $calendarData */
         $calendarData = $request->session()->get('calendars.create.list')
             ->where('externalId', $request->validated('external_id'))
             ->sole();

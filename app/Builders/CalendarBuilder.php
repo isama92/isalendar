@@ -2,11 +2,12 @@
 
 namespace App\Builders;
 
+use App\Models\Calendar;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Auth;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Builder<\App\Models\Calendar>
+ * @extends Builder<Calendar>
  */
 class CalendarBuilder extends Builder
 {

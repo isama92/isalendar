@@ -7,6 +7,7 @@ use App\Models\Connector;
 use App\Services\Calendar\GoogleCalendar\Actions\Auth\GetAuthClient;
 use App\Services\Calendar\GoogleCalendar\Data\GoogleCalendarData;
 use Google\Service\Calendar as CalendarService;
+use Google\Service\Calendar\CalendarList;
 use Google\Service\Calendar\CalendarListEntry as GoogleCalendar;
 use Illuminate\Support\Collection;
 
@@ -15,14 +16,14 @@ class FetchNormalizedCalendars
     public function __construct(private readonly GetAuthClient $getAuthClient) {}
 
     /**
-     * @return \Illuminate\Support\Collection<int, \App\Data\CalendarData>
+     * @return Collection<int, CalendarData>
      */
     public function execute(Connector $connector): Collection
     {
         $googleClient = $this->getAuthClient->execute($connector);
         $service = new CalendarService($googleClient);
 
-        /** @var \Google\Service\Calendar\CalendarList $calendarList */
+        /** @var CalendarList $calendarList */
         $calendarList = $service->calendarList
             ->listCalendarList();
 

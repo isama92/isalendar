@@ -25,7 +25,7 @@ it('encrypts and stores access token when setting', function (): void {
     expect($rawValue)
         ->not->toBeNull()
         ->not->toBe($accessToken)
-        ->and(is_string($rawValue))->toBeTrue()
+        ->and($rawValue)->toBeString()
         ->and($unserialized)
         ->toBeInstanceOf(AccessToken::class)
         ->id->toBe('token-123')

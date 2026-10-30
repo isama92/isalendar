@@ -5,6 +5,7 @@ namespace App\Http\Requests;
 use App\Concerns\SanitizesHtml;
 use App\Models\EventTemplate;
 use App\Rules\CalendarBelongsToUser;
+use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 
 class StoreEventTemplateRequest extends FormRequest
@@ -28,7 +29,7 @@ class StoreEventTemplateRequest extends FormRequest
     }
 
     /**
-     * @return array<string, array<mixed>|\Illuminate\Contracts\Validation\ValidationRule|string>
+     * @return array<string, array<mixed>|string|ValidationRule>
      */
     public function rules(): array
     {

@@ -1,7 +1,9 @@
 <?php
 
+use Pest\Rector\Set\PestSetList;
 use Rector\Caching\ValueObject\Storage\FileCacheStorage;
 use Rector\CodeQuality\Rector\If_\SimplifyIfReturnBoolRector;
+use Rector\CodingStyle\Rector\ArrowFunction\ArrowFunctionDelegatingCallToFirstClassCallableRector;
 use Rector\Config\RectorConfig;
 use Rector\DowngradePhp84\Rector\MethodCall\DowngradeNewMethodCallWithoutParenthesesRector;
 use RectorLaravel\Rector\ClassMethod\AddGenericReturnTypeToRelationsRector;
@@ -17,6 +19,7 @@ return RectorConfig::configure()
     ])
     ->withSkip([
         SimplifyIfReturnBoolRector::class,
+        ArrowFunctionDelegatingCallToFirstClassCallableRector::class => [__DIR__.'/tests'],
     ])
     ->withPhpSets()
     ->withPreparedSets(
@@ -28,6 +31,7 @@ return RectorConfig::configure()
     ->withSets([
         LaravelSetList::LARAVEL_CONTAINER_STRING_TO_FULLY_QUALIFIED_NAME,
         LaravelSetList::LARAVEL_FACADE_ALIASES_TO_FULL_NAMES,
+        PestSetList::CODING_STYLE,
     ])
     ->withRules([
         DowngradeNewMethodCallWithoutParenthesesRector::class, // Downgrades because PHPMD does not support PHP 8.4

@@ -1,5 +1,9 @@
 <?php
 
+use Torann\GeoIP\Services\IPData;
+use Torann\GeoIP\Services\IPFinder;
+use Torann\GeoIP\Services\IPGeoLocation;
+
 return [
 
     /*
@@ -49,7 +53,7 @@ return [
 
     'services' => [
         'ipgeolocation' => [
-            'class' => \Torann\GeoIP\Services\IPGeoLocation::class,
+            'class' => IPGeoLocation::class,
             'secure' => true,
             'key' => env('IPGEOLOCATION_KEY'),
             'continent_path' => storage_path('app/continents.json'),
@@ -57,13 +61,13 @@ return [
         ],
 
         'ipdata' => [
-            'class' => \Torann\GeoIP\Services\IPData::class,
+            'class' => IPData::class,
             'key' => env('IPDATA_API_KEY'),
             'secure' => true,
         ],
 
         'ipfinder' => [
-            'class' => \Torann\GeoIP\Services\IPFinder::class,
+            'class' => IPFinder::class,
             'key' => env('IPFINDER_API_KEY'),
             'secure' => true,
             'locales' => ['en'],

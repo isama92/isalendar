@@ -6,6 +6,9 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Scope;
 
+/**
+ * @implements Scope<Model>
+ */
 class ExcludeMarkedForDeletionScope implements Scope
 {
     public function apply(Builder $builder, Model $model): void
@@ -14,7 +17,7 @@ class ExcludeMarkedForDeletionScope implements Scope
     }
 
     /**
-     * @param  \Illuminate\Database\Eloquent\Builder<\Illuminate\Database\Eloquent\Model>  $builder
+     * @param  Builder<Model>  $builder
      */
     public function extend(Builder $builder): void
     {

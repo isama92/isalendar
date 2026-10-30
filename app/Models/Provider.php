@@ -7,11 +7,14 @@ use Illuminate\Database\Eloquent\Attributes\Scope;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Override;
 
 class Provider extends Model
 {
+    #[Override]
     public $timestamps = false;
 
+    #[Override]
     protected $hidden = [
         'access_object',
         'auth_route',
@@ -45,8 +48,8 @@ class Provider extends Model
     }
 
     /**
-     * @param  \Illuminate\Database\Eloquent\Builder<\App\Models\Provider>  $query
-     * @return \Illuminate\Database\Eloquent\Builder<\App\Models\Provider>
+     * @param  Builder<Provider>  $query
+     * @return Builder<Provider>
      */
     #[Scope]
     protected function enabled(Builder $query): Builder
@@ -55,7 +58,7 @@ class Provider extends Model
     }
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany<\App\Models\Connector, $this>
+     * @return HasMany<Connector, $this>
      */
     public function connectors(): HasMany
     {
