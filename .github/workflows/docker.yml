@@ -1,0 +1,102 @@
+name: docker
+
+# Pull requests (and manual runs on other branches) build without pushing. On main the
+# image is published as :latest only after the tests workflow has passed for that commit,
+# so a red build never reaches compose.production.yml. Both paths share a buildx cache.
+# Nothing publishes from a pull request: a fork must not be able to move :latest.
+on:
+  pull_request:
+    types:
+      - opened
+      - reopened
+      - synchronize
+      - ready_for_review
+  # Only fires for the copy of this file on the default branch, so it cannot be exercised
+  # from a pull request. Use workflow_dispatch on main to publish deliberately.
+  workflow_run:
+    workflows:
+      - tests
+    types:
+      - completed
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  # Never abandon a half-finished push.
+  cancel-in-progress: false
+
+jobs:
+  image:
+    name: Build${{ (github.event_name == 'workflow_run' || (github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main')) && ' and push' || '' }} the image
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    # workflow_run: only a successful tests run for a push to main. Checking the event
+    # matters, because the branches filter also matches a fork pull request whose head
+    # branch happens to be called main.
+    if: >-
+      (github.event_name == 'pull_request' && ! github.event.pull_request.draft)
+      || github.event_name == 'workflow_dispatch'
+      || (github.event_name == 'workflow_run'
+          && github.event.workflow_run.conclusion == 'success'
+          && github.event.workflow_run.event == 'push')
+
+    permissions:
+      contents: read
+      # Only used on the push path, but permissions cannot be set per step.
+      packages: write
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          # workflow_run runs on the default branch head; build the commit that was tested.
+          ref: ${{ github.event.workflow_run.head_sha || github.sha }}
+          persist-credentials: false
+
+      - name: Set up Buildx
+        uses: docker/setup-buildx-action@f87e5991a6d7451dcb8d9637bfbc97413f497069 # v4.4.1
+
+      # Schema and interpolation check only. The .env is a throwaway copy of the example,
+      # because compose treats a missing env_file as a hard error.
+      - name: Validate compose.production.yml
+        run: |
+          cp .env.production.example .env
+          docker compose -f compose.production.yml config -q
+          rm -f .env
+
+      - name: Log in to GHCR
+        if: github.event_name == 'workflow_run' || (github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main')
+        uses: docker/login-action@81c6f93d4bc991e510b342a00b419b3bb4efc5c6 # v4.7.0
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Derive tags and labels
+        id: meta
+        uses: docker/metadata-action@dc802804100637a589fabce1cb79ff13a1411302 # v6.2.0
+        with:
+          # Derived rather than hardcoded so a fork publishes into its own namespace.
+          images: ghcr.io/${{ github.repository }}
+          # A single moving tag, matching compose.production.yml. Roll back by pinning a
+          # digest from this run's log.
+          tags: type=raw,value=latest
+          labels: |
+            org.opencontainers.image.title=isalendar
+
+      - name: Build${{ (github.event_name == 'workflow_run' || (github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main')) && ' and push' || '' }}
+        uses: docker/build-push-action@c3c9e263c25d99ce0380d002d59b67737d91b0dc # v7.4.0
+        with:
+          context: .
+          file: Dockerfile
+          platforms: linux/amd64
+          push: ${{ github.event_name == 'workflow_run' || (github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main') }}
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=gha,scope=isalendar
+          cache-to: type=gha,mode=max,scope=isalendar

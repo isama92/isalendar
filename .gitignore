@@ -1,6 +1,7 @@
 ### Laravel ###
 .env*
 !.env.herd
+!.env.lerd
 !.env.sail
 !.env.ci
 !.env.example
@@ -14,6 +15,9 @@
 /compose.override.yml
 Homestead.json
 Homestead.yaml
+
+### Lerd ###
+/.lerd.local.yaml
 
 ### Composer ###
 /vendor

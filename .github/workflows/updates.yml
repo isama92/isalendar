@@ -1,0 +1,177 @@
+# Weekly dependency updates, as a pull request.
+#
+# `composer update` and `npm update` only move the lock files. `composer bump` and
+# `npm-check-updates --target semver` raise the floors in composer.json and package.json
+# to match, so declared and installed versions do not drift apart. None of these cross a
+# major version; that stays a manual decision.
+#
+# Two jobs on purpose. `update` installs freshly released, unreviewed packages and runs
+# their install scripts, so it gets a read-only token and no persisted credentials.
+# `pull-request` holds the write permissions but runs no dependency code: it only takes
+# the four manifest and lock files from `update` and opens the pull request.
+name: automatic updates
+
+on:
+  schedule:
+    # Wednesday 07:00 UTC.
+    - cron: '0 7 * * 3'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}
+  cancel-in-progress: true
+
+jobs:
+  update:
+    name: Update dependencies and run the checks
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+
+    # Same database setup as tests.yml.
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: password
+          MYSQL_DATABASE: testing
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping -h 127.0.0.1 -ppassword"
+          --health-interval=5s
+          --health-timeout=5s
+          --health-retries=20
+
+    env:
+      DB_CONNECTION: mysql
+      DB_HOST: 127.0.0.1
+      DB_PORT: 3306
+      DB_USERNAME: root
+      DB_PASSWORD: password
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@f3e473d116dcccaddc5834248c87452386958240 # v2
+        with:
+          php-version-file: .php-version
+          extensions: pcntl, redis, intl, gd, zip, bcmath, pdo_mysql
+          tools: composer:v2
+          coverage: none
+
+      - name: Setup Node
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version-file: .node-version
+          cache: 'npm'
+
+      - name: Prepare environment
+        run: |
+          composer install --no-interaction --no-progress --prefer-dist
+          cp .env.example .env
+          php artisan key:generate --no-interaction
+
+      - name: Update Composer dependencies
+        run: |
+          composer update --no-interaction --no-progress
+          composer bump
+
+      # ncu rewrites package.json and reinstalls; `npm update` then settles the lock file
+      # for anything ncu left within range. ncu is pinned so the tool itself is not an
+      # unreviewed release.
+      - name: Update npm dependencies
+        run: |
+          npx --yes npm-check-updates@23.1.1 -u --target semver --install always
+          npm update
+
+      # Built before the checks because the feature tests need the Vite manifest, and
+      # because native packages (tailwind oxide, lightningcss) are what an update breaks.
+      - name: Build assets
+        run: npm run build
+
+      - name: Run CI checks
+        run: composer ci:check
+
+      # ci:check leaves these to code-quality.yml, which does not run on this branch.
+      - name: Run static analysis
+        run: |
+          composer analyze
+          composer mess
+
+      - name: Upload updated manifests
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: updated-manifests
+          path: |
+            composer.json
+            composer.lock
+            package.json
+            package-lock.json
+          retention-days: 1
+
+  pull-request:
+    name: Open the pull request
+    needs: update
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    # create-pull-request pushes a branch (contents) and opens the pull request against it.
+    permissions:
+      contents: write
+      pull-requests: write
+
+    steps:
+      # Credentials stay persisted here because create-pull-request pushes through this
+      # remote. Safe because nothing in this job installs or runs dependency code.
+      - name: Checkout code
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      # Into a scratch directory, never the checkout: the artifact comes from a job that ran
+      # untrusted code, so only the four expected regular files are copied across.
+      - name: Download updated manifests
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          name: updated-manifests
+          path: ${{ runner.temp }}/manifests
+
+      - name: Apply updated manifests
+        run: |
+          for file in composer.json composer.lock package.json package-lock.json; do
+            source="$RUNNER_TEMP/manifests/$file"
+            test -f "$source" && test ! -L "$source" || { echo "::error::$file missing or not a regular file"; exit 1; }
+            cp "$source" "./$file"
+          done
+
+      - name: Create a pull request
+        uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # v8.1.1
+        with:
+          # With an UPDATES_TOKEN secret (fine-grained PAT with contents and pull-requests
+          # write) the pull request triggers tests.yml and friends. With GITHUB_TOKEN it
+          # does not, because GitHub ignores events raised by that token.
+          token: ${{ secrets.UPDATES_TOKEN || secrets.GITHUB_TOKEN }}
+          add-paths: |
+            composer.json
+            composer.lock
+            package.json
+            package-lock.json
+          commit-message: Update dependencies
+          branch: update-dependencies
+          delete-branch: true
+          title: Dependency updates
+          body: |
+            Automated weekly update of the Composer and npm dependencies.
+
+            `composer update` then `composer bump`, and `npm-check-updates --target
+            semver` then `npm update`. Neither ecosystem crosses a major version.
+
+            `npm run build` and `composer ci:check` both passed on these versions before
+            this pull request was opened.
+          labels: dependencies
+          assignees: isama92
