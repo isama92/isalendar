@@ -77,6 +77,7 @@ Calendar events belonging to a specific calendar. Properties include:
 ## Code Formatting
 - To format/lint PHP files, use: `composer lint`
 - This will run Laravel Pint to ensure code matches the project's style.
+- You must run `composer lint` before finalizing changes.
 
 
 ## Replies
