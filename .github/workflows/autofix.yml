@@ -3,10 +3,9 @@
 # lives in code-quality.yml.
 name: autofix.ci
 
+# Pull requests only. On a push to main autofix.ci would commit straight onto main,
+# bypassing review.
 on:
-  push:
-    branches:
-      - main
   pull_request:
     types:
       - opened
