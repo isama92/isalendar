@@ -99,19 +99,15 @@
             "@php artisan migrate --graceful --ansi"
         ],
         "analyze": "phpstan analyze --memory-limit=2048M",
-        "ci:analyze": "phpstan analyze --memory-limit=2048M --error-format=github --no-progress --ansi",
         "ci:check": [
             "Composer\\Config::disableProcessTimeout",
             "npm run lint",
             "npm run prettier",
             "npm run type-check",
             "@lint:check",
-            "@analyze",
-            "@mess",
+            "@refactor:check",
             "@test"
         ],
-        "ci:lint": "pint --ansi",
-        "ci:refactor": "rector process --ansi",
         "dev": [
             "Composer\\Config::disableProcessTimeout",
             "npx concurrently -c \"#93c5fd,#c4b5fd,#fb7185,#fdba74\" \"php artisan serve\" \"php artisan queue:listen --tries=1\" \"php artisan pail --timeout=0\" \"npm run dev\" --names=server,queue,logs,vite --kill-others"
@@ -144,10 +140,7 @@
     },
     "scripts-descriptions": {
         "analyze": "Runs static analysis",
-        "ci:analyze": "Runs static analysis with GitHub annotations",
-        "ci:check": "Runs every check CI runs, without fixing anything",
-        "ci:lint": "Fixes the PHP code style",
-        "ci:refactor": "Applies Rector refactors",
+        "ci:check": "Runs the tests and every style check CI runs, without fixing anything",
         "lint": "Correct the code style of all PHP and JS files",
         "lint:check": "Checks the PHP code style without fixing it",
         "mess": "Checks for potential code problems",
