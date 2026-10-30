@@ -8,7 +8,7 @@ The Laravel Boost guidelines are specifically curated by Laravel maintainers for
 ## Foundational Context
 This application is a Laravel application and its main Laravel ecosystems package & versions are below. You are an expert with them all. Ensure you abide by these specific packages & versions.
 
-- php - 8.4.13
+- php - 8.5
 - inertiajs/inertia-laravel (INERTIA) - v2
 - laravel/framework (LARAVEL) - v12
 - laravel/horizon (HORIZON) - v5
@@ -102,18 +102,16 @@ Calendar events belonging to a specific calendar. Properties include:
 - Use descriptive names for variables and methods. For example, `isRegisteredForDiscounts`, not `discount()`.
 - Check for existing components to reuse before writing a new one.
 
-## Laravel Sail
-- This application uses Laravel Sail for its development environment.
-- **ALWAYS** use Sail commands when you need to run PHP, Composer, NPM, or Artisan commands.
-- Examples:
-  - `./vendor/bin/sail artisan migrate` (NOT `php artisan migrate`)
-  - `./vendor/bin/sail composer install` (NOT `composer install`)
-  - `./vendor/bin/sail npm install` (NOT `npm install`)
-  - `./vendor/bin/sail php --version` (NOT `php --version`)
-- **NPM Development Server**: `./vendor/bin/sail npm run dev` is always running in the background. DO NOT run `./vendor/bin/sail npm run build` as changes are automatically hot-reloaded by Vite.
+## Local Development (lerd)
+- This application runs locally on lerd at https://isalendar.test. Laravel Sail is NOT used locally; do not run `./vendor/bin/sail`.
+- Run commands directly, lerd provides them on PATH: `php artisan migrate`, `composer install`, `npm install`, `node --version`.
+- MySQL (`lerd-mysql`) and Redis (`lerd-redis`) are lerd services configured in `.env`.
+- The lerd `php` wrapper runs inside a container: it does not pass exported shell env vars through (put values in `.env`), and `127.0.0.1` inside it is not the host.
+- lerd's PHP CLI has `memory_limit=128M`. Some tests (e.g. `SaveUserPhotoTest`) need more: run the suite with `php -d memory_limit=-1 vendor/bin/pest` if it runs out of memory.
+- **NPM Development Server**: Vite (`npm run dev`) is expected to be running. DO NOT run `npm run build` as changes are automatically hot-reloaded by Vite.
 
 ## Code Formatting
-- To format/lint PHP files, use: `./vendor/bin/sail composer lint`
+- To format/lint PHP files, use: `composer lint`
 - This will run Laravel Pint to ensure code matches the project's style.
 
 ## Verification Scripts
@@ -247,8 +245,8 @@ Route::get('/users', function () {
 
 ## Do Things the Laravel Way
 
-- Use `./vendor/bin/sail artisan make:` commands to create new files (i.e. migrations, controllers, models, etc.). You can list available Artisan commands using the `list-artisan-commands` tool.
-- If you're creating a generic PHP class, use `./vendor/bin/sail artisan make:class`.
+- Use `php artisan make:` commands to create new files (i.e. migrations, controllers, models, etc.). You can list available Artisan commands using the `list-artisan-commands` tool.
+- If you're creating a generic PHP class, use `php artisan make:class`.
 - Pass `--no-interaction` to all Artisan commands to ensure they work without user input. You should also pass the correct `--options` to ensure correct behavior.
 
 ### Database
@@ -283,7 +281,7 @@ Route::get('/users', function () {
 ### Testing
 - When creating models for tests, use the factories for the models. Check if the factory has custom states that can be used before manually setting up the model.
 - Faker: Use methods such as `$this->faker->word()` or `fake()->randomDigit()`. Follow existing conventions whether to use `$this->faker` or `fake()`.
-- When creating tests, make use of `./vendor/bin/sail artisan make:test [options] <name>` to create a feature test, and pass `--unit` to create a unit test. Most tests should be feature tests.
+- When creating tests, make use of `php artisan make:test [options] <name>` to create a feature test, and pass `--unit` to create a unit test. Most tests should be feature tests.
 
 ### Translations
 - Translation files are organized by domain in the `lang/{locale}/` directory (e.g., `lang/en/`, `lang/it/`).
@@ -326,7 +324,7 @@ Route::get('/users', function () {
 
 ## Laravel Pint Code Formatter
 
-- You must run `./vendor/bin/sail composer lint` before finalizing changes to ensure your code matches the project's expected style.
+- You must run `composer lint` before finalizing changes to ensure your code matches the project's expected style.
 - This runs Laravel Pint to format all PHP files in the project.
 
 
@@ -338,7 +336,7 @@ Route::get('/users', function () {
 - If you need to verify a feature is working, write or update a Unit / Feature test.
 
 ### Pest Tests
-- All tests must be written using Pest. Use `./vendor/bin/sail artisan make:test --pest <name>`.
+- All tests must be written using Pest. Use `php artisan make:test --pest <name>`.
 - You must not remove any tests or test files from the tests directory without approval. These are not temporary or helper files - these are core to the application.
 - Tests should test all of the happy paths, failure paths, and weird paths.
 - Tests live in the `tests/Feature` and `tests/Unit` directories.
@@ -351,9 +349,9 @@ it('is true', function () {
 
 ### Running Tests
 - Run the minimal number of tests using an appropriate filter before finalizing code edits.
-- To run all tests: `./vendor/bin/sail artisan test`.
-- To run all tests in a file: `./vendor/bin/sail artisan test tests/Feature/ExampleTest.php`.
-- To filter on a particular test name: `./vendor/bin/sail artisan test --filter=testName` (recommended after making a change to a related file).
+- To run all tests: `php artisan test`.
+- To run all tests in a file: `php artisan test tests/Feature/ExampleTest.php`.
+- To filter on a particular test name: `php artisan test --filter=testName` (recommended after making a change to a related file).
 - When the tests relating to your changes are passing, ask the user if they would like to run the entire test suite to ensure everything is still passing.
 
 ### Pest Assertions

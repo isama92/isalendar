@@ -51,3 +51,4 @@ Thumbs.db
 /ray.php
 /.phpactor.json
 /coverage
+.env.before_lerd
