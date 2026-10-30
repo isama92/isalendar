@@ -4,25 +4,29 @@ namespace App\Models;
 
 use App\Builders\ConnectorBuilder;
 use App\Casts\ProviderAccessDetailsCast;
+use Database\Factories\ConnectorFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\HasBuilder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Override;
 
 class Connector extends Model
 {
-    /** @use HasFactory<\Database\Factories\ConnectorFactory> */
+    /** @use HasFactory<ConnectorFactory> */
     use HasFactory;
 
-    /** @use \Illuminate\Database\Eloquent\HasBuilder<\App\Builders\ConnectorBuilder> */
+    /** @use HasBuilder<ConnectorBuilder> */
     use HasBuilder;
 
     use SoftDeletes;
 
+    #[Override]
     protected static string $builder = ConnectorBuilder::class;
 
+    #[Override]
     protected $fillable = [
         'provider_id',
         'external_id',
@@ -30,6 +34,7 @@ class Connector extends Model
         'enabled',
     ];
 
+    #[Override]
     protected $hidden = [
         'access_details',
     ];
@@ -49,7 +54,7 @@ class Connector extends Model
     }
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo<\App\Models\Provider, $this>
+     * @return BelongsTo<Provider, $this>
      */
     public function provider(): BelongsTo
     {
@@ -57,7 +62,7 @@ class Connector extends Model
     }
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo<\App\Models\User, $this>
+     * @return BelongsTo<User, $this>
      */
     public function user(): BelongsTo
     {
@@ -65,7 +70,7 @@ class Connector extends Model
     }
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany<\App\Models\Calendar, $this>
+     * @return BelongsToMany<Calendar, $this>
      */
     public function calendars(): BelongsToMany
     {

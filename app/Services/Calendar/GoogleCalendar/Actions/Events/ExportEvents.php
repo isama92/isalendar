@@ -22,9 +22,9 @@ class ExportEvents
         CarbonImmutable $fetchWindowStart,
         CarbonImmutable $fetchWindowEnd,
     ): void {
-        /** @phpstan-ignore method.notFound */
         $calendar->events()
             ->with(['createdBy', 'calendar'])
+            /** @phpstan-ignore method.notFound */
             ->withMarkedForDeletion()
             ->whereBetween('starts_at', [$fetchWindowStart, $fetchWindowEnd])
             ->lazyById()

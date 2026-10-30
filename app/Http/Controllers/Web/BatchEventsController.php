@@ -57,7 +57,7 @@ class BatchEventsController extends Controller
     }
 
     /**
-     * @return \Illuminate\Support\Collection<int, \App\Models\Calendar>
+     * @return Collection<int, Calendar>
      */
     private function getCalendarsForSelect(): Collection
     {
@@ -67,7 +67,7 @@ class BatchEventsController extends Controller
     }
 
     /**
-     * @return \Illuminate\Support\Collection<int, \App\Models\EventTemplate>
+     * @return Collection<int, EventTemplate>
      */
     private function getEventTemplatesForSelect(): Collection
     {

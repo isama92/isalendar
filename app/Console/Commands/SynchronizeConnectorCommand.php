@@ -8,15 +8,18 @@ use App\Models\Connector;
 use Illuminate\Console\Command;
 use Illuminate\Console\ConfirmableTrait;
 use Illuminate\Contracts\Console\PromptsForMissingInput;
+use Override;
 
 class SynchronizeConnectorCommand extends Command implements PromptsForMissingInput
 {
     use ConfirmableTrait;
 
+    #[Override]
     protected $signature = 'app:synchronize:connector
                             {connector : The Connector ID}
                             {--force : Force the operation without interaction}';
 
+    #[Override]
     protected $description = 'Run synchronization a specific connector';
 
     public function handle(SynchronizeCalendar $synchronizeCalendar): int

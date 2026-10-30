@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use App\Http\Controllers\Web\Auth\AuthController;
 use App\Http\Controllers\Web\Auth\OidcController;
 use App\Http\Controllers\Web\Auth\PasswordResetLinkController;

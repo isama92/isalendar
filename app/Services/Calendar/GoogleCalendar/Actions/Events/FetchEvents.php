@@ -9,6 +9,7 @@ use App\Services\Calendar\GoogleCalendar\Data\GoogleEventData;
 use Carbon\CarbonImmutable;
 use Google\Service\Calendar as CalendarService;
 use Google\Service\Calendar\Event as GoogleEvent;
+use Google\Service\Calendar\Events;
 use Illuminate\Support\Collection;
 
 class FetchEvents
@@ -16,7 +17,7 @@ class FetchEvents
     public function __construct(private readonly GetAuthClient $getAuthClient) {}
 
     /**
-     * @return \Illuminate\Support\Collection<int, \App\Services\Calendar\GoogleCalendar\Data\GoogleEventData>
+     * @return Collection<int, GoogleEventData>
      */
     public function execute(
         Connector $connector,
@@ -39,7 +40,7 @@ class FetchEvents
             'timeZone' => 'UTC',
         ];
 
-        /** @var \Google\Service\Calendar\Events $eventList */
+        /** @var Events $eventList */
         $eventList = $service->events
             ->listEvents($calendar->external_id, $optParams);
 

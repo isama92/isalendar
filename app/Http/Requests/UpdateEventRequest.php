@@ -5,6 +5,7 @@ namespace App\Http\Requests;
 use App\Concerns\NormalizesEventTimestamps;
 use App\Concerns\SanitizesHtml;
 use App\Rules\CalendarBelongsToUser;
+use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 
 class UpdateEventRequest extends FormRequest
@@ -31,7 +32,7 @@ class UpdateEventRequest extends FormRequest
     }
 
     /**
-     * @return array<string, array<mixed>|\Illuminate\Contracts\Validation\ValidationRule|string>
+     * @return array<string, array<mixed>|string|ValidationRule>
      */
     public function rules(): array
     {

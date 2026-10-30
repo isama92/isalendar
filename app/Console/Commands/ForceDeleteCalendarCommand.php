@@ -6,15 +6,18 @@ use App\Models\Calendar;
 use Illuminate\Console\Command;
 use Illuminate\Console\ConfirmableTrait;
 use Illuminate\Contracts\Console\PromptsForMissingInput;
+use Override;
 
 class ForceDeleteCalendarCommand extends Command implements PromptsForMissingInput
 {
     use ConfirmableTrait;
 
+    #[Override]
     protected $signature = 'app:force-delete:calendar
                             {calendar : The Calendar ID}
                             {--force : Force the operation without interaction}';
 
+    #[Override]
     protected $description = 'Force delete a calendar and all its related events';
 
     public function handle(): int

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use App\Http\Controllers\Web\BatchEventsController;
 use App\Http\Controllers\Web\CalendarEventController;
 use App\Http\Controllers\Web\CalendarsController;

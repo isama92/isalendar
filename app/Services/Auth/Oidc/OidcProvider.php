@@ -4,14 +4,17 @@ namespace App\Services\Auth\Oidc;
 
 use Laravel\Socialite\Two\AbstractProvider;
 use Laravel\Socialite\Two\User as OAuth2User;
+use Override;
 
 class OidcProvider extends AbstractProvider
 {
     /**
      * @var array<int, string>
      */
+    #[Override]
     protected $scopes = ['openid', 'profile', 'email'];
 
+    #[Override]
     protected $scopeSeparator = ' ';
 
     protected function getAuthUrl($state): string

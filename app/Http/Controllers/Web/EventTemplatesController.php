@@ -106,7 +106,7 @@ class EventTemplatesController extends Controller
     }
 
     /**
-     * @return \Illuminate\Support\Collection<int, \App\Models\Calendar>
+     * @return Collection<int, Calendar>
      */
     private function getCalendarsForSelect(): Collection
     {

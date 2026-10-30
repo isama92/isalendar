@@ -14,8 +14,8 @@ class SaveEvent
 {
     public function execute(Connector $connector, Calendar $calendar, GoogleEventData $googleEventData): void
     {
-        /** @phpstan-ignore method.notFound */
         $event = $calendar->events()
+            /** @phpstan-ignore method.notFound */
             ->withMarkedForDeletion()
             ->where('calendar_id', $calendar->id)
             ->where('external_id', $googleEventData->id)

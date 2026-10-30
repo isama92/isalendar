@@ -7,15 +7,18 @@ use App\Models\Calendar;
 use Illuminate\Console\Command;
 use Illuminate\Console\ConfirmableTrait;
 use Illuminate\Contracts\Console\PromptsForMissingInput;
+use Override;
 
 class SynchronizeCalendarCommand extends Command implements PromptsForMissingInput
 {
     use ConfirmableTrait;
 
+    #[Override]
     protected $signature = 'app:synchronize:calendar
                             {calendar : The Calendar ID}
                             {--force : Force the operation without interaction}';
 
+    #[Override]
     protected $description = 'Run synchronization for a specific calendar';
 
     public function handle(SynchronizeCalendar $synchronizeCalendar): int

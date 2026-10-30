@@ -30,7 +30,7 @@ class CompleteSeeder extends Seeder
     }
 
     /**
-     * @return \Illuminate\Support\Collection<int, \App\Models\User>
+     * @return Collection<int, User>
      */
     private function createUsers(): Collection
     {
@@ -48,7 +48,7 @@ class CompleteSeeder extends Seeder
     }
 
     /**
-     * @param  \Illuminate\Support\Collection<int, \App\Models\User>  $users
+     * @param  Collection<int, User>  $users
      */
     private function createEvents(Collection $users): void
     {

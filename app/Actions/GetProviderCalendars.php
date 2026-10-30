@@ -2,6 +2,7 @@
 
 namespace App\Actions;
 
+use App\Data\CalendarData;
 use App\Enums\Service;
 use App\Models\Connector;
 use App\Services\Calendar\GoogleCalendar\Actions\Calendars\FetchNormalizedCalendars as GoogleCalendarFetchNormalizedCalendars;
@@ -10,7 +11,7 @@ use Illuminate\Support\Collection;
 class GetProviderCalendars
 {
     /**
-     * @return \Illuminate\Support\Collection<int, \App\Data\CalendarData>
+     * @return Collection<int, CalendarData>
      */
     public function execute(Connector $connector): Collection
     {

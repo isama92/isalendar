@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use App\Models\Calendar;
+use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 
 class StoreProviderRequest extends FormRequest
@@ -13,7 +14,7 @@ class StoreProviderRequest extends FormRequest
     }
 
     /**
-     * @return array<string, array<mixed>|\Illuminate\Contracts\Validation\ValidationRule|string>
+     * @return array<string, array<mixed>|string|ValidationRule>
      */
     public function rules(): array
     {

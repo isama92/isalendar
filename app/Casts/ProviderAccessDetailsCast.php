@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Crypt;
 use Override;
 
 /**
- * @implements \Illuminate\Contracts\Database\Eloquent\CastsAttributes<null|\App\Contracts\AccessToken, null|\App\Contracts\AccessToken>
+ * @implements CastsAttributes<null|AccessToken, null|AccessToken>
  *
  * @SuppressWarnings("PHPMD.ErrorControlOperator")
  */

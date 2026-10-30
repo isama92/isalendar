@@ -46,6 +46,28 @@ describe('password reset link store', function (): void {
         Notification::assertSentTo($user, ResetPassword::class);
     });
 
+    it('translates the reset link mail subject', function (string $locale, string $subject): void {
+        Notification::fake();
+        app()->setLocale($locale);
+
+        $user = User::factory()->create([
+            'email' => 'user@example.com',
+        ]);
+
+        post(route('password.email'), [
+            'email' => 'user@example.com',
+        ])->assertSessionHas('success');
+
+        Notification::assertSentTo(
+            $user,
+            ResetPassword::class,
+            fn (ResetPassword $notification): bool => $notification->toMail($user)->subject === $subject
+        );
+    })->with([
+        'english' => ['en', 'Reset your password'],
+        'italian' => ['it', 'Resetta la tua password'],
+    ]);
+
     it('does not reveal non-existent email addresses', function (): void {
         Notification::fake();
 

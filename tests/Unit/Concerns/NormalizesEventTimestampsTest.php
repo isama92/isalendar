@@ -2,8 +2,7 @@
 
 use App\Concerns\NormalizesEventTimestamps;
 
-uses(NormalizesEventTimestamps::class)
-    ->group('concerns');
+pest()->use(NormalizesEventTimestamps::class)->group('concerns');
 
 it('returns null when value is null', function (): void {
     $result = test()->normalizeEventTimestamp(null, false, 'Europe/Amsterdam');

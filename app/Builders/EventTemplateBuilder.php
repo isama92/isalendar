@@ -2,11 +2,12 @@
 
 namespace App\Builders;
 
+use App\Models\EventTemplate;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Auth;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Builder<\App\Models\EventTemplate>
+ * @extends Builder<EventTemplate>
  */
 class EventTemplateBuilder extends Builder
 {
