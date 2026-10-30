@@ -1,0 +1,82 @@
+# The workflow name is load-bearing: autofix.ci refuses to run unless the workflow using
+# its action is called exactly "autofix.ci". Keep only formatters in here; static analysis
+# lives in code-quality.yml.
+name: autofix.ci
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    types:
+      - opened
+      - reopened
+      - synchronize
+      - ready_for_review
+
+# Read-only on purpose. autofix.ci pushes through its own GitHub App, not this token.
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  # REQUIRES the autofix.ci GitHub App on this repository (https://github.com/apps/autofix-ci).
+  # Without it the formatters still run and the job passes, but the fixes are discarded.
+  autofix:
+    name: Format and refactor
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    if: github.event_name != 'pull_request' || ! github.event.pull_request.draft
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@f3e473d116dcccaddc5834248c87452386958240 # v2
+        with:
+          php-version: '8.5'
+          extensions: pcntl, redis, intl, gd, zip, bcmath, pdo_mysql
+          tools: composer:v2
+          coverage: none
+
+      - name: Setup Node
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: '22'
+          cache: 'npm'
+
+      - name: Install Composer dependencies
+        run: composer install --no-interaction --no-progress --prefer-dist
+
+      - name: Install npm dependencies
+        run: npm ci
+
+      # Paths come from pint.json (cache-file) and rector.php (cacheDirectory).
+      - name: Cache formatting results
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: |
+            .php-cs-fixer.cache
+            /tmp/rector/cache
+          key: ${{ github.repository }}-autofix-${{ github.sha }}
+          restore-keys: |
+            ${{ github.repository }}-autofix-
+
+      # Rector before Pint: Rector rewrites syntax without caring about formatting.
+      - name: Run Rector
+        run: composer ci:refactor
+
+      - name: Run Pint
+        run: composer ci:lint
+
+      - name: Run Prettier and ESLint
+        run: npm run format
+
+      - name: Commit any fixes
+        uses: autofix-ci/action@c5b2d67aa2274e7b5a18224e8171550871fc7e4a
+        with:
+          commit-message: '[autofix.ci] Apply code formatting fixes'

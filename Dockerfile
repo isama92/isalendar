@@ -16,7 +16,7 @@ COPY public ./public
 RUN npm run build
 
 # Production runtime stage
-FROM php:8.4-fpm-alpine
+FROM php:8.5-fpm-alpine
 
 # Install system dependencies and PHP extensions
 RUN apk add --no-cache \
@@ -37,7 +37,6 @@ RUN apk add --no-cache \
         gd \
         zip \
         mbstring \
-        opcache \
         pcntl \
         bcmath \
         intl

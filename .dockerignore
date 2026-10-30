@@ -22,7 +22,7 @@ pint.json
 .php-cs-fixer.cache
 .prettierrc.json
 eslint.config.mjs
-build-and-push.sh
+.github
 Dockerfile
 
 # IDE
